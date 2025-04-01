@@ -2,7 +2,8 @@
 
 namespace Software.Infraestructure.Repository
 {
-    public class AuthenticationRepository : IAuthenticationRepository
+    public class AuthenticationRepository(SoftwareContext context) : IAuthenticationRepository
     {
+        private readonly SoftwareContext _context = context;
     }
 }
