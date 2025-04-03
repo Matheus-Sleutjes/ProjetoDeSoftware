@@ -6,6 +6,6 @@ namespace Software.Infraestructure
     public class SoftwareContext : DbContext
     {
         public SoftwareContext(DbContextOptions<SoftwareContext> options) : base(options) { }
-        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

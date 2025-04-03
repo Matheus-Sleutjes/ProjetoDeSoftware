@@ -2,13 +2,13 @@
 
 namespace Software.Domain.Models
 {
-    public class Usuario
+    public class User
     {
         [Key]
-        public int UsuarioId { get; set; }
+        public int UserId { get; set; }
 
         [MaxLength(150)]
-        public string Nome { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         
         [MaxLength(100)]
         public string Username { get; set; } = string.Empty;
