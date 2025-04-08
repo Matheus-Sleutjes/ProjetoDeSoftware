@@ -10,9 +10,15 @@ namespace Software.Api.Controllers
         private readonly IAuthenticationService _authenticationService = authenticationService;
 
         [HttpGet]
-        public IActionResult Get() {
+        public IActionResult GetAll() {
             return Ok("Hello World");
         }
-       
+
+        [HttpGet("{id}")]
+        public IActionResult GetGustavo(int id)
+        {
+            return Ok("Hello World, Gustavo");
+        }
+
     }
 }
