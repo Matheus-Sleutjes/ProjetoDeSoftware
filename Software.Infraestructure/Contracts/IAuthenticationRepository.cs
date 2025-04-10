@@ -1,6 +1,7 @@
 ﻿namespace Software.Infraestructure.Contracts
 {
-    public interface IAuthenticationRepository
+    public interface IAuthenticationRepository : IRepository
     {
+        string GetNameById(int id);
     }
 }

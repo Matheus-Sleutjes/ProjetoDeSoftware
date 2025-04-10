@@ -9,6 +9,7 @@ namespace Software.Api.Configuration
     {
         public static void DependencyRegister(this IServiceCollection services)
         {
+            services.AddScoped<IRepository, Repository>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
         }
