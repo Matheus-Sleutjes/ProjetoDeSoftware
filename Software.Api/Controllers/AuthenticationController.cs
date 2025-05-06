@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Software.Application.Contracts;
+using Software.Domain.Dtos;
 
 namespace Software.Api.Controllers
 {
@@ -9,16 +10,24 @@ namespace Software.Api.Controllers
     {
         private readonly IAuthenticationService _authenticationService = authenticationService;
 
-        [HttpGet]
-        public IActionResult GetAll() {
-            return Ok("Hello World");
-        }
-
-        [HttpGet("{id}")]
-        public IActionResult GetGustavo(int id)
+        [HttpPost]
+        public IActionResult Create([FromBody]UserDto dto)
         {
-            return Ok("Hello World, Gustavo");
+            if (dto == null) return BadRequest("Invalid data.");
+
+            var response = _authenticationService.Create(dto);
+
+            return Ok(response);
         }
 
+        [HttpPost]
+        public IActionResult Login([FromBody] UserDto dto)
+        {
+            if (dto == null) return BadRequest("Invalid data.");
+
+            var response = _authenticationService.Login(dto.Email, dto.Password);
+
+            return Ok(response);
+        }
     }
 }

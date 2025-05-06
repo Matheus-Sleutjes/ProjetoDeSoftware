@@ -1,5 +1,13 @@
-﻿using Software.Application.Contracts;
+﻿using Microsoft.IdentityModel.Tokens;
+using Software.Application.Contracts;
+using Software.Domain.Dtos;
+using Software.Domain.Enums;
+using Software.Domain.Models;
 using Software.Infraestructure.Contracts;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Xml.Linq;
 
 namespace Software.Application.Services
 {
@@ -7,6 +15,67 @@ namespace Software.Application.Services
     {
         private readonly IAuthenticationRepository _authenticationRepository = authenticationRepository;
 
+        public string Create(UserDto dto)
+        {
+            var Exists = _authenticationRepository.ValidateUserExists(dto.Email, dto.Username);
+            if (Exists) return "Usuario já existe";
 
+            var user = new User(dto.Name, dto.LastName, dto.Username, dto.Email, ConvertStringToBase64(dto.Password), dto.Role);
+
+            var result = _authenticationRepository.Create(user);
+            return result;
+        }
+
+        public LoginResponse Login(string email, string password)
+        {
+            var response = new LoginResponse();
+
+            var user = _authenticationRepository.GetByEmail(email);
+            if (user == null) return LoginError();
+            
+            var passwordBase64 = ConvertStringToBase64(password);
+            if (!user.VerifyPassword(passwordBase64)) return LoginError();
+
+            response.Token = GenerateToken(user);
+            response.Success = true;
+            response.Message = "Login realizado com sucesso";
+
+            return response;
+        }
+
+        public string GenerateToken(User user)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("iguasudiasbduasdiuasbhdsuidsuiadsibas"));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim(JwtRegisteredClaimNames.Name, user.GetFullName()),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(2),
+                signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private string ConvertStringToBase64(string password)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(password);
+            string base64Text = Convert.ToBase64String(bytes);
+            return base64Text;
+        }
+
+        private LoginResponse LoginError()
+        {
+            var response = new LoginResponse();
+            response.Message = "Email ou Senha incorreta";
+            response.Success = false;
+            return response;
+        }
     }
 }
