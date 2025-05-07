@@ -1,13 +1,11 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Software.Application.Contracts;
 using Software.Domain.Dtos;
-using Software.Domain.Enums;
 using Software.Domain.Models;
 using Software.Infraestructure.Contracts;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Xml.Linq;
 
 namespace Software.Application.Services
 {
@@ -43,7 +41,31 @@ namespace Software.Application.Services
             return response;
         }
 
-        public string GenerateToken(User user)
+        public UserDto? GetById(int id)
+        {
+            var user = _authenticationRepository.GetById(id);
+            if (user == null) return null;
+            var dto = new UserDto
+            {
+                Name = user.Name,
+                LastName = user.LastName,
+                Username = user.Username,
+                Email = user.Email,
+                Role = user.Role
+            };
+            return dto;
+        }
+
+        public bool DeleteById(int id)
+        {
+            var user = _authenticationRepository.GetById(id);
+            if (user == null) return false;
+            
+            _authenticationRepository.Delete(user);
+            return true;
+        }
+
+        private string GenerateToken(User user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("iguasudiasbduasdiuasbhdsuidsuiadsibas"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

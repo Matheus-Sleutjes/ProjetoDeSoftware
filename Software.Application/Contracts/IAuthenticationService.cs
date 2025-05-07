@@ -6,5 +6,7 @@ namespace Software.Application.Contracts
     {
         string Create(UserDto dto);
         LoginResponse Login(string email, string password);
+        UserDto? GetById(int id);
+        bool DeleteById(int id);
     }
 }

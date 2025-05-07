@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Software.Domain.Dtos;
 using Software.Domain.Models;
 using Software.Infraestructure.Contracts;
 
@@ -11,21 +12,21 @@ namespace Software.Infraestructure.Repository
         public User? GetByEmail(string email)
         {
             var user = _context.Users.AsNoTracking()
-                                            .FirstOrDefault(t => t.Email == email);
+                                     .FirstOrDefault(t => t.Email == email);
             return user;
         }
 
         public User? GetByUsername(string username)
         {
             var user = _context.Users.AsNoTracking()
-                                            .FirstOrDefault(t => t.Username == username);
+                                     .FirstOrDefault(t => t.Username == username);
             return user;
         }
 
         public bool ValidateUserExists(string email, string username)
         {
             var user = _context.Users.AsNoTracking()
-                                            .FirstOrDefault(t => t.Email == email || t.Username == username);
+                                     .FirstOrDefault(t => t.Email == email || t.Username == username);
             return user != null;
         }
 
@@ -34,6 +35,18 @@ namespace Software.Infraestructure.Repository
             _context.Users.Add(user);
             _context.SaveChanges();
             return "Usuario criado com sucesso";
+        }
+
+        public User? GetById(int id)
+        {
+            return _context.Users.AsNoTracking()
+                                 .FirstOrDefault(t => t.UserId == id);
+        }
+
+        public void DeleteById(User user)
+        {
+            _context.Users.Remove(user);
+            _context.SaveChanges();
         }
     }
 }

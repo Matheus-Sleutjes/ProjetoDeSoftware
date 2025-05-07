@@ -11,9 +11,9 @@ namespace Software.Api.Controllers
         private readonly IAuthenticationService _authenticationService = authenticationService;
 
         [HttpPost]
-        public IActionResult Create([FromBody]UserDto dto)
+        public IActionResult Create([FromBody] UserDto dto)
         {
-            if (dto == null) return BadRequest("Invalid data.");
+            if (dto == null) return BadRequest("Informações invalidas");
 
             var response = _authenticationService.Create(dto);
 
@@ -23,11 +23,29 @@ namespace Software.Api.Controllers
         [HttpPost]
         public IActionResult Login([FromBody] UserDto dto)
         {
-            if (dto == null) return BadRequest("Invalid data.");
+            if (dto == null) return BadRequest("Informações invalidas");
 
             var response = _authenticationService.Login(dto.Email, dto.Password);
 
             return Ok(response);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            var user = _authenticationService.GetById(id);
+            return Ok(user);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteById(int id)
+        {
+            var isSuccess = _authenticationService.DeleteById(id);
+
+            if (isSuccess)
+                return Ok();
+            else
+                return NotFound("User não encontrado.");
         }
     }
 }
