@@ -10,5 +10,6 @@ namespace Software.Infraestructure.Contracts
         bool ValidateUserExists(string email, string username);
         string Create(User user);
         void Delete(User user);
+        void Update(User user);
     }
 }

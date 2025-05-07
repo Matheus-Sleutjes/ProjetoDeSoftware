@@ -8,5 +8,6 @@ namespace Software.Application.Contracts
         LoginResponse Login(string email, string password);
         UserDto? GetById(int id);
         bool DeleteById(int id);
+        bool Update(int id, UserDto dto);
     }
 }

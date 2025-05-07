@@ -65,6 +65,19 @@ namespace Software.Application.Services
             return true;
         }
 
+        public bool Update(int id, UserDto dto)
+        {
+            var user = _authenticationRepository.GetById(id);
+            if (user == null) return false;
+
+            user.Name = dto.Name == "" ? user.Name : dto.Name;
+            user.LastName = dto.LastName == "" ? user.LastName : dto.LastName;
+            user.Username = dto.Username == "" ? user.Username : dto.Username;
+
+            _authenticationRepository.Update(user);
+            return true;
+        }
+
         private string GenerateToken(User user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("iguasudiasbduasdiuasbhdsuidsuiadsibas"));

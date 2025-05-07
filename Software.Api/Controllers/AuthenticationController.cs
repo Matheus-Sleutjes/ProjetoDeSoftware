@@ -47,5 +47,16 @@ namespace Software.Api.Controllers
             else
                 return NotFound("User não encontrado.");
         }
+
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, [FromBody] UserDto dto)
+        {
+            var isSuccess = _authenticationService.Update(id, dto);
+
+            if (isSuccess)
+                return Ok("Atualizado com sucesso!");
+            else
+                return BadRequest("Algo deu errado!");
+        }
     }
 }
