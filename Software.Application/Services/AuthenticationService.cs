@@ -80,7 +80,7 @@ namespace Software.Application.Services
 
         private string GenerateToken(User user)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("iguasudiasbduasdiuasbhdsuidsuiadsibas"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Utils.JtwSecretkey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]

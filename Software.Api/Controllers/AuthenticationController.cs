@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Software.Application.Contracts;
 using Software.Domain.Dtos;
@@ -20,7 +21,7 @@ namespace Software.Api.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
+        [HttpPost("Login")]
         public IActionResult Login([FromBody] UserDto dto)
         {
             if (dto == null) return BadRequest("Informações invalidas");
@@ -30,6 +31,7 @@ namespace Software.Api.Controllers
             return Ok(response);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
@@ -37,17 +39,19 @@ namespace Software.Api.Controllers
             return Ok(user);
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public IActionResult DeleteById(int id)
         {
             var isSuccess = _authenticationService.DeleteById(id);
 
             if (isSuccess)
-                return Ok();
+                return Ok("Usuario deletado com sucesso!");
             else
-                return NotFound("User não encontrado.");
+                return NotFound("User não encontrado!");
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] UserDto dto)
         {
