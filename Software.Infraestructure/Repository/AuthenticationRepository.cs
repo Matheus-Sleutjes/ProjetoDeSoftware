@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Software.Domain.Dtos;
 using Software.Domain.Models;
 using Software.Infraestructure.Contracts;
 
@@ -43,7 +42,7 @@ namespace Software.Infraestructure.Repository
                                  .FirstOrDefault(t => t.UserId == id);
         }
 
-        public void DeleteById(User user)
+        public void Delete(User user)
         {
             _context.Users.Remove(user);
             _context.SaveChanges();
