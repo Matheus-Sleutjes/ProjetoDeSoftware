@@ -20,9 +20,10 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
+
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
   ],
   exports: [
     CommonModule,

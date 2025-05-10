@@ -1,22 +1,46 @@
-<div class="login-container" *ngIf="!loading">
-    <img src="/assets/logo-pi.png" alt="Clínicas PI" class="logo" />
-    <h2>Entrar na sua conta</h2>
-
-    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-        <mat-form-field appearance="fill">
-            <mat-label>Email</mat-label>
-            <input matInput placeholder="Digite seu email" formControlName="email" type="email" required />
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-            <mat-label>Senha</mat-label>
-            <input matInput placeholder="Digite sua senha" formControlName="senha" type="password" required />
-        </mat-form-field>
-
-        <div class="login-actions">
-            <a href="#">Esqueceu a senha?</a>
+<section class="login-section">
+    <div class="login-container">
+        <div class="left-panel">
+            <h1>Clínicas PI π</h1>
+            <p class="description">Bem-vindo(a)! Faça login para acessar sua conta.</p>
+            <img src="assets/imgs/cirurgia.jpg" alt="Cirurgia" class="illustration" />
         </div>
 
-        <button mat-raised-button class="login-button" type="submit">Entrar</button>
-    </form>
-</div>
+        <div class="right-panel" *ngIf="!loading">
+            <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
+                <h2>Entrar na sua conta</h2>
+
+                <mat-form-field appearance="outline" class="field">
+                    <mat-icon matPrefix>person</mat-icon>
+                    <mat-label>Email</mat-label>
+                    <input matInput formControlName="email" type="email" placeholder="seu@exemplo.com" />
+                    <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Email obrigatório</mat-error>
+                    <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Email inválido</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="field">
+                    <mat-icon matPrefix>lock</mat-icon>
+                    <mat-label>Senha</mat-label>
+                    <input matInput [type]="hide ? 'password' : 'text'" formControlName="senha"
+                        placeholder="••••••••" />
+                    <button mat-icon-button matSuffix type="button" (click)="hide = !hide">
+                        <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+                    </button>
+                    <mat-error *ngIf="loginForm.get('senha')?.hasError('required')" color="danger">Senha obrigatória</mat-error>
+                    <mat-error *ngIf="loginForm.get('senha')?.hasError('minlength')" color="warning">Mínimo de 6 caracteres</mat-error>
+                </mat-form-field>
+<!-- [disabled]="loginForm.invalid || loading" -->
+                <button  type="button" mat-raised-button class="btn-login" >
+                    {{ loading ? 'Entrando...' : 'Entrar' }}
+                </button>
+
+                <div class="extras">
+                    <a routerLink="/forgot-password">Esqueceu a senha?</a>
+                </div>
+            </form>
+
+            <button mat-raised-button (click)="onLogin()">Home teste</button>
+            <p class="footer">© {{ currentYear }} Clínicas PI</p>
+        </div>
+    </div>
+</section>
