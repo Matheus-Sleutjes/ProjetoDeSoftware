@@ -1,1 +1,22 @@
-<p>login works!</p>
+<div class="login-container" *ngIf="!loading">
+    <img src="/assets/logo-pi.png" alt="Clínicas PI" class="logo" />
+    <h2>Entrar na sua conta</h2>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+        <mat-form-field appearance="fill">
+            <mat-label>Email</mat-label>
+            <input matInput placeholder="Digite seu email" formControlName="email" type="email" required />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Senha</mat-label>
+            <input matInput placeholder="Digite sua senha" formControlName="senha" type="password" required />
+        </mat-form-field>
+
+        <div class="login-actions">
+            <a href="#">Esqueceu a senha?</a>
+        </div>
+
+        <button mat-raised-button class="login-button" type="submit">Entrar</button>
+    </form>
+</div>
