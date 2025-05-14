@@ -4,11 +4,13 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SharedModule } from '../../shared/shared.module';
 import { AppModule } from '../../app.module';
+import { AuthenticationService } from '../../services/authentication.service';
+import { Login } from '../../models/login';
 
 
 @Component({
     selector: 'app-login',
-    imports:[SharedModule],
+    imports: [SharedModule],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
     standalone: true,
@@ -21,15 +23,16 @@ export class LoginComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-    
+
         private router: Router,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private authService: AuthenticationService
     ) { }
 
     ngOnInit(): void {
         this.loginForm = this.fb.group({
             email: ['', [Validators.required, Validators.email]],
-            senha: ['', [Validators.required, Validators.minLength(6)]]
+            password: ['', [Validators.required,]]
         });
     }
 
@@ -39,11 +42,27 @@ export class LoginComponent implements OnInit {
         //     return;
         // }
 
-        console.log("ir pra outra tela")
         // this.loading = true;
+        const credentials: Login = {
+            email: this.loginForm.value.email,
+            password: this.loginForm.value.password
+        }
+
+        this.authService.login(credentials).subscribe({
+            next: (response: any) => {
+                if (response) {
+                    sessionStorage.setItem('token', response.token);
+                    this.router.navigate(['home']);
+                } else {
+                    this.snackBar.open('Erro ao obter o token', 'OK', { duration: 4000 });
+                }
+            },
+            error: (err: any) => {
+                this.snackBar.open(err.error?.message || 'Erro no login', 'OK', { duration: 4000 });
+            }
+        }).add(() => this.loading = false);
         const { email, senha } = this.loginForm.value;
 
-        this.router.navigate(['home']);
         // this.authService.login(email, senha).subscribe({
         //     next: () => this.router.navigate(['/dashboard']),
         //     error: (err: any) => {

@@ -16,9 +16,9 @@ export class AuthenticationService {
     private router: Router,
   ) { }
 
-  public controller = "Usuario";
+  public controller = "Authentication";
   private tokenKey = 'token';
-  private readonly baseUrl = 'https://localhost:7265/api';
+  private readonly baseUrl = 'https://localhost:7055/';
 
   //async login(credentials: Login): Promise<boolean>  {
     // var token = '';
@@ -60,7 +60,8 @@ export class AuthenticationService {
 
   login(credentials: Login): Observable<boolean> {
     return new Observable<boolean>((observer) => {
-      this.http.post(`${this.controller}/login`, credentials).subscribe(
+      console.log("Login", credentials);
+      this.http.post(`${this.controller}` + '/Login', credentials).subscribe(
         (response: any) => {
           console.log(response);
           const token = response.token;
