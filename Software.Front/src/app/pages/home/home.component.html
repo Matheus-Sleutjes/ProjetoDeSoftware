@@ -1,4 +1,55 @@
-<app-header></app-header>
-<p>
-    teste
-</p>
+<mat-toolbar color="primary" class="top-nav">
+    <span class="logo">π</span>
+    <span class="spacer"></span>
+    <button mat-button (click)="logout()">Sair</button>
+</mat-toolbar>
+
+<div class="container">
+
+
+    <div class="hero-section">
+        <div class="hero-text">
+            <h1>Cuide da sua saúde<br />com praticidade e confiança!</h1>
+            <p>Agende sua consulta online com apenas alguns cliques.</p>
+
+            <div class="options">
+                <mat-card *ngFor="let opt of options" class="option-card" type="button">
+                    <mat-icon>{{ opt.icon }}</mat-icon>
+                    <span>{{ opt.label }}</span>
+                </mat-card>
+            </div>
+        </div>
+
+        <div class="hero-image">
+            <div class="image-bg"></div>
+            <img src="assets/imgs/medic_japa.jpg" alt="Médico" />
+        </div>
+    </div>
+</div>
+
+<div class="secondary-image">
+    <img src="assets/imgs/cirurgiao.jpg" alt="Cirurgia" class="img-cirurgiao" />
+</div>
+
+<!-- Seção de clínicas -->
+<section class="clinics-section">
+    <h2>Clinicas PI π</h2>
+    <div class="clinics-list">
+        <div *ngFor="let clinic of clinics" class="clinic-card">
+            <!-- <img [src]="clinic.mapUrl" alt="{{ clinic.name }}" /> -->
+            <span>{{ clinic.name }}</span>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="contacts">
+        <span>Atendimentos 24h</span>
+        <span>Cuiabá (65) 9999-9999</span>
+        <span>São Paulo (65) 9999-9999</span>
+    </div>
+    <div class="socials">
+        <mat-icon svgIcon="instagram"></mat-icon>
+        <mat-icon svgIcon="facebook"></mat-icon>
+    </div>
+</footer>
