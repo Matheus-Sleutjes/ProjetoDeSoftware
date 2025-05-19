@@ -1,0 +1,17 @@
+$green-dark: #004d40;
+$green-light: #00796b;
+$white: #fff;
+
+.top-nav {
+    background: $green-dark;
+    color: $white;
+
+    .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .spacer {
+        flex: 1 1 auto;
+    }
+}

@@ -40,4 +40,16 @@ export class HomeComponent {
     // seu código de logout aqui...
     this.router.navigate(['/login']);
   }
+
+  navigateToAppointments(pageOpt: Option) {
+    console.log(pageOpt);
+    this.router.navigate(
+      ['/appointments'],
+      {
+        queryParams: {
+          options: JSON.stringify(pageOpt)  // como é um array/obj, converte pra string
+        }
+      })
+  }
+
 }

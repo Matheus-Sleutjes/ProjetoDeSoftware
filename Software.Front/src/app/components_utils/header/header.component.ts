@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { SharedModule } from '../../shared/shared.module';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -10,4 +11,10 @@ import { SharedModule } from '../../shared/shared.module';
 })
 export class HeaderComponent {
   
+  constructor(private router: Router) {}
+
+  logout() {
+    // seu código de logout aqui...
+    this.router.navigate(['/login']);
+  }
 }

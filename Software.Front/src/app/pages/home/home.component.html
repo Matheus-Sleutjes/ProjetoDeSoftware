@@ -13,7 +13,7 @@
             <p>Agende sua consulta online com apenas alguns cliques.</p>
 
             <div class="options">
-                <mat-card *ngFor="let opt of options" class="option-card" type="button">
+                <mat-card *ngFor="let opt of options" class="option-card" type="button" (click)="navigateToAppointments(opt)">
                     <mat-icon>{{ opt.icon }}</mat-icon>
                     <span>{{ opt.label }}</span>
                 </mat-card>

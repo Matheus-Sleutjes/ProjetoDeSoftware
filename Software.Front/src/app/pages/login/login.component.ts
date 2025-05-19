@@ -48,27 +48,20 @@ export class LoginComponent implements OnInit {
             password: this.loginForm.value.password
         }
 
-        this.authService.login(credentials).subscribe({
-            next: (response: any) => {
-                if (response) {
-                    sessionStorage.setItem('token', response.token);
-                    this.router.navigate(['home']);
-                } else {
-                    this.snackBar.open('Erro ao obter o token', 'OK', { duration: 4000 });
-                }
-            },
-            error: (err: any) => {
-                this.snackBar.open(err.error?.message || 'Erro no login', 'OK', { duration: 4000 });
-            }
-        }).add(() => this.loading = false);
-        const { email, senha } = this.loginForm.value;
-
-        // this.authService.login(email, senha).subscribe({
-        //     next: () => this.router.navigate(['/dashboard']),
+        // this.authService.login(credentials).subscribe({
+        //     next: (response: any) => {
+        //         if (response) {
+        //             sessionStorage.setItem('token', response.token);
+        this.router.navigate(['home']);
+        //         } else {
+        //             this.snackBar.open('Erro ao obter o token', 'OK', { duration: 4000 });
+        //         }
+        //     },
         //     error: (err: any) => {
         //         this.snackBar.open(err.error?.message || 'Erro no login', 'OK', { duration: 4000 });
         //     }
         // }).add(() => this.loading = false);
+
     }
 }
 
