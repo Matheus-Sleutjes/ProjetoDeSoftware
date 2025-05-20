@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { HttpService } from './http.service';
 import { Login } from '../models/login';
+import { CreateAccount } from '../models/createAccount';
 
 @Injectable({
   providedIn: 'root'
@@ -16,51 +17,51 @@ export class AuthenticationService {
     private router: Router,
   ) { }
 
-  public controller = "Usuario";
+  public controller = "Authentication";
   private tokenKey = 'token';
-  private readonly baseUrl = 'https://localhost:7265/api';
+  private readonly baseUrl = 'https://localhost:7055/';
 
   //async login(credentials: Login): Promise<boolean>  {
-    // var token = '';
+  // var token = '';
 
-    // const url = `${this.baseUrl}/${this.controller}/Login`
-    // await this.http.post(url, credentials).subscribe(response => {
-    //   console.log(response)
-    // })
+  // const url = `${this.baseUrl}/${this.controller}/Login`
+  // await this.http.post(url, credentials).subscribe(response => {
+  //   console.log(response)
+  // })
 
-    // return true;
-    // try {
-    //   var token = '';
-    //   this.http.post<any>(`${this.baseUrl}/${this.controller}/login`, credentials).subscribe((response: any) => {
-    //     console.log(response)
-    //     token = response.token;
-    //   });
+  // return true;
+  // try {
+  //   var token = '';
+  //   this.http.post<any>(`${this.baseUrl}/${this.controller}/login`, credentials).subscribe((response: any) => {
+  //     console.log(response)
+  //     token = response.token;
+  //   });
 
 
-    //   if (token != "" && token != undefined) {
-    //     const decodedToken = jwtDecode<JwtPayload>(token);
-    //     const currentTime = Date.now() / 1000;
+  //   if (token != "" && token != undefined) {
+  //     const decodedToken = jwtDecode<JwtPayload>(token);
+  //     const currentTime = Date.now() / 1000;
 
-    //     if (decodedToken.exp && decodedToken.exp > currentTime) {
-    //       localStorage.setItem(this.tokenKey, token);
-    //       return true;
-    //     } else {
-    //       console.error('Token expirado');
-    //       return false;
-    //     }
-    //   } else {
-    //     console.error('Token não recebido');
-    //     return false;
-    //   }
-    // } catch (error) {
-    //   console.error('Erro no login', error);
-    //   return false;
-    // }
+  //     if (decodedToken.exp && decodedToken.exp > currentTime) {
+  //       localStorage.setItem(this.tokenKey, token);
+  //       return true;
+  //     } else {
+  //       console.error('Token expirado');
+  //       return false;
+  //     }
+  //   } else {
+  //     console.error('Token não recebido');
+  //     return false;
+  //   }
+  // } catch (error) {
+  //   console.error('Erro no login', error);
+  //   return false;
+  // }
   //}
 
   login(credentials: Login): Observable<boolean> {
     return new Observable<boolean>((observer) => {
-      this.http.post(`${this.controller}/login`, credentials).subscribe(
+      this.http.post(`${this.controller}` + '/Login', credentials).subscribe(
         (response: any) => {
           console.log(response);
           const token = response.token;
@@ -91,6 +92,29 @@ export class AuthenticationService {
         }
       );
     });
+  }
+
+  createdAccount(credentials: CreateAccount): Observable<any> {
+    return new Observable<boolean>((observer) => {
+      console.log("criar conta", credentials);
+      this.http.post(`${this.controller}`, credentials).subscribe(
+        (response: any) => {
+         response = JSON.stringify(response)
+          console.log(response);
+          console.log("criar conta", response);
+          observer.next(true); // Emite falso no erro
+          observer.complete();
+
+
+        },
+        (error) => {
+          console.error('Erro no login', error);
+          observer.next(false); // Emite falso no erro
+          observer.complete();
+        }
+      );
+    });
+
   }
 
 

@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class HttpService {
 
-  private readonly baseUrl = 'https://localhost:7265/api'; // URL base da sua API
+  private readonly baseUrl = 'https://localhost:7055'; // URL base da sua API
 
   constructor(private http: HttpClient) {}
 // Método para obter os headers com o token

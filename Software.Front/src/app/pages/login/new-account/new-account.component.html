@@ -1,0 +1,90 @@
+<section class="section-register">
+    <div class="register-container">
+
+        <!-- painel esquerdo com branding e imagem -->
+        <div class="left-panel">
+            <h1>Clínicas PI π</h1>
+            <p class="description">Crie sua conta para agendar consultas de forma simples e segura.</p>
+            <img src="assets/imgs/cirurgiao.jpg" alt="Cadastro" class="illustration" />
+        </div>
+
+        <!-- painel direito com o formulário -->
+        <div class="right-panel" *ngIf="!loading">
+            <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="register-form">
+                <h2>Cadastro de Usuário</h2>
+
+                <mat-form-field appearance="outline">
+                    <mat-icon matPrefix>person</mat-icon>
+                    <mat-label>Nome</mat-label>
+                    <input matInput formControlName="name" placeholder="Seu nome" />
+                    <mat-error *ngIf="registerForm.get('name')?.hasError('required')">
+                        Nome é obrigatório
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-icon matPrefix>person</mat-icon>
+                    <mat-label>Sobrenome</mat-label>
+                    <input matInput formControlName="lastName" placeholder="Seu sobrenome" />
+                    <mat-error *ngIf="registerForm.get('lastName')?.hasError('required')">
+                        Sobrenome é obrigatório
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-icon matPrefix>account_circle</mat-icon>
+                    <mat-label>Usuário</mat-label>
+                    <input matInput formControlName="username" placeholder="Escolha um usuário" />
+                    <mat-error *ngIf="registerForm.get('username')?.hasError('minlength')">
+                        Precisa ter ao menos 4 caracteres
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-icon matPrefix>email</mat-icon>
+                    <mat-label>Email</mat-label>
+                    <input matInput formControlName="email" placeholder="seu@exemplo.com" />
+                    <mat-error *ngIf="registerForm.get('email')?.hasError('email')">
+                        Email inválido
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-icon matPrefix>lock</mat-icon>
+                    <mat-label>Senha</mat-label>
+                    <input matInput [type]="hide ? 'password' : 'text'" formControlName="password"
+                        placeholder="••••••••" />
+                    <button mat-icon-button matSuffix type="button" (click)="hide = !hide">
+                        <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+                    </button>
+                    <mat-error *ngIf="registerForm.get('password')?.hasError('minlength')">
+                        Min. 6 caracteres
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-icon matPrefix>badge</mat-icon>
+                    <mat-label>Tipo de Conta</mat-label>
+                    <mat-select formControlName="role">
+                        <mat-option *ngFor="let r of roles" [value]="r.value">
+                            {{ r.viewValue }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <button class="btn-created" type="submit" mat-raised-button color="primary" [disabled]="registerForm.invalid || loading"
+                    class="btn-register">
+                    <mat-icon class="icon-left">person_add</mat-icon>
+                    Cadastrar
+                </button>
+
+                <p class="footer">
+                    Já tem conta?
+                    <a type="button" (click)="navigateTologin()">Entrar</a>
+                </p>
+            </form>
+
+        </div>
+
+    </div>
+</section>
