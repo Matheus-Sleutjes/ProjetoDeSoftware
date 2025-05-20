@@ -1,12 +1,18 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
 :host {
+    /* app-root ou seu componente */
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    /* cobre toda a viewport */
     background: linear-gradient(135deg, #00796b, #004d40);
-    width: 100%;
-    height: auto;
-    font-family: "noto sans", sans-serif !important;
+    font-family: "Noto Sans", sans-serif;
 }
 
 .login-section {
@@ -84,7 +90,7 @@
 .btn-login {
     width: 100%;
     padding: 0.75rem;
-    font-size: 1rem;
+    font-size: 1em;
     margin-bottom: 1rem;
     background: #0a5761 !important;
     color: white !important;

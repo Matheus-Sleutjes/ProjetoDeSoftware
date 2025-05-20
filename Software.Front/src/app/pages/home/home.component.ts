@@ -39,6 +39,7 @@ export class HomeComponent {
   logout() {
     // seu código de logout aqui...
     this.router.navigate(['/login']);
+    localStorage.clear();
   }
 
   navigateToAppointments(pageOpt: Option) {

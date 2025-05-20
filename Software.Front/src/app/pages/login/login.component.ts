@@ -10,7 +10,7 @@ import { Login } from '../../models/login';
 
 @Component({
     selector: 'app-login',
-    imports: [SharedModule],
+    imports: [SharedModule, ],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
     standalone: true,
@@ -36,31 +36,36 @@ export class LoginComponent implements OnInit {
         });
     }
 
-    onLogin() {
-        // if (this.loginForm.invalid) {
-        //     this.loginForm.markAllAsTouched();
-        //     return;
-        // }
+    navigateToNewAccount() {
+        console.log('Navigating to new account');
+        this.router.navigate(['new-account']);
+    }
 
-        // this.loading = true;
+    onLogin() {
+        if (this.loginForm.invalid) {
+            this.loginForm.markAllAsTouched();
+            return;
+        }
+
+        this.loading = true;
         const credentials: Login = {
             email: this.loginForm.value.email,
             password: this.loginForm.value.password
         }
 
-        // this.authService.login(credentials).subscribe({
-        //     next: (response: any) => {
-        //         if (response) {
-        //             sessionStorage.setItem('token', response.token);
-        this.router.navigate(['home']);
-        //         } else {
-        //             this.snackBar.open('Erro ao obter o token', 'OK', { duration: 4000 });
-        //         }
-        //     },
-        //     error: (err: any) => {
-        //         this.snackBar.open(err.error?.message || 'Erro no login', 'OK', { duration: 4000 });
-        //     }
-        // }).add(() => this.loading = false);
+        this.authService.login(credentials).subscribe({
+            next: (response: any) => {
+                if (response) {
+                    sessionStorage.setItem('token', response.token);
+                    this.router.navigate(['home']);
+                } else {
+                    this.snackBar.open('emailn ou senha Incorreto', 'OK', { duration: 4000 });
+                }
+            },
+            error: (err: any) => {
+                this.snackBar.open(err.error?.message || 'Erro no login', 'OK', { duration: 4000 });
+            }
+        }).add(() => this.loading = false);
 
     }
 }

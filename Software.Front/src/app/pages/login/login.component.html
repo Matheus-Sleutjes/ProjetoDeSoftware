@@ -26,20 +26,19 @@
                     <button mat-icon-button matSuffix type="button" (click)="hide = !hide">
                         <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
                     </button>
-                    <mat-error *ngIf="loginForm.get('password')?.hasError('required')" color="danger">Senha obrigatória</mat-error>
-    
+                    <mat-error *ngIf="loginForm.get('password')?.hasError('required')" color="danger">Senha
+                        obrigatória</mat-error>
+
                 </mat-form-field>
-<!-- [disabled]="loginForm.invalid || loading" -->
-                <button  type="submit" mat-raised-button class="btn-login" >
-                  Entrar
+                <button type="submit" mat-raised-button class="btn-login">
+                    Entrar
                 </button>
 
-                <!-- <div class="extras">
-                    <a routerLink="/forgot-password">Esqueceu a senha?</a>
-                </div> -->
             </form>
+            <button type="submit" mat-raised-button class="btn-create-account" (click)="navigateToNewAccount()">
+                Criar conta
+            </button>
 
-            <!-- <button mat-raised-button (click)="onLogin()">Home teste</button> -->
             <p class="footer">© {{ currentYear }} Clínicas PI</p>
         </div>
     </div>
