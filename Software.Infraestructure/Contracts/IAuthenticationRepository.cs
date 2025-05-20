@@ -1,4 +1,5 @@
-﻿using Software.Domain.Models;
+﻿using Software.Domain.Dtos;
+using Software.Domain.Models;
 
 namespace Software.Infraestructure.Contracts
 {
@@ -11,5 +12,6 @@ namespace Software.Infraestructure.Contracts
         string Create(User user);
         void Delete(User user);
         void Update(User user);
+        List<UserDto> GetAllByParameter(int roleId);
     }
 }

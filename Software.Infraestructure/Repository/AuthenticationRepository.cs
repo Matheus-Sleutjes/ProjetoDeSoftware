@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Software.Domain.Dtos;
+using Software.Domain.Enums;
 using Software.Domain.Models;
 using Software.Infraestructure.Contracts;
 
@@ -52,6 +54,21 @@ namespace Software.Infraestructure.Repository
         {
             _context.Users.Update(user);
             _context.SaveChanges();
+        }
+
+        public List<UserDto> GetAllByParameter(int roleId)
+        {
+            return _context.Users.AsNoTracking().Where(t => (roleId == 0 ? true : t.Role == (Role)roleId))
+                                 .Select(t => new UserDto
+                                 {
+                                     Name = t.Name,
+                                     LastName = t.LastName,
+                                     Username = t.Username,
+                                     Email = t.Email,
+                                     Role = t.Role,
+                                     Cpf = t.Cpf
+                                 })
+                                 .ToList();
         }
     }
 }

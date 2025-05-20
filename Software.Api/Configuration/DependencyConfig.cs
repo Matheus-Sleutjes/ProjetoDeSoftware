@@ -12,6 +12,10 @@ namespace Software.Api.Configuration
             services.AddScoped<IRepository, Repository>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+            services.AddScoped<IDoctorService, DoctorService>();
+            services.AddScoped<IDoctorRepository, DoctorRepository>();
+            services.AddScoped<ISpecialtyService, SpecialtyService>();
+            services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
         }
     }
 }

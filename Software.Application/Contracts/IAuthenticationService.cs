@@ -9,5 +9,6 @@ namespace Software.Application.Contracts
         UserDto? GetById(int id);
         bool DeleteById(int id);
         bool Update(int id, UserDto dto);
+        List<UserDto> GetAllByParameter(int roleId);
     }
 }
