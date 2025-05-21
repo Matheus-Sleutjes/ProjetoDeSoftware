@@ -3,8 +3,8 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { HttpService } from './http.service';
-import { Login } from '../models/login';
-import { CreateAccount } from '../models/createAccount';
+import { In_Login } from '../models/In_login';
+import { In_CreateAccount } from '../models/In_createAccount';
 
 @Injectable({
   providedIn: 'root'
@@ -59,7 +59,7 @@ export class AuthenticationService {
   // }
   //}
 
-  login(credentials: Login): Observable<boolean> {
+  login(credentials: In_Login): Observable<boolean> {
     return new Observable<boolean>((observer) => {
       this.http.post(`${this.controller}` + '/Login', credentials).subscribe(
         (response: any) => {
@@ -94,12 +94,12 @@ export class AuthenticationService {
     });
   }
 
-  createdAccount(credentials: CreateAccount): Observable<any> {
+  createdAccount(credentials: In_CreateAccount): Observable<any> {
     return new Observable<boolean>((observer) => {
       console.log("criar conta", credentials);
       this.http.post(`${this.controller}`, credentials).subscribe(
         (response: any) => {
-         response = JSON.stringify(response)
+          response = JSON.stringify(response)
           console.log(response);
           console.log("criar conta", response);
           observer.next(true); // Emite falso no erro

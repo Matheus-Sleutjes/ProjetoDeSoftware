@@ -1,6 +1,15 @@
 <mat-toolbar color="primary" class="top-nav">
     <span class="logo">π</span>
     <span class="spacer"></span>
+
+    <div>
+        <ng-container>
+            <button mat-button (click)="navigateToListUser()">Lista de usuário</button>
+            <button mat-button>Histórico</button>
+            <button mat-button>Consultas</button>
+        </ng-container>
+    </div>
+
     <button mat-button (click)="logout()">Sair</button>
 </mat-toolbar>
 
@@ -13,7 +22,8 @@
             <p>Agende sua consulta online com apenas alguns cliques.</p>
 
             <div class="options">
-                <mat-card *ngFor="let opt of options" class="option-card" type="button" (click)="navigateToAppointments(opt)">
+                <mat-card *ngFor="let opt of options" class="option-card" type="button"
+                    (click)="navigateToAppointments(opt)">
                     <mat-icon>{{ opt.icon }}</mat-icon>
                     <span>{{ opt.label }}</span>
                 </mat-card>

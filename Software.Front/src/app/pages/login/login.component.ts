@@ -5,12 +5,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SharedModule } from '../../shared/shared.module';
 import { AppModule } from '../../app.module';
 import { AuthenticationService } from '../../services/authentication.service';
-import { Login } from '../../models/login';
+import { In_Login } from '../../models/In_login';
 
 
 @Component({
     selector: 'app-login',
-    imports: [SharedModule, ],
+    imports: [SharedModule],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
     standalone: true,
@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
 
         private router: Router,
         private snackBar: MatSnackBar,
-        private authService: AuthenticationService
+        private authService: AuthenticationService,
     ) { }
 
     ngOnInit(): void {
@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
         }
 
         this.loading = true;
-        const credentials: Login = {
+        const credentials: In_Login = {
             email: this.loginForm.value.email,
             password: this.loginForm.value.password
         }
@@ -67,6 +67,10 @@ export class LoginComponent implements OnInit {
             }
         }).add(() => this.loading = false);
 
+    }
+
+    teste(){
+        this.router.navigate(['/home'])
     }
 }
 
