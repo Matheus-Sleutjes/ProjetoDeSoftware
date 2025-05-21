@@ -18,7 +18,7 @@ namespace Software.Application.Services
             var Exists = _authenticationRepository.ValidateUserExists(dto.Email, dto.Username);
             if (Exists) return "Usuario já existe";
 
-            var user = new User(dto.Name, dto.LastName, dto.Username, dto.Email, ConvertStringToBase64(dto.Password), dto.Role);
+            var user = new User(dto.Name, dto.LastName, dto.Username, dto.Email, ConvertStringToBase64(dto.Password), dto.Cpf);
 
             var result = _authenticationRepository.Create(user);
             return result;
@@ -51,7 +51,8 @@ namespace Software.Application.Services
                 LastName = user.LastName,
                 Username = user.Username,
                 Email = user.Email,
-                Role = user.Role
+                Role = user.Role,
+                Cpf = user.Cpf
             };
             return dto;
         }
@@ -78,6 +79,11 @@ namespace Software.Application.Services
             return true;
         }
 
+        public List<UserDto> GetAllByParameter(int roleId)
+        {
+            return _authenticationRepository.GetAllByParameter(roleId);
+        }
+
         private string GenerateToken(User user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Utils.JtwSecretkey));
@@ -87,7 +93,8 @@ namespace Software.Application.Services
             {
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.Name, user.GetFullName()),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(JwtRegisteredClaimNames.Acr, user.Role.ToString())
         };
 
             var token = new JwtSecurityToken(
@@ -112,5 +119,6 @@ namespace Software.Application.Services
             response.Success = false;
             return response;
         }
+
     }
 }

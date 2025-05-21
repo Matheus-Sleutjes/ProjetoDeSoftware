@@ -7,5 +7,7 @@ namespace Software.Infraestructure
     {
         public SoftwareContext(DbContextOptions<SoftwareContext> options) : base(options) { }
         public DbSet<User> Users { get; set; }
+        public DbSet<Doctor> Doctor { get; set; }
+        public DbSet<Specialty> Specialty { get; set; }
     }
 }

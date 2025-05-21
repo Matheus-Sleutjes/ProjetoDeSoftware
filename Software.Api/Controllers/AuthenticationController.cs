@@ -14,18 +14,16 @@ namespace Software.Api.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] UserDto dto)
         {
-            if (dto == null) return BadRequest("Informações invalidas");
+            if (dto == null) return BadRequest(new { Message = "Informações invalidas" });
 
             var response = _authenticationService.Create(dto);
 
-            return Ok(response);
+            return Ok(new { Message = response });
         }
 
         [HttpPost("Login")]
         public IActionResult Login([FromBody] UserDto dto)
         {
-            if (dto == null) return BadRequest("Informações invalidas");
-
             var response = _authenticationService.Login(dto.Email, dto.Password);
 
             return Ok(response);
@@ -40,15 +38,23 @@ namespace Software.Api.Controllers
         }
 
         [Authorize]
+        [HttpGet("GetAllByParameter")]
+        public IActionResult GetAllByParameter([FromQuery]int roleId)
+        {
+            var users = _authenticationService.GetAllByParameter(roleId);
+            return Ok(users);
+        }
+
+        [Authorize]
         [HttpDelete("{id}")]
         public IActionResult DeleteById(int id)
         {
             var isSuccess = _authenticationService.DeleteById(id);
 
             if (isSuccess)
-                return Ok("Usuario deletado com sucesso!");
+                return Ok(new { Message = "Usuario deletado com sucesso!" });
             else
-                return NotFound("User não encontrado!");
+                return NotFound(new { Message = "User não encontrado!" });
         }
 
         [Authorize]
@@ -58,9 +64,9 @@ namespace Software.Api.Controllers
             var isSuccess = _authenticationService.Update(id, dto);
 
             if (isSuccess)
-                return Ok("Atualizado com sucesso!");
+                return Ok(new { Message = "Atualizado com sucesso!" });
             else
-                return BadRequest("Algo deu errado!");
+                return BadRequest(new { Message = "Algo deu errado!" });
         }
     }
 }

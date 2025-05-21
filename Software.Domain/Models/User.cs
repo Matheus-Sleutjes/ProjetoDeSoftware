@@ -5,14 +5,16 @@ namespace Software.Domain.Models
 {
     public class User
     {
-        public User(string name, string lastName, string username, string email, string password, Role role)
+        public User() { }
+        public User(string name, string lastName, string username, string email, string password, string cpf)
         {
             Name = name;
             LastName = lastName;
             Username = username;
             Email = email;
             Password = password;
-            Role = role;
+            Role = Role.Patient;
+            Cpf = cpf;
         }
 
         [Key]
@@ -32,6 +34,9 @@ namespace Software.Domain.Models
 
         [Required]
         public string Password { get; set; } = string.Empty;
+
+        [Required]
+        public string Cpf { get; set; } = string.Empty;
 
         [Required]
         public Role Role { get; set; }
