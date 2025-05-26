@@ -42,6 +42,7 @@ export class HomeComponent {
     localStorage.clear();
   }
 
+
   navigateToAppointments(pageOpt: Option) {
     console.log(pageOpt);
     this.router.navigate(
@@ -53,4 +54,7 @@ export class HomeComponent {
       })
   }
 
+  navigateToListUser(){
+    this.router.navigate(['/list-user']);
+  }
 }

@@ -1,4 +1,4 @@
-import { CreateAccount } from './../../../models/createAccount';
+import { In_CreateAccount } from '../../../models/In_createAccount';
 import { Component } from '@angular/core';
 import { SharedModule } from '../../../shared/shared.module';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -59,7 +59,7 @@ export class NewAccountComponent {
       return;
     }
 
-    var account: CreateAccount = {
+    var account: In_CreateAccount = {
       name: this.registerForm.value.name,
       lastName: this.registerForm.value.lastName,
       username: this.registerForm.value.username,

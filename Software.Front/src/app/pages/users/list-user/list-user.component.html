@@ -1,1 +1,45 @@
-<p>list-user works!</p>
+<app-header></app-header>
+
+<div class="user-list-container">
+    <mat-form-field appearance="outline" class="role-filter">
+        <mat-label>Filtrar por perfil</mat-label>
+        <mat-select [(value)]="selectedRole" (selectionChange)="applyRoleFilter()">
+            <mat-option *ngFor="let r of roles" [value]="r">{{ r || 'Todos' }}</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <div class="table-wrapper">
+        <table class="user-table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Sobrenome</th>
+                    <th>Usuário</th>
+                    <th>Email</th>
+                    <th>CPF</th>
+                    <th>Perfil</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let u of filtered">
+                    <td>{{ u.name }}</td>
+                    <td>{{ u.lastName }}</td>
+                    <td>{{ u.username }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.cpf }}</td>
+                    <td>{{ u.role }}</td>
+                    <td class="actions">
+                        <button mat-icon-button (click)="edit(u)" matTooltip="Alterar">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-icon-button color="warn" (click)="delete(u)" matTooltip="Excluir">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+  

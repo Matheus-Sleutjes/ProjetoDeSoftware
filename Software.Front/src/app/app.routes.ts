@@ -4,6 +4,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { HomeComponent } from './pages/home/home.component';
 import { AppointmentsComponent } from './pages/appointments/appointments.component';
 import { NewAccountComponent } from './pages/login/new-account/new-account.component';
+import { ListUserComponent } from './pages/users/list-user/list-user.component';
 export const routes: Routes = [
   // {
   //     path: 'patient',
@@ -26,8 +27,14 @@ export const routes: Routes = [
     path: 'appointments', canActivate: [AuthGuard],
     loadChildren: async () => (await import('./pages/appointments/routes')).routes
   },
+  
+  // {
+  //   path: 'home', component: HomeComponent, canActivate: [AuthGuard],
+  // }
   {
-    path: 'home', component: HomeComponent, canActivate: [AuthGuard],
-  }
-
+    path: 'home', component: HomeComponent,
+  },
+  {
+    path: 'list-user', component: ListUserComponent,
+  },
 ];

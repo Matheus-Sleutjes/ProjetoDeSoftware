@@ -1,0 +1,43 @@
+.user-list-container {
+    padding: 1rem 2rem;
+    display: grid;
+    gap: 1rem;
+}
+
+.role-filter {
+    width: 200px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: 8px;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+
+    thead {
+        background: #004d40;
+        color: #fff;
+    }
+
+    th,
+    td {
+        padding: 0.75rem 1rem;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+
+    tr:nth-child(even) {
+        background: #f9f9f9;
+    }
+
+    .actions {
+        display: grid;
+        grid-auto-flow: column;
+        gap: 0.5rem;
+    }
+}

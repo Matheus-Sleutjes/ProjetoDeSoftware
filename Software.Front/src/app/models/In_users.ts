@@ -1,9 +1,8 @@
-export interface CreateAccount {
+export interface In_Users {
     name: string,
     lastName: string,
     username: string,
     email: string,
-    password: string,
-    role: number
-
+    cpf: string,
+    role: 'Médico' | 'Paciente';
 }
