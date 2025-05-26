@@ -8,6 +8,7 @@ namespace Software.Infraestructure.Contracts
         User? GetByEmail(string email);
         User? GetByUsername(string username);
         User? GetById(int id);
+        User? GetByCpf(string cpf);
         bool ValidateUserExists(string email, string username);
         string Create(User user);
         void Delete(User user);

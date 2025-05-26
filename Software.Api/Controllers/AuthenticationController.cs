@@ -38,6 +38,14 @@ namespace Software.Api.Controllers
         }
 
         [Authorize]
+        [HttpGet("GetByCpf")]
+        public IActionResult GetById([FromQuery] string cpf)
+        {
+            var user = _authenticationService.GetByCpf(cpf);
+            return Ok(user);
+        }
+
+        [Authorize]
         [HttpGet("GetAllByParameter")]
         public IActionResult GetAllByParameter([FromQuery]int roleId)
         {

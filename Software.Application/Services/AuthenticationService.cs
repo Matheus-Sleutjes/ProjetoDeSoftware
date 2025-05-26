@@ -57,6 +57,22 @@ namespace Software.Application.Services
             return dto;
         }
 
+        public UserDto? GetByCpf(string cpf)
+        {
+            var user = _authenticationRepository.GetByCpf(cpf);
+            if (user == null) return null;
+            var dto = new UserDto
+            {
+                Name = user.Name,
+                LastName = user.LastName,
+                Username = user.Username,
+                Email = user.Email,
+                Role = user.Role,
+                Cpf = user.Cpf
+            };
+            return dto;
+        }
+
         public bool DeleteById(int id)
         {
             var user = _authenticationRepository.GetById(id);

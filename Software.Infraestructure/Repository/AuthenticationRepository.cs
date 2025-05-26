@@ -70,5 +70,12 @@ namespace Software.Infraestructure.Repository
                                  })
                                  .ToList();
         }
+
+        public User? GetByCpf(string cpf)
+        {
+            var user = _context.Users.AsNoTracking()
+                                     .FirstOrDefault(t => t.Cpf == cpf);
+            return user;
+        }
     }
 }
