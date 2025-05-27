@@ -19,12 +19,13 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ConfirmDialogComponent } from '../pages/util/confirm-dialog/confirm-dialog.component';
 
 
 @NgModule({
   imports: [
     CommonModule,
-    
+    ConfirmDialogComponent
   ],
   exports: [
     CommonModule,
@@ -48,6 +49,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatNativeDateModule,
     MatCheckboxModule,
     MatProgressSpinnerModule,
+    MatDialogModule
    
   ]
 })

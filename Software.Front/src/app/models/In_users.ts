@@ -1,9 +1,9 @@
 export interface In_Users {
-    id: number,
+    userId: number,
     name: string,
     lastName: string,
     username: string,
     email: string,
     cpf: string,
-    role: 'Médico' | 'Paciente';
+    role: 1 | 2 | 3, // 1: Admin, 2: Médico, 3: Paciente
 }

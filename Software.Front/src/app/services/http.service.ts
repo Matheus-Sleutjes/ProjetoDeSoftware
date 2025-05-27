@@ -33,8 +33,8 @@ export class HttpService {
   }
 
   // Método genérico para requisições PUT
-  put(endpoint: string, body: any): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/${endpoint}`, body, { headers: this.getHeaders() });
+  put(id: string, body: {}): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/${this.controller}/${id}`, body, { headers: this.getHeaders() });
   }
 
   // Método genérico para requisições DELETE

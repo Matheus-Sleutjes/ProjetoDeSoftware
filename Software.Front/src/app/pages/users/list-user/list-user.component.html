@@ -2,9 +2,9 @@
 
 <div class="user-list-container">
     <mat-form-field appearance="outline" class="role-filter">
-        <mat-label>Filtrar por perfil</mat-label>
+        <mat-label class="mat-label-title">Filtrar por perfil</mat-label>
         <mat-select [(value)]="selectedRole" (selectionChange)="applyRoleFilter()">
-            <mat-option style="background: red;" *ngFor="let r of roles" [value]="r.value">
+            <mat-option class="mat-opption" *ngFor="let r of roles" [value]="r.value">
                 {{ r.label }}
             </mat-option>
         </mat-select>
