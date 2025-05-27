@@ -1,4 +1,5 @@
 export interface In_Users {
+    id: number,
     name: string,
     lastName: string,
     username: string,

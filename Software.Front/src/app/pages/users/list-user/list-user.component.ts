@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { HeaderComponent } from "../../../components_utils/header/header.component";
 import { In_Users } from '../../../models/In_users';
-import { share } from 'rxjs';
 import { SharedModule } from '../../../shared/shared.module';
+import { HttpService } from '../../../services/http.service';
+import { EnumRole } from '../../../models/enumRole';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-list-user',
@@ -12,31 +14,55 @@ import { SharedModule } from '../../../shared/shared.module';
 })
 export class ListUserComponent {
 
-    users: In_Users[] = [
-        { name: 'Ana', lastName: 'Silva', username: 'ana.silva', email: 'ana.silva@mail.com', cpf: '123.456.789-00', role: 'Médico' },
-        { name: 'Bruno', lastName: 'Costa', username: 'bruno.costa', email: 'bruno.costa@mail.com', cpf: '987.654.321-11', role: 'Paciente' },
-        { name: 'Carla', lastName: 'Pereira', username: 'carla.pereira', email: 'carla.p@mail.com', cpf: '111.222.333-44', role: 'Médico' },
-        { name: 'Daniel', lastName: 'Almeida', username: 'daniel.almeida', email: 'dan.almeida@mail.com', cpf: '555.666.777-88', role: 'Paciente' },
-        { name: 'Elisa', lastName: 'Fernandes', username: 'elisa.fern', email: 'elisa.fern@mail.com', cpf: '999.888.777-66', role: 'Médico' }
-    ];
+    users: In_Users[] = [];
 
     filtered: In_Users[] = [];
-    roles = ['', 'Médico', 'Paciente'];
-    selectedRole = '';
-    constructor() {
 
+    endPoit = 'GetAllByParameter';
+    pararms = 0;
+    displayedColumns: string[] = ['name', 'lastName', 'username', 'email', 'cpf', 'role', 'actions'];
+    roles = [
+        { value: 0, label: 'Todos' },
+        { value: EnumRole.Administrador, label: 'Administrador' },
+        { value: EnumRole.Medico, label: 'Médico' },
+        { value: EnumRole.Paciente, label: 'Paciente' }
+    ];
+    selectedRole = 0;
+    constructor(
+        private restService: HttpService,
+        private snackBar: MatSnackBar) {
     }
 
-    displayedColumns: string[] = ['name', 'lastName', 'username', 'email', 'cpf', 'role', 'actions'];
 
     ngOnInit(): void {
+        this.getUsers();
         this.filtered = [...this.users];
+        // valor inicial
+        // ... resto do compo
     }
 
     applyRoleFilter() {
-        this.filtered = this.selectedRole
-            ? this.users.filter(u => u.role === this.selectedRole)
-            : [...this.users];
+        // se for “Todos” (0), mostra tudo; senão filtra pelo value
+        this.filtered = this.selectedRole === 0
+            ? [...this.users]
+            : this.users.filter((u: any) => u.role === this.selectedRole);
+        this.getUsers(this.selectedRole);
+    }
+
+
+    async getUsers(params: number = 0) {
+        await this.restService.get(this.endPoit, {
+            roleId: params
+        }).subscribe({
+            next: (data: In_Users[]) => {
+                this.users = data;
+                this.filtered = [...this.users];
+            },
+            error: (err) => {
+                console.error('Erro ao buscar usuários:', err);
+                this.snackBar.open(err.error?.message || 'Erro buscar usuário', 'OK', { duration: 4000 });
+            }
+        });
     }
 
     edit(user: In_Users) {
@@ -45,7 +71,12 @@ export class ListUserComponent {
     }
 
     delete(user: In_Users) {
+        console.log('Deletar', user);
+        this.restService.delete(`${user.id}`).subscribe((data) => {
+            console.log('Usuário deletado com sucesso', data);
+            this.snackBar.open('Usuário deletado com sucesso', 'OK', { duration: 4000 });
+        })
         this.users = this.users.filter(u => u.username !== user.username);
-        this.applyRoleFilter();
+        
     }
 }

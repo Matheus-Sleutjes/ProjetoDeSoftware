@@ -56,7 +56,6 @@ export class LoginComponent implements OnInit {
         this.authService.login(credentials).subscribe({
             next: (response: any) => {
                 if (response) {
-                    sessionStorage.setItem('token', response.token);
                     this.router.navigate(['home']);
                 } else {
                     this.snackBar.open('emailn ou senha Incorreto', 'OK', { duration: 4000 });
@@ -69,7 +68,7 @@ export class LoginComponent implements OnInit {
 
     }
 
-    teste(){
+    teste() {
         this.router.navigate(['/home'])
     }
 }

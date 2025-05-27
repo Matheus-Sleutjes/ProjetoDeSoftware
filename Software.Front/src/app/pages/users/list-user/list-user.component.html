@@ -4,9 +4,11 @@
     <mat-form-field appearance="outline" class="role-filter">
         <mat-label>Filtrar por perfil</mat-label>
         <mat-select [(value)]="selectedRole" (selectionChange)="applyRoleFilter()">
-            <mat-option *ngFor="let r of roles" [value]="r">{{ r || 'Todos' }}</mat-option>
+            <mat-option style="background: red;" *ngFor="let r of roles" [value]="r.value">
+                {{ r.label }}
+            </mat-option>
         </mat-select>
-    </mat-form-field>
+        </mat-form-field>
 
     <div class="table-wrapper">
         <table class="user-table">
