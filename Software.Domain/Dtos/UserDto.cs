@@ -4,6 +4,7 @@ namespace Software.Domain.Dtos
 {
     public class UserDto
     {
+        public int UserId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;

@@ -47,6 +47,7 @@ namespace Software.Application.Services
             if (user == null) return null;
             var dto = new UserDto
             {
+                UserId = user.UserId,
                 Name = user.Name,
                 LastName = user.LastName,
                 Username = user.Username,
@@ -63,6 +64,7 @@ namespace Software.Application.Services
             if (user == null) return null;
             var dto = new UserDto
             {
+                UserId = user.UserId,
                 Name = user.Name,
                 LastName = user.LastName,
                 Username = user.Username,

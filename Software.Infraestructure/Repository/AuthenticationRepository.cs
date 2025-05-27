@@ -3,6 +3,7 @@ using Software.Domain.Dtos;
 using Software.Domain.Enums;
 using Software.Domain.Models;
 using Software.Infraestructure.Contracts;
+using Software.Infraestructure.Migrations;
 
 namespace Software.Infraestructure.Repository
 {
@@ -61,6 +62,7 @@ namespace Software.Infraestructure.Repository
             return _context.Users.AsNoTracking().Where(t => (roleId == 0 ? true : t.Role == (Role)roleId))
                                  .Select(t => new UserDto
                                  {
+                                     UserId = t.UserId,
                                      Name = t.Name,
                                      LastName = t.LastName,
                                      Username = t.Username,

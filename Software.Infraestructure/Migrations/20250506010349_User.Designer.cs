@@ -12,7 +12,7 @@ namespace Software.Infraestructure.Migrations
 {
     [DbContext(typeof(SoftwareContext))]
     [Migration("20250506010349_User")]
-    partial class User
+    partial class User1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
