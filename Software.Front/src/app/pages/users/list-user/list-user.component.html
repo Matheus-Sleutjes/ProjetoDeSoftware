@@ -8,7 +8,7 @@
                 {{ r.label }}
             </mat-option>
         </mat-select>
-        </mat-form-field>
+    </mat-form-field>
 
     <div class="table-wrapper">
         <table class="user-table">
@@ -31,6 +31,8 @@
                     <td>{{ u.email }}</td>
                     <td>{{ u.cpf }}</td>
                     <td>{{ u.role }}</td>
+
+                    @if(acrRole == 'admin'){
                     <td class="actions">
                         <button mat-icon-button (click)="edit(u)" matTooltip="Alterar">
                             <mat-icon>edit</mat-icon>
@@ -39,9 +41,9 @@
                             <mat-icon>delete</mat-icon>
                         </button>
                     </td>
+                    }
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
-  

@@ -1,7 +1,7 @@
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { In_CreateAccount } from './../../../models/In_createAccount';
 import { Component } from '@angular/core';
-import { HeaderComponent } from "../../../components_utils/header/header.component";
+import { HeaderComponent } from "../../util/header/header.component";
 import { In_Users } from '../../../models/In_users';
 import { SharedModule } from '../../../shared/shared.module';
 import { HttpService } from '../../../services/http.service';
@@ -33,19 +33,26 @@ export class ListUserComponent {
         { value: EnumRole.Paciente, label: 'Paciente' }
     ];
     selectedRole = 0;
+    roleUser = EnumRole;
+
+    acrRole = '';
     constructor(
         private restService: HttpService,
         private snackBar: MatSnackBar,
         private dialog: MatDialog
-        ) {
+    ) {
     }
 
 
     ngOnInit(): void {
         this.getUsers();
         this.filtered = [...this.users];
-        // valor inicial
-        // ... resto do compo
+        
+        // Receber parâmetros name e acr da URL (query params)
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('name');
+        const acr = urlParams.get('acr');
+        this.acrRole = acr || '';
     }
 
     applyRoleFilter() {
@@ -83,10 +90,10 @@ export class ListUserComponent {
                 this.getUsers(); // recarrega a lista
             }
         });
-      }
+    }
 
     delete(user: In_Users) {
-        const data: In_ConfirmDialog= {
+        const data: In_ConfirmDialog = {
             title: 'Excluir usuário',
             message: `Tem certeza que deseja excluir o usuário "${user.username}"?`,
             confirmText: 'Excluir',
@@ -111,5 +118,5 @@ export class ListUserComponent {
                 }
             });
         });
-      }
+    }
 }

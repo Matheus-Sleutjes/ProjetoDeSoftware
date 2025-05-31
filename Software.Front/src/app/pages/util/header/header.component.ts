@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SharedModule } from '../../shared/shared.module';
+import { SharedModule } from '../../../shared/shared.module';
 import { Router } from '@angular/router';
 
 @Component({
@@ -10,9 +10,13 @@ import { Router } from '@angular/router';
   standalone: true,
 })
 export class HeaderComponent {
-  
-  constructor(private router: Router) {}
 
+  constructor(private router: Router) { }
+
+
+  home(){
+    this.router.navigate(['/home']);
+  }
   logout() {
     // seu código de logout aqui...
     this.router.navigate(['/login']);

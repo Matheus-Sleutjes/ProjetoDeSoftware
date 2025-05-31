@@ -16,6 +16,11 @@ import { In_CreateAccount } from '../../../models/In_createAccount';
 export class EditUserDialogComponent {
   updateForm!: FormGroup;
 
+
+  endpoitSpecialty = 'Specialty'
+
+  specialty: any[] = [];
+  docterSelected: boolean = false;
   constructor(
     private fb: FormBuilder,
     private restService: HttpService,
@@ -27,18 +32,19 @@ export class EditUserDialogComponent {
   ngOnInit(): void {
     this.updateForm = this.fb.group({
       name: [this.user.name],
-      lastName: [this.user.lastName, ],
+      lastName: [this.user.lastName,],
       username: [this.user.username, [, Validators.minLength(4)]],
       email: [this.user.email, [, Validators.email]],
-      password: ['', Validators.minLength(6)],
-      role: [this.user.role, ],
+      password: [''],
+      role: [this.user.role,],
       cpf: [
-      this.formatCpf(this.user.cpf),
-      [
-        ,
-        Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)
-      ]
-      ]
+        this.formatCpf(this.user.cpf),
+        [
+          ,
+          Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)
+        ]
+      ],
+      specialty: [''],
     });
 
     // Atualize o valor do campo CPF ao digitar, removendo caracteres não numéricos e formatando
@@ -46,17 +52,41 @@ export class EditUserDialogComponent {
       const numericCpf = value.replace(/\D/g, '').slice(0, 11);
       const formattedCpf = this.formatCpf(numericCpf);
       if (value !== formattedCpf) {
-      this.updateForm.get('cpf')?.setValue(formattedCpf, { emitEvent: false });
+        this.updateForm.get('cpf')?.setValue(formattedCpf, { emitEvent: false });
       }
     });
-    }
+  }
 
-    private formatCpf(cpf: string): string {
+  private formatCpf(cpf: string): string {
     const digits = (cpf || '').replace(/\D/g, '').slice(0, 11);
     if (digits.length <= 3) return digits;
     if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
     if (digits.length <= 9) return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
     return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9, 11)}`;
+  }
+
+  getRole() {
+    // Aqui você pode manipular o evento de seleção de função, se necessário
+    const selectedRole = this.updateForm.value.role
+    
+    console.log('Evento de seleção de função:', selectedRole);
+    if(selectedRole === '2') {
+      this.docterSelected = true;
+      this.getSpecialty();
+    }
+
+  }
+  getSpecialty() {
+    this.restService.get(this.endpoitSpecialty).subscribe({
+      next: (data) => {
+        // Aqui você pode manipular os dados recebidos, se necessário
+        console.log('Especialidades:', data);
+        this.specialty = data;
+      },
+      error: (err) => {
+        this.snackBar.open(err.error?.message || 'Erro ao carregar especialidades', 'OK', { duration: 4000 });
+      }
+    });
   }
 
   onSave(): void {

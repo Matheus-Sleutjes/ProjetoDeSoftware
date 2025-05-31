@@ -57,6 +57,7 @@ export class LoginComponent implements OnInit {
             next: (response: any) => {
                 if (response) {
                     this.router.navigate(['home']);
+
                 } else {
                     this.snackBar.open('emailn ou senha Incorreto', 'OK', { duration: 4000 });
                 }
@@ -71,5 +72,7 @@ export class LoginComponent implements OnInit {
     teste() {
         this.router.navigate(['/home'])
     }
+
+
 }
 

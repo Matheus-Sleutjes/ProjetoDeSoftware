@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HeaderComponent } from "../../components_utils/header/header.component";
+import { HeaderComponent } from "../util/header/header.component";
 import { SharedModule } from '../../shared/shared.module';
 import { ActivatedRoute } from '@angular/router';
 
