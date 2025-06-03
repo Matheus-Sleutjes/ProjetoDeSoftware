@@ -2,9 +2,11 @@
 
 <div class="user-list-container">
     <mat-form-field appearance="outline" class="role-filter">
-        <mat-label>Filtrar por perfil</mat-label>
+        <mat-label class="mat-label-title">Filtrar por perfil</mat-label>
         <mat-select [(value)]="selectedRole" (selectionChange)="applyRoleFilter()">
-            <mat-option *ngFor="let r of roles" [value]="r">{{ r || 'Todos' }}</mat-option>
+            <mat-option class="mat-opption" *ngFor="let r of roles" [value]="r.value">
+                {{ r.label }}
+            </mat-option>
         </mat-select>
     </mat-form-field>
 
@@ -29,6 +31,8 @@
                     <td>{{ u.email }}</td>
                     <td>{{ u.cpf }}</td>
                     <td>{{ u.role }}</td>
+
+                    @if(acrRole == 'admin'){
                     <td class="actions">
                         <button mat-icon-button (click)="edit(u)" matTooltip="Alterar">
                             <mat-icon>edit</mat-icon>
@@ -37,9 +41,9 @@
                             <mat-icon>delete</mat-icon>
                         </button>
                     </td>
+                    }
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
-  

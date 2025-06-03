@@ -4,7 +4,8 @@
 
     <div>
         <ng-container>
-            <button mat-button (click)="navigateToListUser()">Lista de usuário</button>
+
+            <button mat-button (click)="navigateToListUser()" *ngIf="acr == 'admin' || acr ==  'doctor'">Lista de usuário</button>
             <button mat-button>Histórico</button>
             <button mat-button>Consultas</button>
         </ng-container>
@@ -18,6 +19,12 @@
 
     <div class="hero-section">
         <div class="hero-text">
+
+            @if(name){
+            <h3>Olá, {{ name }}!</h3>
+            <p>Bem-vindo ao nosso sistema de agendamento de consultas médicas.</p>
+            }
+
             <h1>Cuide da sua saúde<br />com praticidade e confiança!</h1>
             <p>Agende sua consulta online com apenas alguns cliques.</p>
 

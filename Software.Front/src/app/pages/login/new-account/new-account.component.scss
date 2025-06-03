@@ -12,6 +12,10 @@ section.section-register {
     padding: 1rem;
 }
 
+mat-error{
+    color: red !important;
+}
+
 .register-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -70,11 +74,15 @@ section.section-register {
         .btn-register {
             width: 100%;
             margin-top: 0.5rem;
+            background-color: #00796b;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.2rem;
         }
 
         .footer {
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             margin-top: 1rem;
 
             a {

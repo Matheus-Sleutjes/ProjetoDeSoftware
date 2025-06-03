@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
+import { UtilsService } from '../../services/utils.service';
 
 interface Option {
   icon: string;
@@ -34,14 +35,27 @@ export class HomeComponent {
     { name: 'São Paulo – SP', mapUrl: 'assets/imgs/mapa-sp.png' }
   ];
 
-  constructor(private router: Router) { }
+  name = '';
+  acr = ''
+  constructor(
+    private router: Router,
+    private util: UtilsService
+  ) {
+    // Agora você pode usar name e acr conforme necessário
+  }
 
   logout() {
     // seu código de logout aqui...
     this.router.navigate(['/login']);
     localStorage.clear();
   }
-
+  ngOnInit() {
+    const decoded = this.util.decodeJwt();
+    const name = decoded && decoded.name ? decoded.name : '';
+    const acr = decoded && decoded.acr ? decoded.acr : '';
+    this.name = name;
+    this.acr = acr.toLowerCase();
+  }
 
   navigateToAppointments(pageOpt: Option) {
     console.log(pageOpt);
@@ -54,7 +68,15 @@ export class HomeComponent {
       })
   }
 
-  navigateToListUser(){
-    this.router.navigate(['/list-user']);
+  navigateToListUser() {
+    this.router.navigate(
+      ['/list-user'],
+      {
+        queryParams: {
+          name: this.name,
+          acr: this.acr
+        }
+      }
+    );
   }
 }

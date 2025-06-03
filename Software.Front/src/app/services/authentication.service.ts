@@ -72,6 +72,7 @@ export class AuthenticationService {
 
             if (decodedToken.exp && decodedToken.exp > currentTime) {
               localStorage.setItem(this.tokenKey, token);
+              sessionStorage.setItem(this.tokenKey, token); 
               observer.next(true); // Emite verdadeiro
               observer.complete(); // Conclui o observable
             } else {

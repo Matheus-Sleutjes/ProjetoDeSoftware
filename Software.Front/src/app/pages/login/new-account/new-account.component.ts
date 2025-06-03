@@ -43,6 +43,7 @@ export class NewAccountComponent {
       name: ['', Validators.required],
       lastName: ['', Validators.required],
       username: ['', [Validators.required, Validators.minLength(4)]],
+      cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]], 
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
       role: [1, Validators.required]
@@ -62,6 +63,7 @@ export class NewAccountComponent {
     var account: In_CreateAccount = {
       name: this.registerForm.value.name,
       lastName: this.registerForm.value.lastName,
+      cpf: this.registerForm.value.cpf,
       username: this.registerForm.value.username,
       email: this.registerForm.value.email,
       password: this.registerForm.value.password,
