@@ -22,12 +22,10 @@ interface Clinic {
 })
 export class HomeComponent {
   options: Option[] = [
-    { icon: 'favorite_outline', label: 'Cardiologista', },
+    { icon: 'favorite_outline', label: 'Cardiologista' },
     { icon: 'vaccines', label: 'Vacinas' },
-    { icon: 'favorite_outline', label: 'Cardiologista' },
-    { icon: 'favorite_outline', label: 'Cardiologista' },
-    { icon: 'favorite_outline', label: 'Cardiologista' },
-    { icon: 'favorite_outline', label: 'Cardiologista' },
+    { icon: 'hearing', label: 'Otorrino' }, // 'hearing' é o ícone de ouvido no Material Icons
+    { icon: 'add_to_queue', label: 'Dentista' }, // 'dentistry' ou 'medical_services' pode ser usado para dente, dependendo do set disponível
   ];
 
   clinics: Clinic[] = [

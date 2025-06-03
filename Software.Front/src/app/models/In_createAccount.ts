@@ -5,6 +5,5 @@ export interface In_CreateAccount {
     username: string;
     email: string;
     password: string;
-    role: number;
 
 }

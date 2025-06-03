@@ -44,24 +44,30 @@ export class NewAccountComponent {
       name: ['', Validators.required],
       lastName: ['', Validators.required],
       username: ['', [Validators.required, Validators.minLength(4)]],
-      cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
+      cpf: [
+        '',
+        [
+          ,
+          Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)
+        ]
+      ],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
-      role: [3, Validators.required]
+    });
+
+    this.registerForm.get('cpf')?.valueChanges.subscribe(value => {
+      const numericCpf = value.replace(/\D/g, '').slice(0, 11);
+      const formattedCpf = this.util.formatCpf(numericCpf);
+      if (value !== formattedCpf) {
+        this.registerForm.get('cpf')?.setValue(formattedCpf, { emitEvent: false });
+      }
     });
 
     const urlParams = this.util.getParametersFromUrl();
     const name = urlParams.name || '';
     this.acrRole = urlParams.acr || ''
-
-    this.roles = [
-      ...(this.acrRole === 'admin'
-        ? [{ value: EnumRole.Administrador, label: 'Administrador' }]
-        : []),
-      { value: EnumRole.Medico, label: 'Médico' },
-      { value: EnumRole.Paciente, label: 'Paciente' }
-    ];
   }
+
 
   navigateTologin() {
     this.router.navigate(['login']);
@@ -79,8 +85,7 @@ export class NewAccountComponent {
       cpf: this.registerForm.value.cpf,
       username: this.registerForm.value.username,
       email: this.registerForm.value.email,
-      password: this.registerForm.value.password,
-      role: this.registerForm.value.role
+      password: this.registerForm.value.password
     }
 
     console.log(account);
