@@ -92,6 +92,8 @@ namespace Software.Application.Services
             user.Name = dto.Name == "" ? user.Name : dto.Name;
             user.LastName = dto.LastName == "" ? user.LastName : dto.LastName;
             user.Username = dto.Username == "" ? user.Username : dto.Username;
+            user.Role = dto.Role ;
+            user.Cpf = dto.Cpf == "" ? user.Cpf : dto.Cpf;
 
             _authenticationRepository.Update(user);
             return true;
