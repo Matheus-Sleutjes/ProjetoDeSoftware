@@ -75,8 +75,8 @@
                     <mat-icon matPrefix>badge</mat-icon>
                     <mat-label>Tipo de Conta</mat-label>
                     <mat-select formControlName="role">
-                        <mat-option *ngFor="let r of roles" [value]="r.value">
-                            {{ r.viewValue }}
+                        <mat-option class="mat-opption" *ngFor="let r of roles" [value]="r.value">
+                            {{ r.label }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>

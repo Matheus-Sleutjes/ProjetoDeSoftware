@@ -29,4 +29,15 @@ export class UtilsService {
       return null;
     }
   }
+
+  getParametersFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = urlParams.get('name');
+    const acr = urlParams.get('acr');
+    return {
+      name: name || '',
+      acr: acr || ''
+    };
+
+  }
 }

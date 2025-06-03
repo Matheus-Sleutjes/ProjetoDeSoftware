@@ -36,7 +36,8 @@ export class HomeComponent {
   ];
 
   name = '';
-  acr = ''
+  acr = '';
+  isAdmin = false;
   constructor(
     private router: Router,
     private util: UtilsService
@@ -55,6 +56,8 @@ export class HomeComponent {
     const acr = decoded && decoded.acr ? decoded.acr : '';
     this.name = name;
     this.acr = acr.toLowerCase();
+
+    this.isAdmin = acr ? acr.toLowerCase() === 'admin' : false;
   }
 
   navigateToAppointments(pageOpt: Option) {
@@ -66,6 +69,18 @@ export class HomeComponent {
           options: JSON.stringify(pageOpt)  // como é um array/obj, converte pra string
         }
       })
+  }
+
+  navigateToRegisterUser() {
+    this.router.navigate(
+      ['./new-account'],
+      {
+        queryParams: {
+          name: this.name,
+          acr: this.acr
+        }
+      }
+    );
   }
 
   navigateToListUser() {

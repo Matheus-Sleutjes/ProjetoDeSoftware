@@ -28,13 +28,10 @@ export const routes: Routes = [
     loadChildren: async () => (await import('./pages/appointments/routes')).routes
   },
   
-  // {
-  //   path: 'home', component: HomeComponent, canActivate: [AuthGuard],
-  // }
   {
-    path: 'home', component: HomeComponent,
+    path: 'home', component: HomeComponent, canActivate: [AuthGuard],
   },
   {
-    path: 'list-user', component: ListUserComponent,
+    path: 'list-user', canActivate: [AuthGuard], component: ListUserComponent,
   },
 ];

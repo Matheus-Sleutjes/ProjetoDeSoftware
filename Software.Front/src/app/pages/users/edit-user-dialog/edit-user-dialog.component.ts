@@ -76,6 +76,7 @@ export class EditUserDialogComponent {
     }
 
   }
+  
   getSpecialty() {
     this.restService.get(this.endpoitSpecialty).subscribe({
       next: (data) => {

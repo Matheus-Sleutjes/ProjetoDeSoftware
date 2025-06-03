@@ -6,6 +6,8 @@ import { AuthenticationService } from '../../../services/authentication.service'
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
+import { UtilsService } from '../../../services/utils.service';
+import { EnumRole } from '../../../models/enumRole';
 
 
 interface RoleOption {
@@ -24,18 +26,17 @@ export class NewAccountComponent {
   registerForm!: FormGroup;
   hide = true;
   loading = false;
-  roles: RoleOption[] = [
-    { value: 2, viewValue: 'Médico' },
-    { value: 3, viewValue: 'Paciente' }
-  ];
+
 
   account = {};
-
+  acrRole = '';
+  roles: { value: number, label: string }[] = [];
   constructor(
     private fb: FormBuilder,
     private auth: AuthenticationService,
     private router: Router,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
+    private util: UtilsService
   ) { }
 
   ngOnInit(): void {
@@ -43,11 +44,23 @@ export class NewAccountComponent {
       name: ['', Validators.required],
       lastName: ['', Validators.required],
       username: ['', [Validators.required, Validators.minLength(4)]],
-      cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]], 
+      cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
-      role: [1, Validators.required]
+      role: [3, Validators.required]
     });
+
+    const urlParams = this.util.getParametersFromUrl();
+    const name = urlParams.name || '';
+    this.acrRole = urlParams.acr || ''
+
+    this.roles = [
+      ...(this.acrRole === 'admin'
+        ? [{ value: EnumRole.Administrador, label: 'Administrador' }]
+        : []),
+      { value: EnumRole.Medico, label: 'Médico' },
+      { value: EnumRole.Paciente, label: 'Paciente' }
+    ];
   }
 
   navigateTologin() {
@@ -70,6 +83,7 @@ export class NewAccountComponent {
       role: this.registerForm.value.role
     }
 
+    console.log(account);
     this.loading = true;
     this.auth.createdAccount(account).subscribe({
       next: () => {
