@@ -1,34 +1,71 @@
 import { Component, OnInit } from '@angular/core';
-import { HeaderComponent } from "../util/header/header.component";
+import { Router, ActivatedRoute } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
-import { ActivatedRoute } from '@angular/router';
+import { UtilsService } from '../../services/utils.service';
+import { AppointmentFormComponent } from './appointment-form/appointment-form.component';
+
+
+interface Option {
+  icon: string;
+  label: string;
+}
 
 @Component({
   selector: 'app-appointments',
-  imports: [HeaderComponent, SharedModule],
   templateUrl: './appointments.component.html',
-  styleUrl: './appointments.component.scss',
-  standalone: true,
+  styleUrls: ['./appointments.component.scss'],
+  imports: [
+    SharedModule,
+    AppointmentFormComponent,
+  ],
+  standalone: true
 })
-export class AppointmentsComponent {
-  options: any[] = [];
+export class AppointmentsComponent implements OnInit {
+  selectedSpeciality: Option | null = null;
+  userName: string = '';
+  userRole: string = '';
+  isDoctor: boolean = false;
 
-  constructor(private route: ActivatedRoute) {
-    this.initParams();
-  }
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private utils: UtilsService
+  ) { }
 
+  ngOnInit() {
+    // Obter dados do usuário do JWT
+    const userInfo = this.utils.decodeJwt();
+    this.userName = userInfo?.name || '';
+    this.userRole = userInfo?.acr?.toLowerCase() || '';
+    this.isDoctor = this.userRole === 'doctor';
 
-  initParams() {
+    // Obter especialidade selecionada da URL se houver
     this.route.queryParams.subscribe(params => {
       if (params['options']) {
         try {
-          this.options = JSON.parse(params['options']);
-          console.log(this.options);
-        } catch {
-          console.error('Não foi possível parsear options');
+          this.selectedSpeciality = JSON.parse(params['options']);
+        } catch (e) {
+          console.error('Erro ao processar opções:', e);
         }
       }
     });
   }
 
+  navigateToCreateAppointment() {
+    this.router.navigate(['/appointments/create'], {
+      queryParams: { speciality: this.selectedSpeciality?.label }
+    });
+  }
+
+  navigateToMyAppointments() {
+    this.router.navigate(['/appointments/my-appointments']);
+  }
+
+  navigateToDoctorDashboard() {
+    this.router.navigate(['/appointments/dashboard']);
+  }
+
+  navigateToNotificationSettings() {
+    this.router.navigate(['/appointments/notification-settings']);
+  }
 }

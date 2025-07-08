@@ -1,0 +1,229 @@
+/* Variáveis de cores (pode puxar de um arquivo _variables.scss se tiver) */
+:root {
+    --color-primary: #00796B;
+    /* Verde vibrante */
+    --color-dark-green: #004D40;
+    /* Verde escuro */
+    --color-accent: #2196F3;
+    /* Azul de destaque */
+    --color-white: #FFFFFF;
+    --color-light-gray: #F9F9F9;
+    /* Fundo geral */
+    --color-medium-gray: #E0E0E0;
+    /* Bordas e separadores */
+    --color-text-dark: #333333;
+    --color-text-medium: #666666;
+    --color-hover-green-light: #e8f5e9;
+    /* Verde bem claro para hover */
+}
+
+/* Importe a fonte globalmente em styles.scss (se ainda não o fez) */
+/* @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap'); */
+
+.appointment-form-container {
+    font-family: 'Open Sans', sans-serif;
+    padding: 2.5rem 3rem;
+    /* Padding generoso */
+    background-color: var(--color-light-gray);
+    /* Fundo da seção */
+    min-height: calc(100vh - 64px);
+    /* Ajuste com base na altura do seu header */
+    display: flex;
+    justify-content: center;
+    /* Centraliza o card horizontalmente */
+    align-items: flex-start;
+    /* Alinha o card ao topo verticalmente */
+}
+
+.app-form-card {
+    /* Classe adicionada ao mat-card no HTML */
+    width: 100%;
+    max-width: 650px;
+    /* Largura máxima para o formulário */
+    background-color: var(--color-white);
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    /* Sombra suave */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Transição para interatividade */
+
+    &:hover {
+        transform: translateY(-5px);
+        /* Leve elevação no hover */
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        /* Sombra mais forte no hover */
+    }
+}
+
+.app-card-header {
+    padding: 1.5rem 2rem 1rem;
+    border-bottom: 1px solid var(--color-medium-gray);
+    /* Linha divisória */
+    margin-bottom: 1.5rem;
+}
+
+.app-card-title {
+    font-size: 2rem;
+    /* Título maior */
+    font-weight: 700;
+    color: var(--color-dark-green);
+    /* Verde escuro */
+    margin-bottom: 0.5rem;
+}
+
+.app-card-subtitle {
+    font-size: 1.1rem;
+    color: var(--color-text-medium);
+    font-weight: 400;
+}
+
+.app-card-content {
+    padding: 1rem 2rem 2rem;
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        /* Espaço entre os campos */
+    }
+
+    .full-width {
+        width: 100%;
+    }
+
+    /* Estilos para mat-form-field (inputs, selects, datepickers) */
+    .mat-form-field-appearance-outline {
+        .mat-form-field-wrapper {
+            padding-bottom: 0;
+            margin-bottom: 0.5rem;
+            /* Espaçamento entre campos */
+        }
+
+        .mat-form-field-outline {
+            color: var(--color-medium-gray);
+            /* Cor da borda */
+        }
+
+        .mat-form-field-label {
+            color: var(--color-text-medium);
+            /* Cor da label */
+        }
+    }
+
+    .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+        color: var(--color-primary);
+        /* Borda primária quando focado */
+    }
+
+    .mat-form-field-appearance-outline.mat-focused .mat-form-field-label {
+        color: var(--color-primary);
+        /* Label primária quando focado */
+    }
+
+    .mat-error {
+        font-size: 0.85rem;
+        margin-top: 0.2rem;
+        color: #d32f2f;
+        /* Cor padrão de erro do Material */
+    }
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    /* Alinha botões à direita */
+    gap: 1.2rem;
+    /* Espaço entre os botões */
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-medium-gray);
+    /* Linha divisória para as ações */
+    margin-top: 1rem;
+
+    button {
+        padding: 0.8rem 1.8rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        /* Bordas arredondadas */
+        transition: background-color 0.2s ease, transform 0.1s ease;
+
+        &.mat-raised-button.mat-primary {
+            background-color: var(--color-primary);
+            color: var(--color-white);
+
+            &:hover {
+                background-color: var(--color-dark-green);
+                /* Escurece no hover */
+                transform: translateY(-2px);
+                /* Leve elevação */
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        &.mat-button {
+            /* Estilo para o botão "Cancelar" */
+            color: var(--color-text-medium);
+
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.04);
+                /* Fundo sutil no hover */
+                transform: translateY(-2px);
+            }
+        }
+    }
+
+    mat-spinner {
+        margin-right: 0.5rem;
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .appointment-form-container {
+        padding: 1.5rem;
+        align-items: center;
+        /* Centraliza verticalmente em telas menores */
+    }
+
+    .app-form-card {
+        max-width: 100%;
+        /* Ocupa toda a largura disponível */
+        border-radius: 8px;
+    }
+
+    .app-card-header {
+        padding: 1rem 1.5rem 0.8rem;
+        margin-bottom: 1rem;
+    }
+
+    .app-card-title {
+        font-size: 1.6rem;
+    }
+
+    .app-card-content {
+        padding: 0.5rem 1.5rem 1.5rem;
+
+        form {
+            gap: 1rem;
+        }
+    }
+
+    .form-actions {
+        flex-direction: column;
+        /* Botões empilhados */
+        gap: 0.8rem;
+
+        button {
+            width: 100%;
+            /* Botões ocupam toda a largura */
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+        }
+    }
+}
+
+@media (max-width: 576px) {
+    .appointment-form-container {
+        padding: 1rem;
+    }
+}

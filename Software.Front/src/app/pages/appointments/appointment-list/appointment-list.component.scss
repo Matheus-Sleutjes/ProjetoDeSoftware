@@ -1,0 +1,401 @@
+// Variáveis
+$color-primary: #00796B;
+$color-primary-light: #B2DFDB;
+$color-primary-dark: #004D40;
+$color-accent: #2196F3;
+$color-warn: #F44336;
+$color-success: #4CAF50;
+$color-pending: #FF9800;
+$color-text-dark: #333333;
+$color-text-medium: #666666;
+$color-text-light: #999999;
+$color-background: #F5F5F5;
+$color-card-bg: #FFFFFF;
+$color-divider: #E0E0E0;
+
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+
+$shadow-light: 0 2px 4px rgba(0, 0, 0, 0.05);
+$shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.1);
+$shadow-strong: 0 8px 16px rgba(0, 0, 0, 0.15);
+
+$transition-standard: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+// Estilos gerais
+.appointment-list-container {
+    font-family: 'Roboto', 'Open Sans', sans-serif;
+    padding: 1.5rem;
+    background-color: $color-background;
+    min-height: calc(100vh - 64px); // Ajuste conforme a altura do seu header
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+// Header da página
+.appointment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 500;
+        color: $color-primary-dark;
+        margin: 0;
+    }
+}
+
+// Estado de carregamento
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+
+    .loading-text {
+        margin-top: 1rem;
+        color: $color-text-medium;
+        font-size: 1rem;
+    }
+}
+
+// Estado vazio
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    background-color: $color-card-bg;
+    border-radius: $border-radius-lg;
+    box-shadow: $shadow-light;
+    text-align: center;
+
+    .empty-state-icon {
+        font-size: 4rem;
+        height: 4rem;
+        width: 4rem;
+        color: $color-text-light;
+        margin-bottom: 1.5rem;
+
+        mat-icon {
+            font-size: 4rem;
+            height: 4rem;
+            width: 4rem;
+        }
+    }
+
+    .empty-state-title {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: $color-text-dark;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state-message {
+        color: $color-text-medium;
+        max-width: 400px;
+        margin-bottom: 2rem;
+    }
+
+    .empty-state-button {
+        padding: 0.5rem 1.5rem;
+        font-weight: 500;
+
+        mat-icon {
+            margin-right: 0.5rem;
+        }
+    }
+}
+
+// Seção de filtros
+.filter-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: center;
+
+    .mat-button-toggle-group {
+        border-radius: $border-radius-md;
+        overflow: hidden;
+
+        .mat-button-toggle {
+            background-color: $color-card-bg;
+            color: $color-text-medium;
+
+            &.mat-button-toggle-checked {
+                background-color: $color-primary;
+                color: white;
+            }
+        }
+    }
+
+    .date-filter {
+        width: 200px;
+        margin: 0;
+    }
+}
+
+// Grid de agendamentos
+.appointments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+// Card de agendamento
+.appointment-card {
+    position: relative;
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+    box-shadow: $shadow-medium;
+    transition: $transition-standard;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: $shadow-strong;
+    }
+
+    // Status badge
+    .appointment-status-badge {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        border-bottom-left-radius: $border-radius-sm;
+        color: white;
+    }
+
+    // Classes de status
+    &.status-scheduled {
+        border-top: 4px solid $color-primary;
+
+        .appointment-status-badge {
+            background-color: $color-primary;
+        }
+    }
+
+    &.status-confirmed {
+        border-top: 4px solid $color-success;
+
+        .appointment-status-badge {
+            background-color: $color-success;
+        }
+    }
+
+    &.status-pending {
+        border-top: 4px solid $color-pending;
+
+        .appointment-status-badge {
+            background-color: $color-pending;
+        }
+    }
+
+    &.status-canceled {
+        border-top: 4px solid $color-warn;
+
+        .appointment-status-badge {
+            background-color: $color-warn;
+        }
+    }
+
+    &.status-completed {
+        border-top: 4px solid $color-accent;
+
+        .appointment-status-badge {
+            background-color: $color-accent;
+        }
+    }
+
+    // Data e hora
+    .appointment-date-time {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem 1rem 1rem;
+
+        .appointment-date {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .date-day {
+                font-size: 1.8rem;
+                font-weight: 700;
+                line-height: 1;
+                color: $color-text-dark;
+            }
+
+            .date-month {
+                font-size: 0.9rem;
+                color: $color-text-medium;
+                text-transform: uppercase;
+            }
+        }
+
+        .appointment-time {
+            display: flex;
+            align-items: center;
+            color: $color-text-medium;
+
+            mat-icon {
+                font-size: 1.2rem;
+                height: 1.2rem;
+                width: 1.2rem;
+                margin-right: 0.25rem;
+            }
+        }
+    }
+
+    mat-divider {
+        margin: 0 1rem;
+    }
+
+    // Detalhes do agendamento
+    .appointment-details {
+        padding: 1rem;
+
+        .appointment-speciality {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: $color-text-dark;
+            margin: 0 0 0.75rem;
+        }
+
+        .appointment-person,
+        .appointment-location {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            color: $color-text-medium;
+
+            mat-icon {
+                font-size: 1.1rem;
+                height: 1.1rem;
+                width: 1.1rem;
+                margin-right: 0.5rem;
+            }
+        }
+    }
+
+    // Observações
+    .appointment-notes {
+        padding: 0.75rem 1rem;
+        background-color: rgba($color-primary-light, 0.2);
+        display: flex;
+        align-items: flex-start;
+
+        mat-icon {
+            font-size: 1.1rem;
+            height: 1.1rem;
+            width: 1.1rem;
+            margin-right: 0.5rem;
+            margin-top: 0.2rem;
+            color: $color-text-medium;
+        }
+
+        p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: $color-text-medium;
+        }
+    }
+
+    // Ações
+    .appointment-actions {
+        padding: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: flex-end;
+        margin-top: auto;
+
+        button {
+            font-size: 0.85rem;
+
+            mat-icon {
+                font-size: 1rem;
+                height: 1rem;
+                width: 1rem;
+            }
+        }
+    }
+}
+
+// Sem resultados
+.no-results {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    color: $color-text-medium;
+
+    mat-icon {
+        font-size: 3rem;
+        height: 3rem;
+        width: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.7;
+    }
+}
+
+// Paginação
+.pagination-controls {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+// Responsividade
+@media (max-width: 768px) {
+    .appointment-list-container {
+        padding: 1rem;
+    }
+
+    .appointment-header {
+        .page-title {
+            font-size: 1.5rem;
+        }
+    }
+
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+
+        .mat-button-toggle-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .date-filter {
+            width: 100%;
+        }
+    }
+
+    .appointments-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .appointment-card {
+        .appointment-actions {
+            flex-direction: column;
+
+            button {
+                width: 100%;
+            }
+        }
+    }
+}

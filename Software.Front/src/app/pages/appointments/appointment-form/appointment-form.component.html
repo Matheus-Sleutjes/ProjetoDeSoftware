@@ -1,0 +1,61 @@
+<div class="appointment-form-container">
+    <mat-card class="app-form-card"> <mat-card-header class="app-card-header">
+            <mat-card-title class="app-card-title">Agendar Consulta</mat-card-title>
+            <mat-card-subtitle *ngIf="speciality" class="app-card-subtitle">{{ speciality }}</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content class="app-card-content">
+            <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Médico</mat-label>
+                    <mat-select formControlName="doctorId">
+                        <mat-option *ngFor="let doctor of availableDoctors" [value]="doctor.id">
+                            {{ doctor.name }} - {{ doctor.speciality }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="appointmentForm.get('doctorId')?.hasError('required')">
+                        Por favor, selecione um médico
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Data da consulta</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="date" [min]="minDate">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error *ngIf="appointmentForm.get('date')?.hasError('required')">
+                        Por favor, selecione uma data
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Horário da consulta</mat-label>
+                    <mat-select formControlName="time">
+                        <mat-option *ngFor="let slot of availableTimeSlots" [value]="slot.time"
+                            [disabled]="!slot.available">
+                            {{ slot.time }} {{ !slot.available ? '(Indisponível)' : '' }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="appointmentForm.get('time')?.hasError('required')">
+                        Por favor, selecione um horário
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Observações</mat-label>
+                    <textarea matInput formControlName="notes" rows="3"
+                        placeholder="Informe aqui qualquer informação adicional sobre sua consulta"></textarea>
+                </mat-form-field>
+
+                <div class="form-actions">
+                    <button mat-button type="button" routerLink="/appointments">Cancelar</button>
+                    <button mat-raised-button color="primary" type="submit"
+                        [disabled]="appointmentForm.invalid || isLoading">
+                        <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+                        <span *ngIf="!isLoading">Agendar Consulta</span>
+                    </button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

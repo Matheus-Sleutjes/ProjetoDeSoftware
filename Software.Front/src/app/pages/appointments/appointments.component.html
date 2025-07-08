@@ -1,12 +1,70 @@
-<app-header></app-header>
+<mat-toolbar color="primary" class="top-nav">
+    <span class="logo">π</span>
+    <span class="spacer"></span>
 
-<section class="container">
+    <div>
+        <button mat-button routerLink="/home">Home</button>
+        <button mat-button routerLink="/appointments/my-appointments">Minhas Consultas</button>
+        <button mat-button *ngIf="isDoctor" routerLink="/appointments/dashboard">Dashboard Médico</button>
+        <button mat-button routerLink="/appointments/notification-settings">Preferências de Notificação</button>
+    </div>
+</mat-toolbar>
 
-    <mat-card>
-        <mat-card-title>Agente Agora</mat-card-title>
-        <mat-card-content>
+<div class="container">
+    <div class="header-section">
+        <h1>Agendamento de Consultas</h1>
 
-        </mat-card-content>
-    </mat-card>
+        @if(selectedSpeciality) {
+        <div class="selected-speciality">
+            <h2>Especialidade selecionada: {{ selectedSpeciality.label }}</h2>
+            <mat-icon>{{ selectedSpeciality.icon }}</mat-icon>
+        </div>
+        }
 
-</section>
+        <div class="action-buttons">
+            <button mat-raised-button color="primary" (click)="navigateToCreateAppointment()">
+                <mat-icon>add</mat-icon> Nova Consulta
+            </button>
+            <button mat-raised-button color="accent" (click)="navigateToMyAppointments()">
+                <mat-icon>list</mat-icon> Minhas Consultas
+            </button>
+        </div>
+    </div>
+
+    <div class="info-cards">
+        <mat-card class="info-card">
+            <mat-card-header>
+                <mat-icon mat-card-avatar>event_available</mat-icon>
+                <mat-card-title>Agende sua consulta</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <p>Escolha a especialidade, data e horário disponível para sua consulta.</p>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="info-card">
+            <mat-card-header>
+                <mat-icon mat-card-avatar>notifications</mat-icon>
+                <mat-card-title>Receba lembretes</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <p>Configure notificações para ser lembrado antes da sua consulta.</p>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="info-card">
+            <mat-card-header>
+                <mat-icon mat-card-avatar>schedule</mat-icon>
+                <mat-card-title>Flexibilidade</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <p>Cancele ou reagende sua consulta quando necessário.</p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <!-- Exibir o formulário de agendamento diretamente se uma especialidade foi selecionada -->
+    @if(selectedSpeciality) {
+    <app-appointment-form [speciality]="selectedSpeciality.label"></app-appointment-form>
+    }
+    </div>

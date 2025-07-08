@@ -41,15 +41,6 @@
         </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width" *ngIf="docterSelected">
-        <mat-label class="mat-label-title">Especialidade do Médico</mat-label>
-        <mat-select formControlName="specialty">
-            <mat-option class="mat-opption" *ngFor="let s of specialty" [value]="s.specialtyId">
-                {{ s.description }}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-
     <mat-form-field appearance="outline" class="full-width">
         <mat-icon matPrefix>badge</mat-icon>
         <mat-label>CPF</mat-label>

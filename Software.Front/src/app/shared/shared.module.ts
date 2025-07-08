@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -25,7 +25,14 @@ import { ConfirmDialogComponent } from '../pages/util/confirm-dialog/confirm-dia
 @NgModule({
   imports: [
     CommonModule,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    MatToolbarModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+        // MatTooltipModule
   ],
   exports: [
     CommonModule,
@@ -49,8 +56,17 @@ import { ConfirmDialogComponent } from '../pages/util/confirm-dialog/confirm-dia
     MatNativeDateModule,
     MatCheckboxModule,
     MatProgressSpinnerModule,
-    MatDialogModule
-   
+    MatDialogModule,
+    NgIf,
+    NgFor,
+    // // MatTableModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    // MatTooltipModule,
+
   ]
 })
 export class SharedModule { }

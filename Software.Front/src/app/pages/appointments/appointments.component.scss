@@ -1,0 +1,395 @@
+/* Variáveis de cores (recomendo ter um arquivo _variables.scss e importar) */
+:root {
+    --color-primary: #00796B;
+    /* Verde vibrante */
+    --color-dark-green: #004D40;
+    /* Verde escuro */
+    --color-accent: #2196F3;
+    /* Azul de destaque (para ícones/ações) */
+    --color-white: #FFFFFF;
+    --color-light-gray: #F9F9F9;
+    /* Fundo geral das seções */
+    --color-medium-gray: #E0E0E0;
+    /* Bordas e separadores */
+    --color-text-dark: #333333;
+    --color-text-medium: #666666;
+    --color-icon-bg: #E0F2F7;
+    /* Azul esverdeado claro para fundo de ícones */
+    --color-hover-green-light: #e8f5e9;
+    /* Verde bem claro para hover de cards/botões */
+    --color-selected-border: #004D40;
+    /* Cor para borda de seleção de especialidade */
+
+}
+
+$green-dark: #004d40;
+$green-light: #00796b;
+$white: #fff;
+
+/* Importe a fonte globalmente em styles.scss (se ainda não o fez) */
+/* @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap'); */
+
+// Aplica a fonte ao corpo ou ao container principal
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+
+
+.top-nav {
+    background: $green-dark;
+    /* Verde escuro para o topo */
+    color: $white;
+    padding: 0 4rem;
+    /* Mais padding nas laterais */
+    height: 64px;
+    /* Altura padrão de toolbars Material */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Sombra sutil */
+
+    .logo {
+        font-size: 1.8rem;
+        /* Logo maior */
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        margin-right: 2rem;
+    }
+
+    .spacer {
+        flex: 1 1 auto;
+    }
+
+    button {
+        color: var(--color-white);
+        font-weight: 600;
+        margin: 0 0.5rem;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            /* Efeito hover suave */
+            transform: translateY(-2px);
+            /* Leve elevação no hover */
+        }
+    }
+}
+
+.container {
+    font-family: 'Open Sans', sans-serif;
+    padding: 2.5rem 4rem;
+    /* Padding generoso */
+    background-color: var(--color-light-gray);
+    /* Fundo da seção */
+    min-height: calc(100vh - 64px);
+    /* Ajuste com base na altura do seu header */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Centraliza o conteúdo horizontalmente */
+    gap: 3rem;
+    /* Espaçamento entre as principais seções */
+    max-width: 1400px;
+    /* Limita largura do conteúdo principal */
+    margin: 0 auto;
+    /* Centraliza o container na página */
+}
+
+.header-section {
+    text-align: center;
+    width: 100%;
+    max-width: 900px;
+    /* Limita a largura do cabeçalho */
+
+    h1 {
+        font-size: 3rem;
+        /* Título principal maior */
+        font-weight: 700;
+        color: var(--color-dark-green);
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.03em;
+        line-height: 1.2;
+    }
+
+    .selected-speciality {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+        margin-top: 1.5rem;
+        margin-bottom: 2.5rem;
+        /* Espaço para os botões de ação */
+        padding: 0.8rem 1.5rem;
+        background-color: var(--color-hover-green-light);
+        /* Fundo suave para destaque */
+        border: 1px solid var(--color-primary);
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--color-dark-green);
+            margin: 0;
+
+            span {
+                color: var(--color-primary);
+                /* Destaque o nome da especialidade */
+            }
+        }
+
+        mat-icon {
+            font-size: 28px;
+            color: var(--color-accent);
+            /* Ícone em azul destaque */
+        }
+    }
+
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        /* Espaço entre os botões */
+        margin-top: 2.5rem;
+        /* Margem superior para separar do título ou especialidade */
+
+
+        button {
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+
+            mat-icon {
+                margin-right: 0.5rem;
+                font-size: 20px;
+                /* Tamanho padrão para ícones em botões */
+                vertical-align: middle;
+                /* Alinha o ícone com o texto */
+            }
+
+            &.mat-raised-button.mat-primary {
+                background-color: var(--color-primary);
+                color: var(--color-white);
+
+                &:hover {
+                    background-color: var(--color-dark-green);
+                    /* Escurece no hover */
+                    transform: translateY(-2px);
+                    /* Leve elevação */
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                }
+            }
+
+            &.mat-raised-button.mat-accent {
+                /* Mantém o accent, mas pode ser ajustado para um stroke-button */
+                background-color: var(--color-accent);
+                /* Azul do accent */
+                color: var(--color-white);
+
+                &:hover {
+                    background-color: var(--color-accent), 10%;
+                    /* Escurece o azul no hover */
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                }
+            }
+        }
+    }
+}
+
+.info-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    /* 3 colunas responsivas */
+    gap: 2.5rem;
+    /* Espaço entre os cards */
+    width: 100%;
+    max-width: 1200px;
+    /* Limita a largura do grid de cards */
+    margin-top: 2rem;
+    /* Espaço do header */
+
+    .info-card {
+        background-color: var(--color-white);
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        /* Sombra suave */
+        padding: 1.5rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        /* Transição para interatividade */
+        display: flex;
+        /* Para alinhar header e content */
+        flex-direction: column;
+        /* Coloca header acima do content */
+        justify-content: flex-start;
+        /* Alinha conteúdo ao topo */
+
+        &:hover {
+            transform: translateY(-8px);
+            /* Elevação no hover */
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            /* Sombra mais forte no hover */
+        }
+
+        .mat-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            /* Espaço entre header e content */
+            padding: 0;
+            /* Remove padding padrão do header do card */
+        }
+
+        .mat-card-avatar {
+            /* Estilo para o ícone mat-card-avatar */
+            background-color: var(--color-icon-bg);
+            /* Fundo suave para o ícone */
+            border-radius: 50%;
+            width: 60px;
+            /* Tamanho do círculo do ícone */
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 1rem;
+            /* Espaço à direita do ícone */
+
+            mat-icon {
+                font-size: 36px;
+                /* Tamanho do ícone dentro do avatar */
+                color: var(--color-accent);
+                /* Cor azul para o ícone */
+            }
+        }
+
+        .mat-card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-text-dark);
+            line-height: 1.3;
+        }
+
+        .mat-card-content {
+            p {
+                font-size: 0.95rem;
+                color: var(--color-text-medium);
+                line-height: 1.5;
+            }
+        }
+    }
+}
+
+/* Estilo para o app-appointment-form quando ele é exibido */
+app-appointment-form {
+    width: 100%;
+    max-width: 700px;
+    /* Limita a largura do formulário para centralizar */
+    margin-top: 2rem;
+    /* Espaço acima do formulário */
+}
+
+/* Responsividade */
+@media (max-width: 1200px) {
+    .container {
+        padding: 2rem;
+        gap: 2.5rem;
+    }
+
+    .header-section {
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        .selected-speciality {
+            font-size: 1.2rem;
+        }
+    }
+
+    .info-cards {
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1.5rem;
+        gap: 2rem;
+    }
+
+    .top-nav {
+        padding: 0 1rem;
+
+        button {
+            font-size: 0.8rem;
+            margin: 0 0.2rem;
+        }
+    }
+
+    .header-section {
+        h1 {
+            font-size: 2rem;
+        }
+
+        .selected-speciality {
+            flex-direction: column;
+            /* Empilha texto e ícone */
+            gap: 0.5rem;
+            padding: 0.8rem 1rem;
+
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            mat-icon {
+                font-size: 24px;
+            }
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            /* Botões empilhados */
+            gap: 1rem;
+
+            button {
+                width: 100%;
+                font-size: 1rem;
+                padding: 0.7rem 1.5rem;
+            }
+        }
+    }
+
+    .info-cards {
+        grid-template-columns: 1fr;
+        /* Uma coluna em telas menores */
+        gap: 1.5rem;
+    }
+
+    .info-card {
+        padding: 1.2rem;
+
+        .mat-card-avatar {
+            width: 50px;
+            height: 50px;
+
+            mat-icon {
+                font-size: 30px;
+            }
+        }
+
+        .mat-card-title {
+            font-size: 1.3rem;
+        }
+
+        .mat-card-content p {
+            font-size: 0.9rem;
+        }
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding: 1rem;
+    }
+}
