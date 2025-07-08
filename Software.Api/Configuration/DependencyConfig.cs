@@ -16,8 +16,10 @@ namespace Software.Api.Configuration
             services.AddScoped<IDoctorRepository, DoctorRepository>();
             services.AddScoped<ISpecialtyService, SpecialtyService>();
             services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
+            services.AddScoped<IPatientService, PatientService>();
             services.AddScoped<IPatientRepository, PatientRepository>();
-            services.AddScoped<IPatientRepository, PatientRepository>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddScoped<IAppointmentRepository, AppointmentRepository>();
         }
     }
 }
