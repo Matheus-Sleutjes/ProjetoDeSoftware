@@ -22,12 +22,10 @@ interface Clinic {
 })
 export class HomeComponent {
   options: Option[] = [
-    { icon: 'favorite_outline', label: 'Cardiologista', },
+    { icon: 'favorite_outline', label: 'Cardiologista' },
     { icon: 'vaccines', label: 'Vacinas' },
-    { icon: 'favorite_outline', label: 'Cardiologista' },
-    { icon: 'favorite_outline', label: 'Cardiologista' },
-    { icon: 'favorite_outline', label: 'Cardiologista' },
-    { icon: 'favorite_outline', label: 'Cardiologista' },
+    { icon: 'hearing', label: 'Otorrino' }, // 'hearing' é o ícone de ouvido no Material Icons
+    { icon: 'add_to_queue', label: 'Dentista' }, // 'dentistry' ou 'medical_services' pode ser usado para dente, dependendo do set disponível
   ];
 
   clinics: Clinic[] = [
@@ -36,7 +34,8 @@ export class HomeComponent {
   ];
 
   name = '';
-  acr = ''
+  acr = '';
+  isAdmin = false;
   constructor(
     private router: Router,
     private util: UtilsService
@@ -55,6 +54,8 @@ export class HomeComponent {
     const acr = decoded && decoded.acr ? decoded.acr : '';
     this.name = name;
     this.acr = acr.toLowerCase();
+
+    this.isAdmin = acr ? acr.toLowerCase() === 'admin' : false;
   }
 
   navigateToAppointments(pageOpt: Option) {
@@ -66,6 +67,18 @@ export class HomeComponent {
           options: JSON.stringify(pageOpt)  // como é um array/obj, converte pra string
         }
       })
+  }
+
+  navigateToRegisterUser() {
+    this.router.navigate(
+      ['./new-account'],
+      {
+        queryParams: {
+          name: this.name,
+          acr: this.acr
+        }
+      }
+    );
   }
 
   navigateToListUser() {

@@ -27,6 +27,12 @@ export class HttpService {
     return this.http.get<any>(`${this.baseUrl}/${this.controller}/${endpoint}`, { params, headers: this.getHeaders() });
   }
 
+  getNotController(endpoint: string, params?: any): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/${endpoint}`, { params, headers: this.getHeaders() });
+  }
+
+
+
   // Método genérico para requisições POST
   post(endpoint: string, body: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/${endpoint}`, body, { headers: this.getHeaders() });

@@ -5,7 +5,8 @@
     <div>
         <ng-container>
 
-            <button mat-button (click)="navigateToListUser()" *ngIf="acr == 'admin' || acr ==  'doctor'">Lista de usuário</button>
+            <button mat-button (click)="navigateToListUser()" *ngIf="isAdmin || acr ==  'doctor'">Lista de usuário</button>
+            <button mat-button *ngIf="isAdmin" (click)="navigateToRegisterUser()">Cadastro de usuário</button>
             <button mat-button>Histórico</button>
             <button mat-button>Consultas</button>
         </ng-container>

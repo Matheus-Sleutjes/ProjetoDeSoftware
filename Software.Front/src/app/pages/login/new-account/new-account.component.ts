@@ -6,6 +6,8 @@ import { AuthenticationService } from '../../../services/authentication.service'
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
+import { UtilsService } from '../../../services/utils.service';
+import { EnumRole } from '../../../models/enumRole';
 
 
 interface RoleOption {
@@ -24,18 +26,17 @@ export class NewAccountComponent {
   registerForm!: FormGroup;
   hide = true;
   loading = false;
-  roles: RoleOption[] = [
-    { value: 2, viewValue: 'Médico' },
-    { value: 3, viewValue: 'Paciente' }
-  ];
+
 
   account = {};
-
+  acrRole = '';
+  roles: { value: number, label: string }[] = [];
   constructor(
     private fb: FormBuilder,
     private auth: AuthenticationService,
     private router: Router,
-    private snack: MatSnackBar
+    private snack: MatSnackBar,
+    private util: UtilsService
   ) { }
 
   ngOnInit(): void {
@@ -43,12 +44,30 @@ export class NewAccountComponent {
       name: ['', Validators.required],
       lastName: ['', Validators.required],
       username: ['', [Validators.required, Validators.minLength(4)]],
-      cpf: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]], 
+      cpf: [
+        '',
+        [
+          ,
+          Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)
+        ]
+      ],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
-      role: [1, Validators.required]
     });
+
+    this.registerForm.get('cpf')?.valueChanges.subscribe(value => {
+      const numericCpf = value.replace(/\D/g, '').slice(0, 11);
+      const formattedCpf = this.util.formatCpf(numericCpf);
+      if (value !== formattedCpf) {
+        this.registerForm.get('cpf')?.setValue(formattedCpf, { emitEvent: false });
+      }
+    });
+
+    const urlParams = this.util.getParametersFromUrl();
+    const name = urlParams.name || '';
+    this.acrRole = urlParams.acr || ''
   }
+
 
   navigateTologin() {
     this.router.navigate(['login']);
@@ -66,10 +85,10 @@ export class NewAccountComponent {
       cpf: this.registerForm.value.cpf,
       username: this.registerForm.value.username,
       email: this.registerForm.value.email,
-      password: this.registerForm.value.password,
-      role: this.registerForm.value.role
+      password: this.registerForm.value.password
     }
 
+    console.log(account);
     this.loading = true;
     this.auth.createdAccount(account).subscribe({
       next: () => {

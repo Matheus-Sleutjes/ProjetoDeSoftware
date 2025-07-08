@@ -71,16 +71,6 @@
                     </mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline">
-                    <mat-icon matPrefix>badge</mat-icon>
-                    <mat-label>Tipo de Conta</mat-label>
-                    <mat-select formControlName="role">
-                        <mat-option *ngFor="let r of roles" [value]="r.value">
-                            {{ r.viewValue }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-
                 <button class="btn-created" type="submit" mat-raised-button color="success" [disabled]="registerForm.invalid || loading"
                     class="btn-register">
                     <mat-icon class="icon-left">person_add</mat-icon>

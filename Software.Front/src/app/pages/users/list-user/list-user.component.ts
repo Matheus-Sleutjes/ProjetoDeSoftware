@@ -11,6 +11,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.component';
 import { In_ConfirmDialog } from '../../../models/In_ConfirmDialog';
 import { ConfirmDialogComponent } from '../../util/confirm-dialog/confirm-dialog.component';
+import { UtilsService } from '../../../services/utils.service';
 
 @Component({
     selector: 'app-list-user',
@@ -26,33 +27,39 @@ export class ListUserComponent {
     endPoit = 'GetAllByParameter';
     pararms = 0;
     displayedColumns: string[] = ['name', 'lastName', 'username', 'email', 'cpf', 'role', 'actions'];
-    roles = [
-        { value: 0, label: 'Todos' },
-        { value: EnumRole.Administrador, label: 'Administrador' },
-        { value: EnumRole.Medico, label: 'Médico' },
-        { value: EnumRole.Paciente, label: 'Paciente' }
-    ];
+
     selectedRole = 0;
     roleUser = EnumRole;
 
     acrRole = '';
+    roles: { value: number, label: string }[] = [];
     constructor(
         private restService: HttpService,
         private snackBar: MatSnackBar,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private util: UtilsService
     ) {
+
     }
 
 
     ngOnInit(): void {
         this.getUsers();
         this.filtered = [...this.users];
-        
+
         // Receber parâmetros name e acr da URL (query params)
-        const urlParams = new URLSearchParams(window.location.search);
-        const name = urlParams.get('name');
-        const acr = urlParams.get('acr');
-        this.acrRole = acr || '';
+        const urlParams = this.util.getParametersFromUrl();
+        const name = urlParams.name || '';
+        this.acrRole = urlParams.acr || '';
+
+        this.roles = [
+            { value: 0, label: 'Todos' },
+            ...(this.acrRole === 'admin'
+                ? [{ value: EnumRole.Administrador, label: 'Administrador' }]
+                : []),
+            { value: EnumRole.Medico, label: 'Médico' },
+            { value: EnumRole.Paciente, label: 'Paciente' }
+        ];
     }
 
     applyRoleFilter() {

@@ -6,6 +6,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { In_Users } from '../../../models/In_users';
 import { In_CreateAccount } from '../../../models/In_createAccount';
+import { UtilsService } from '../../../services/utils.service';
+import { In_Speciality } from '../../../models/In_speciality';
 
 @Component({
   selector: 'app-edit-user-dialog',
@@ -19,7 +21,7 @@ export class EditUserDialogComponent {
 
   endpoitSpecialty = 'Specialty'
 
-  specialty: any[] = [];
+  specialty: In_Speciality[] = [];
   docterSelected: boolean = false;
   constructor(
     private fb: FormBuilder,
@@ -27,6 +29,7 @@ export class EditUserDialogComponent {
     private snackBar: MatSnackBar,
     private dialogRef: MatDialogRef<EditUserDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public user: In_Users,
+    private util: UtilsService
   ) { }
 
   ngOnInit(): void {
@@ -38,7 +41,7 @@ export class EditUserDialogComponent {
       password: [''],
       role: [this.user.role,],
       cpf: [
-        this.formatCpf(this.user.cpf),
+        this.util.formatCpf(this.user.cpf),
         [
           ,
           Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)
@@ -50,35 +53,33 @@ export class EditUserDialogComponent {
     // Atualize o valor do campo CPF ao digitar, removendo caracteres não numéricos e formatando
     this.updateForm.get('cpf')?.valueChanges.subscribe(value => {
       const numericCpf = value.replace(/\D/g, '').slice(0, 11);
-      const formattedCpf = this.formatCpf(numericCpf);
+      const formattedCpf = this.util.formatCpf(numericCpf);
       if (value !== formattedCpf) {
         this.updateForm.get('cpf')?.setValue(formattedCpf, { emitEvent: false });
       }
     });
-  }
 
-  private formatCpf(cpf: string): string {
-    const digits = (cpf || '').replace(/\D/g, '').slice(0, 11);
-    if (digits.length <= 3) return digits;
-    if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
-    if (digits.length <= 9) return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
-    return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9, 11)}`;
+    if (this.updateForm.value.role === 2) {
+      this.docterSelected = true;
+      this.getSpecialty();
+    }
+    
   }
 
   getRole() {
     // Aqui você pode manipular o evento de seleção de função, se necessário
     const selectedRole = this.updateForm.value.role
-    
     console.log('Evento de seleção de função:', selectedRole);
-    if(selectedRole === '2') {
+    if (selectedRole === 2) {
       this.docterSelected = true;
       this.getSpecialty();
     }
 
   }
+
   getSpecialty() {
-    this.restService.get(this.endpoitSpecialty).subscribe({
-      next: (data) => {
+    this.restService.getNotController(this.endpoitSpecialty).subscribe({
+      next: (data: In_Speciality[]) => {
         // Aqui você pode manipular os dados recebidos, se necessário
         console.log('Especialidades:', data);
         this.specialty = data;
