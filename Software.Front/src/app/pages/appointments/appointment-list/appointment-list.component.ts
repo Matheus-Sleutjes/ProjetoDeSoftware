@@ -66,31 +66,31 @@ export class AppointmentListComponent implements OnInit {
     );
   }
 
-  cancelAppointment(appointment: Appointment) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: 'Cancelar Consulta',
-        message: `Tem certeza que deseja cancelar a consulta com ${appointment.doctorName} em ${this.formatDate(appointment.date)} às ${appointment.time}?`
-      }
-    });
+  // cancelAppointment(appointment: Appointment) {
+  //   const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+  //     data: {
+  //       title: 'Cancelar Consulta',
+  //       message: `Tem certeza que deseja cancelar a consulta em ${this.formatDate(appointment.appointmentDate)} às ${appointment.time}?`
+  //     }
+  //   });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.isLoading = true;
-        this.appointmentService.cancelAppointment(appointment.id!).subscribe(
-          () => {
-            this.snackBar.open('Consulta cancelada com sucesso', 'Fechar', { duration: 3000 });
-            this.loadAppointments();
-          },
-          (error) => {
-            console.error('Erro ao cancelar consulta:', error);
-            this.isLoading = false;
-            this.snackBar.open('Erro ao cancelar consulta', 'Fechar', { duration: 3000 });
-          }
-        );
-      }
-    });
-  }
+  //   dialogRef.afterClosed().subscribe(result => {
+  //     if (result) {
+  //       this.isLoading = true;
+  //       this.appointmentService.cancelAppointment(appointment.id!).subscribe(
+  //         () => {
+  //           this.snackBar.open('Consulta cancelada com sucesso', 'Fechar', { duration: 3000 });
+  //           this.loadAppointments();
+  //         },
+  //         (error) => {
+  //           console.error('Erro ao cancelar consulta:', error);
+  //           this.isLoading = false;
+  //           this.snackBar.open('Erro ao cancelar consulta', 'Fechar', { duration: 3000 });
+  //         }
+  //       );
+  //     }
+  //   });
+  // }
 
   rescheduleAppointment(appointment: Appointment) {
     // Implementar lógica de redirecionamento para tela de reagendamento

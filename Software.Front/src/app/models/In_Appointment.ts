@@ -1,14 +1,11 @@
 export interface Appointment {
     id?: string;
-    patientId: string;
-    patientName: string;
-    doctorId: string;
-    doctorName: string;
-    speciality: string;
-    date: Date;
-    time: string;
-    status: 'Agendado' | 'Confirmar' | 'Cancelar' | 'Completo';
-    notes?: string;
+    patientId: number;
+    doctorId: number;
+    appointmentDate: string;
+    description: string;
+    // time: string;
+    status: number; // 1: Confirmada, 2: Cancelada, 3: Concluída3
 }
 
 export interface TimeSlot {

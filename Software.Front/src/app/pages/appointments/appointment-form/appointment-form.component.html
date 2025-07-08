@@ -9,8 +9,8 @@
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Médico</mat-label>
                     <mat-select formControlName="doctorId">
-                        <mat-option *ngFor="let doctor of availableDoctors" [value]="doctor.id">
-                            {{ doctor.name }} - {{ doctor.speciality }}
+                        <mat-option class="mat-opption" *ngFor="let doctor of availableDoctors" [value]="doctor.userId">
+                            {{ doctor.name }} {{ doctor.lastName }}
                         </mat-option>
                     </mat-select>
                     <mat-error *ngIf="appointmentForm.get('doctorId')?.hasError('required')">
@@ -20,8 +20,8 @@
 
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Data da consulta</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="date" [min]="minDate">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <input matInput  [matDatepicker]="picker" formControlName="date" [min]="minDate">
+                    <mat-datepicker-toggle   matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                     <mat-error *ngIf="appointmentForm.get('date')?.hasError('required')">
                         Por favor, selecione uma data
@@ -31,7 +31,7 @@
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Horário da consulta</mat-label>
                     <mat-select formControlName="time">
-                        <mat-option *ngFor="let slot of availableTimeSlots" [value]="slot.time"
+                        <mat-option class="mat-opption" *ngFor="let slot of availableTimeSlots" [value]="slot.time"
                             [disabled]="!slot.available">
                             {{ slot.time }} {{ !slot.available ? '(Indisponível)' : '' }}
                         </mat-option>
@@ -43,7 +43,7 @@
 
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Observações</mat-label>
-                    <textarea matInput formControlName="notes" rows="3"
+                    <textarea matInput formControlName="description" rows="3"
                         placeholder="Informe aqui qualquer informação adicional sobre sua consulta"></textarea>
                 </mat-form-field>
 

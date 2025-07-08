@@ -23,38 +23,38 @@
                 <mat-card class="appointment-card">
                     <div class="appointment-header">
                         <div class="appointment-info">
-                            <h3>{{ appointment.speciality }}</h3>
+                            <!-- <h3>{{ appointment.speciality }}</h3> -->
                             <p>
                                 <strong>{{ userRole === 'doctor' ? 'Paciente' : 'Médico' }}:</strong>
-                                {{ userRole === 'doctor' ? appointment.patientName : appointment.doctorName }}
+                                <!-- {{ userRole === 'doctor' ? appointment.patientName : appointment.doctorName }} -->
                             </p>
                         </div>
-                        <div class="appointment-status" [ngClass]="getStatusClass(appointment.status)">
+                        <!-- <div class="appointment-status" [ngClass]="getStatusClass(appointment.status)">
                             {{ getStatusLabel(appointment.status) }}
-                        </div>
+                        </div> -->
                     </div>
 
                     <div class="appointment-details">
-                        <p><mat-icon>calendar_today</mat-icon> {{ formatDate(appointment.date) }}</p>
-                        <p><mat-icon>access_time</mat-icon> {{ appointment.time }}</p>
+                        <!-- <p><mat-icon>calendar_today</mat-icon> {{ formatDate(appointment.appointmentDate) }}</p> -->
+                        <!-- <p><mat-icon>access_time</mat-icon> {{ appointment.time }}</p> -->
                     </div>
 
-                    @if(appointment.notes) {
+                    @if(appointment.description) {
                     <div class="appointment-notes">
                         <strong>Observações:</strong>
-                        <p>{{ appointment.notes }}</p>
+                        <p>{{ appointment.description }}</p>
                     </div>
                     }
 
                     <div class="appointment-actions">
-                        @if(appointment.status === 'Agendado' || appointment.status === 'Confirmar') {
+                        <!-- @if(appointment.status === 'Agendado' || appointment.status === 'Confirmar') { -->
                         <button mat-button color="accent" (click)="rescheduleAppointment(appointment)">
                             <mat-icon>edit_calendar</mat-icon> Reagendar
                         </button>
-                        <button mat-button color="warn" (click)="cancelAppointment(appointment)">
+                        <!-- <button mat-button color="warn" (click)="cancelAppointment(appointment)">
                             <mat-icon>cancel</mat-icon> Cancelar
-                        </button>
-                        }
+                        </button> -->
+                        <!-- } -->
                     </div>
                 </mat-card>
                 }

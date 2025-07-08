@@ -3,6 +3,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
 import { UtilsService } from '../../services/utils.service';
 import { AppointmentFormComponent } from './appointment-form/appointment-form.component';
+import { AppointmentService } from '../../services/appointment.service';
+import { In_Users } from '../../models/In_users';
+import { HttpService } from '../../services/http.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 interface Option {
@@ -25,11 +29,15 @@ export class AppointmentsComponent implements OnInit {
   userName: string = '';
   userRole: string = '';
   isDoctor: boolean = false;
+  filtered: any[] = [];
 
+  endPoit = 'GetAllByParameter';
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private restService: HttpService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -49,6 +57,11 @@ export class AppointmentsComponent implements OnInit {
         }
       }
     });
+
+  }
+
+  navigateToHome() {
+    this.router.navigate(['home']);
   }
 
   navigateToCreateAppointment() {
@@ -68,4 +81,9 @@ export class AppointmentsComponent implements OnInit {
   navigateToNotificationSettings() {
     this.router.navigate(['/appointments/notification-settings']);
   }
+
+
+
+
+
 }
