@@ -2,7 +2,6 @@
 using Software.Domain.Dtos;
 using Software.Domain.Models;
 using Software.Infraestructure.Contracts;
-using Software.Infraestructure.Repository;
 
 namespace Software.Application.Services
 {
@@ -12,34 +11,55 @@ namespace Software.Application.Services
 
         public string Create(PatientDto dto)
         {
-            //var entity = new Patient(dto.CRM, dto.UserId, dto.SpecialtyId);
+            var entity = new Patient(dto.UserId);
 
-            //var result = _patientRepository.Create(entity);
-            //if (result)
-            //    return "Paciente Criado com sucesso!";
-            //else
-            //    return "Erro ao criar o paciente!";
-            return "Método Create não implementado ainda.";
+            var result = _patientRepository.Create(entity);
+            if (result)
+                return "Paciente Criado com sucesso!";
+            else
+                return "Erro ao criar o paciente!";
         }
 
         public bool DeleteById(int id)
         {
-            throw new NotImplementedException();
+            var entity = _patientRepository.GetPatientById(id);
+            if (entity == null) return false;
+
+            return _patientRepository.Delete(entity);
         }
 
         public List<PatientDto> GetAll()
         {
-            throw new NotImplementedException();
+            return _patientRepository.GetAll()
+                .Select(entity => new PatientDto()
+                {
+                    PatientId = entity.PatientId,
+                    UserId = entity.UserId,
+                }).ToList();
         }
 
         public PatientDto? GetById(int id)
         {
-            throw new NotImplementedException();
+            var entity = _patientRepository.GetPatientById(id);
+            if (entity == null) return null;
+
+            var dto = new PatientDto()
+            {
+                PatientId = entity.PatientId,
+                UserId = entity.UserId,
+            };
+            return dto;
         }
 
         public bool Update(int id, PatientDto dto)
         {
-            throw new NotImplementedException();
+            var entity = _patientRepository.GetPatientById(id);
+            if (entity == null) return false;
+
+            entity.UserId = dto.UserId;
+
+            var result = _patientRepository.Update(entity);
+            return result;
         }
     }
 }
