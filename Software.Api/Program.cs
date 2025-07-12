@@ -78,6 +78,9 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IAppointmentNotificationService, AppointmentNotificationService>();
+
 var app = builder.Build();
 
 if (builder.Environment.IsDevelopment())

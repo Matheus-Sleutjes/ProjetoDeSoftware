@@ -12,6 +12,7 @@ namespace Software.Infraestructure.Repository
         {
             return _context.Appointment.AsNoTracking()
                                       .Include(a => a.Patient)
+                                      .ThenInclude(a => a.User)
                                       .Include(a => a.Doctor)
                                       .FirstOrDefault(x => x.AppointmentId == id);
         }

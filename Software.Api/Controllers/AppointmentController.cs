@@ -48,11 +48,11 @@ namespace Software.Api.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult Post([FromBody] AppointmentDto dto)
+        public async Task<IActionResult> Post([FromBody] AppointmentDto dto)
         {
             if (dto == null) return BadRequest(new { Message = "Informações inválidas" });
 
-            var response = _appointmentService.Create(dto);
+            var response = await _appointmentService.CreateAsync(dto);
             return Ok(new { Message = response });
         }
 
