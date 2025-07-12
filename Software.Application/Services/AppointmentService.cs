@@ -5,19 +5,24 @@ using Software.Infraestructure.Contracts;
 
 namespace Software.Application.Services
 {
-    public class AppointmentService(IAppointmentRepository appointmentRepository) : IAppointmentService
+    public class AppointmentService(IAppointmentRepository appointmentRepository, IAppointmentNotificationService appointmentNotificationService) : IAppointmentService
     {
         private readonly IAppointmentRepository _appointmentRepository = appointmentRepository;
+        private readonly IAppointmentNotificationService _notificationService = appointmentNotificationService;
 
-        public string Create(AppointmentDto dto)
+        public async Task<string> CreateAsync(AppointmentDto dto)
         {
             var entity = new Appointment(dto.PatientId, dto.DoctorId, dto.AppointmentDate, dto.Description);
 
             var result = _appointmentRepository.Create(entity);
-            if (result)
-                return "Agendamento criado com sucesso!";
-            else
+            if (!result)
                 return "Erro ao criar o agendamento!";
+
+            var savedAppointment = _appointmentRepository.GetAppointmentById(entity.AppointmentId);
+            if (savedAppointment != null)
+                await _notificationService.NotifyAppointmentCreatedAsync(savedAppointment);
+
+            return "Agendamento criado com sucesso!";
         }
 
         public bool DeleteById(int id)

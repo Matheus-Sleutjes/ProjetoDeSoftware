@@ -20,6 +20,7 @@ namespace Software.Api.Configuration
             services.AddScoped<IPatientRepository, PatientRepository>();
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+            services.AddScoped<IEmailService, EmailService>();
         }
     }
 }

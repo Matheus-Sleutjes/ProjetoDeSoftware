@@ -6,7 +6,7 @@ namespace Software.Application.Contracts
     {
         List<AppointmentDto> GetAll();
         AppointmentDto? GetById(int id);
-        string Create(AppointmentDto dto);
+        Task<string> CreateAsync(AppointmentDto dto);
         bool Update(int id, AppointmentDto dto);
         bool DeleteById(int id);
         List<AppointmentDto> GetByPatientId(int patientId);
