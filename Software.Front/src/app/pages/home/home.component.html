@@ -26,7 +26,7 @@
             <p>Bem-vindo ao nosso sistema de agendamento de consultas médicas.</p>
             }
 
-            <h1>Cuide da sua saúde<br />com praticidade e confiança!</h1>
+            <h1>Cuide da sua saúde<br />com praticaticidade e confiança!</h1>
             <p>Agende sua consulta online com apenas alguns cliques.</p>
 
             <div class="options">
@@ -49,13 +49,15 @@
     <img src="assets/imgs/cirurgiao.jpg" alt="Cirurgia" class="img-cirurgiao" />
 </div>
 
-<!-- Seção de clínicas -->
 <section class="clinics-section">
     <h2>Clinicas PI π</h2>
-    <div class="clinics-list">
-        <div *ngFor="let clinic of clinics" class="clinic-card">
-            <!-- <img [src]="clinic.mapUrl" alt="{{ clinic.name }}" /> -->
-            <span>{{ clinic.name }}</span>
+    <div class="map-container">
+        <div id="main-google-map" class="google-map"></div>
+
+        <div class="clinic-buttons">
+            <button mat-raised-button color="accent" *ngFor="let clinic of clinics" (click)="centerMap(clinic)">
+                {{ clinic.name }}
+            </button>
         </div>
     </div>
 </section>
