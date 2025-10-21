@@ -142,6 +142,51 @@ export class AuthenticationService {
     // Verifica se o usuário está autenticado
     return localStorage.getItem('token') !== null;
   }
+
+  getAllUsersByRole(roleId: number): Observable<any[]> {
+    return this.http.get(`${this.controller}/GetAllByParameter?roleId=${roleId}`);
+  }
+
+  getUserById(id: number): Observable<any> {
+    return this.http.get(`${this.controller}/${id}`);
+  }
+
+  getUserByCpf(cpf: string): Observable<any> {
+    return this.http.get(`${this.controller}/GetByCpf?cpf=${cpf}`);
+  }
+
+  updateUser(id: number, userData: any): Observable<boolean> {
+    return new Observable<boolean>((observer) => {
+      this.http.put(`${this.controller}/${id}`, userData).subscribe(
+        (response: any) => {
+          console.log('User updated:', response);
+          observer.next(true);
+          observer.complete();
+        },
+        (error) => {
+          console.error('Erro ao atualizar usuário', error);
+          observer.next(false);
+          observer.complete();
+        }
+      );
+    });
+  }
+
+  deleteUser(id: number): Observable<boolean> {
+    return new Observable<boolean>((observer) => {
+      this.http.delete(`${this.controller}/${id}`).subscribe(
+        (response: any) => {
+          observer.next(true);
+          observer.complete();
+        },
+        (error) => {
+          console.error('Erro ao excluir usuário', error);
+          observer.next(false);
+          observer.complete();
+        }
+      );
+    });
+  }
 }
 
 

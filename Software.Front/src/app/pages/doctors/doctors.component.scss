@@ -1,3 +1,10 @@
+.avatar-sm {
+  width: 40px;
+  height: 40px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .table th {
   border-top: none;
   font-weight: 600;
@@ -35,8 +42,7 @@
   border-bottom-left-radius: 0;
 }
 
-.form-control:focus,
-.form-select:focus {
+.form-control:focus {
   border-color: #1976d2;
   box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.25);
 }
@@ -99,5 +105,11 @@
   
   .btn-group .btn {
     padding: 0.25rem 0.5rem;
+  }
+  
+  .avatar-sm {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
   }
 }

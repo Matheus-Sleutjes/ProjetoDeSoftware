@@ -1,194 +1,75 @@
-/* cores principais */
-$green-dark: #004d40;
-$green-light: #00796b;
-$white: #fff;
-
-.container {
-    position: relative;
+.bg-primary {
+  background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%) !important;
 }
 
-/* toolbar topo */
-.top-nav {
-    background: $green-dark;
-    color: $white;
-
-    .logo {
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
-
-    .spacer {
-        flex: 1 1 auto;
-    }
+.option-card {
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.1);
 }
 
-/* hero section */
-.hero-section {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 2rem;
-    background: $white;
-
-    .hero-text {
-        h1 {
-            color: $green-dark;
-            font-size: 2rem;
-            line-height: 1.2;
-        }
-
-        p {
-            margin: 0.5rem 0 1.5rem;
-        }
-
-        .options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-
-            .option-card {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                padding: 1rem;
-                border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                width: calc(50% - 1rem);
-
-                mat-icon {
-                    font-size: 1.5rem;
-                    color: $green-light;
-                }
-
-                span {
-                    font-weight: 500;
-                }
-            }
-        }
-    }
-
-    .hero-image {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        .image-bg {
-            position: absolute;
-            width: 107px;
-            height: 532px;
-            background: #00796b;
-            border-radius: 8px;
-            top: 8px;
-            right: 70px;
-        }
-
-        img {
-            position: relative;
-            width: 405px;
-            border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.30);
-        }
-    }
+.option-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(25, 118, 210, 0.3);
 }
 
-
-.secondary-image {
-    position: relative;
-    z-index: 2;
-    width: 90%;
-    max-width: 320px;
-    /* margin: 0 auto -80px; */
-    display: grid;
-    justify-items: start;
-    top: 200px;
+.option-card .fas {
+  color: #1976d2;
+  transition: all 0.3s ease;
 }
 
-/* 2) Imagem em si */
-.img-cirurgiao {
-    width: 100%;
-    border-radius: 15px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+.option-card:hover .fas {
+  transform: scale(1.1);
 }
 
-/* 3) Seção de Clínicas */
-.clinics-section {
-    position: relative;
-    z-index: 1; // atrás da imagem
-    background: $green-dark; // seu tom escuro
-    color: $white;
-    padding: 4rem 2rem 2rem; // padding-top maior para compensar o overlap
-    display: grid;
-    // grid-template-columns: 1fr 1fr;
-    justify-content: end;
-    gap: 1.5rem;
-
-    h2 {
-        grid-column: 1 / -1;
-        margin-bottom: 1rem;
-    }
-
-    .clinics-list {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-
-        .clinic-card {
-            background: $white;
-            color: black;
-            padding: 1rem;
-            border-radius: 8px;
-            text-align: center;
-
-            img {
-                width: 100%;
-                border-radius: 4px;
-                margin-bottom: 0.5rem;
-            }
-
-            span {
-                font-weight: 600;
-            }
-        }
-    }
+.clinic-card {
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.1);
 }
 
-/* footer */
-.footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background: $white;
-    color: $green-dark;
-    font-size: 0.9rem;
-
-    .contacts {
-        display: flex;
-        gap: 2rem;
-    }
-
-    .socials {
-        display: flex;
-        gap: 1rem;
-
-        mat-icon {
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-    }
+.clinic-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(25, 118, 210, 0.15);
 }
 
-/* responsividade */
-@media (max-width: 960px) {
-    .hero-section {
-        grid-template-columns: 1fr;
+// Hero section styling for centered layout
+.min-vh-100 {
+  background: linear-gradient(135deg, rgba(25, 118, 210, 0.05) 0%, rgba(13, 71, 161, 0.05) 100%);
+}
 
-        .hero-image {
-            margin-top: 2rem;
-        }
-    }
+.navbar-brand {
+  font-size: 2rem !important;
+}
 
-    .clinics-list {
-        flex-direction: column;
-    }
+.nav-link {
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+@media (max-width: 991.98px) {
+  .min-vh-100 {
+    min-height: 70vh !important;
+  }
+  
+  .display-4 {
+    font-size: 2rem;
+  }
+  
+  .option-card {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .display-4 {
+    font-size: 1.75rem;
+  }
+  
+  .lead {
+    font-size: 1rem;
+  }
 }

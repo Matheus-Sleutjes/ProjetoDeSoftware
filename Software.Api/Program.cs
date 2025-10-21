@@ -89,11 +89,6 @@ if (builder.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//Cria banco e roda migration
-var serviceScope = app.Services.GetService<IServiceScopeFactory>().CreateScope();
-var context = serviceScope.ServiceProvider.GetRequiredService<SoftwareContext>();
-context.Database.Migrate();
-
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

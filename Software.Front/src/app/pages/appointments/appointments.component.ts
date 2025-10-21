@@ -1,89 +1,99 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { SharedModule } from '../../shared/shared.module';
-import { UtilsService } from '../../services/utils.service';
-import { AppointmentFormComponent } from './appointment-form/appointment-form.component';
-import { AppointmentService } from '../../services/appointment.service';
-import { In_Users } from '../../models/In_users';
-import { HttpService } from '../../services/http.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-
-
-interface Option {
-  icon: string;
-  label: string;
-}
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-appointments',
   templateUrl: './appointments.component.html',
   styleUrls: ['./appointments.component.scss'],
-  imports: [
-    SharedModule,
-    AppointmentFormComponent,
-  ],
-  standalone: true
+  standalone: true,
+  imports: [CommonModule, FormsModule]
 })
 export class AppointmentsComponent implements OnInit {
-  selectedSpeciality: Option | null = null;
-  userName: string = '';
-  userRole: string = '';
-  isDoctor: boolean = false;
-  filtered: any[] = [];
+  appointments: any[] = [];
+  loading = false;
+  searchTerm = '';
+  selectedStatus = 'all';
 
-  endPoit = 'GetAllByParameter';
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private utils: UtilsService,
-    private restService: HttpService,
-    private snackBar: MatSnackBar
-  ) { }
+  constructor(private router: Router) { }
 
-  ngOnInit() {
-    // Obter dados do usuário do JWT
-    const userInfo = this.utils.decodeJwt();
-    this.userName = userInfo?.name || '';
-    this.userRole = userInfo?.acr?.toLowerCase() || '';
-    this.isDoctor = this.userRole === 'doctor';
+  ngOnInit(): void {
+    this.loadAppointments();
+  }
 
-    // Obter especialidade selecionada da URL se houver
-    this.route.queryParams.subscribe(params => {
-      if (params['options']) {
-        try {
-          this.selectedSpeciality = JSON.parse(params['options']);
-        } catch (e) {
-          console.error('Erro ao processar opções:', e);
+  loadAppointments(): void {
+    this.loading = true;
+    // Simulando dados de agendamentos - substituir por chamada real da API
+    setTimeout(() => {
+      this.appointments = [
+        {
+          id: 1,
+          patientName: 'Ana Silva',
+          doctorName: 'Dr. João Silva',
+          specialty: 'Cardiologia',
+          date: '15/01/2024',
+          time: '14:30',
+          status: 'Agendado',
+          notes: 'Consulta de rotina'
+        },
+        {
+          id: 2,
+          patientName: 'Carlos Santos',
+          doctorName: 'Dra. Maria Santos',
+          specialty: 'Pediatria',
+          date: '16/01/2024',
+          time: '09:00',
+          status: 'Concluído',
+          notes: 'Retorno'
+        },
+        {
+          id: 3,
+          patientName: 'Maria Costa',
+          doctorName: 'Dr. Pedro Costa',
+          specialty: 'Ortopedia',
+          date: '17/01/2024',
+          time: '16:00',
+          status: 'Cancelado',
+          notes: 'Paciente cancelou'
         }
-      }
-    });
-
+      ];
+      this.loading = false;
+    }, 1000);
   }
 
-  navigateToHome() {
-    this.router.navigate(['home']);
+  searchAppointments(): void {
+    // Implementar busca quando necessário
   }
 
-  navigateToCreateAppointment() {
-    this.router.navigate(['/appointments/create'], {
-      queryParams: { speciality: this.selectedSpeciality?.label }
-    });
+  filterByStatus(): void {
+    // Implementar filtro por status quando necessário
   }
 
-  navigateToMyAppointments() {
-    this.router.navigate(['/appointments/my-appointments']);
+  addAppointment(): void {
+    alert('Funcionalidade de agendar consulta será implementada em breve!');
   }
 
-  navigateToDoctorDashboard() {
-    this.router.navigate(['/appointments/dashboard']);
+  editAppointment(appointment: any): void {
+    alert(`Editar agendamento: ${appointment.patientName} - Funcionalidade será implementada em breve!`);
   }
 
-  navigateToNotificationSettings() {
-    this.router.navigate(['/appointments/notification-settings']);
+  cancelAppointment(appointment: any): void {
+    if (confirm(`Tem certeza que deseja cancelar o agendamento de ${appointment.patientName}?`)) {
+      alert(`Agendamento cancelado! - Funcionalidade será implementada em breve!`);
+    }
   }
 
+  getStatusBadgeClass(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'agendado': return 'badge bg-primary';
+      case 'concluído': return 'badge bg-success';
+      case 'cancelado': return 'badge bg-danger';
+      default: return 'badge bg-secondary';
+    }
+  }
 
-
-
-
+  goBack(): void {
+    this.router.navigate(['/home']);
+  }
 }

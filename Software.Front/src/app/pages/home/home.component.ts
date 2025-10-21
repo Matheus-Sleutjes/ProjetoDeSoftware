@@ -1,36 +1,37 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { SharedModule } from '../../shared/shared.module';
+import { CommonModule } from '@angular/common';
 import { UtilsService } from '../../services/utils.service';
+import { AuthenticationService } from '../../services/authentication.service';
 
 interface Option {
   icon: string;
   label: string;
+  route: string;
 }
 
 interface Clinic {
   name: string;
-  mapUrl: string;
 }
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  imports: [SharedModule],
+  imports: [CommonModule],
   standalone: true
 })
 export class HomeComponent {
   options: Option[] = [
-    { icon: 'favorite_outline', label: 'Cardiologista' },
-    { icon: 'vaccines', label: 'Vacinas' },
-    { icon: 'hearing', label: 'Otorrino' }, // 'hearing' é o ícone de ouvido no Material Icons
-    { icon: 'add_to_queue', label: 'Dentista' }, // 'dentistry' ou 'medical_services' pode ser usado para dente, dependendo do set disponível
+    { icon: 'fa-user-md', label: 'Médicos', route: 'doctors' },
+    { icon: 'fa-user', label: 'Pacientes', route: 'patients' },
+    { icon: 'fa-calendar-alt', label: 'Agendamentos', route: 'appointments' },
+    { icon: 'fa-stethoscope', label: 'Especialidades', route: 'specialties' },
   ];
 
   clinics: Clinic[] = [
-    { name: 'Cuiabá – MT', mapUrl: 'assets/imgs/mapa-cuiaba.png' },
-    { name: 'São Paulo – SP', mapUrl: 'assets/imgs/mapa-sp.png' }
+    { name: 'Cuiabá – MT' },
+    { name: 'São Paulo – SP' }
   ];
 
   name = '';
@@ -38,15 +39,14 @@ export class HomeComponent {
   isAdmin = false;
   constructor(
     private router: Router,
-    private util: UtilsService
+    private util: UtilsService,
+    private authService: AuthenticationService
   ) {
     // Agora você pode usar name e acr conforme necessário
   }
 
   logout() {
-    // seu código de logout aqui...
-    this.router.navigate(['/login']);
-    localStorage.clear();
+    this.authService.logout();
   }
   ngOnInit() {
     const decoded = this.util.decodeJwt();
@@ -59,37 +59,36 @@ export class HomeComponent {
   }
 
   navigateToAppointments(pageOpt: Option) {
-    console.log(pageOpt);
-    this.router.navigate(
-      ['/appointments'],
-      {
-        queryParams: {
-          options: JSON.stringify(pageOpt)  // como é um array/obj, converte pra string
-        }
-      })
+    console.log('Navegando para:', pageOpt.route);
+    this.router.navigate([`/${pageOpt.route}`]);
   }
 
   navigateToRegisterUser() {
-    this.router.navigate(
-      ['./new-account'],
-      {
-        queryParams: {
-          name: this.name,
-          acr: this.acr
-        }
-      }
-    );
+    this.router.navigate(['/register']);
   }
 
   navigateToListUser() {
-    this.router.navigate(
-      ['/list-user'],
-      {
-        queryParams: {
-          name: this.name,
-          acr: this.acr
-        }
-      }
-    );
+    this.router.navigate(['/users']);
+  }
+
+  navigateToHistory() {
+    // Por enquanto, mostrar alerta - implementar quando a página estiver pronta
+    alert('Funcionalidade de Histórico será implementada em breve!');
+  }
+
+  navigateToAppointmentsList() {
+    this.router.navigate(['/appointments']);
+  }
+
+  navigateToDoctors() {
+    this.router.navigate(['/doctors']);
+  }
+
+  navigateToPatients() {
+    this.router.navigate(['/patients']);
+  }
+
+  navigateToSpecialties() {
+    this.router.navigate(['/specialties']);
   }
 }

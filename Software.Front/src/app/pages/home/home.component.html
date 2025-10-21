@@ -1,73 +1,137 @@
-<mat-toolbar color="primary" class="top-nav">
-    <span class="logo">π</span>
-    <span class="spacer"></span>
-
-    <div>
-        <ng-container>
-
-            <button mat-button (click)="navigateToListUser()" *ngIf="isAdmin || acr ==  'doctor'">Lista de usuário</button>
-            <button mat-button *ngIf="isAdmin" (click)="navigateToRegisterUser()">Cadastro de usuário</button>
-            <button mat-button>Histórico</button>
-            <button mat-button>Consultas</button>
-        </ng-container>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold fs-3" href="#">π</a>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item dropdown" *ngIf="isAdmin || acr == 'doctor'">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-users me-1"></i>Gerenciar
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" (click)="navigateToListUser()">
+              <i class="fas fa-users me-2"></i>Usuários
+            </a></li>
+            <li><a class="dropdown-item" (click)="navigateToDoctors()">
+              <i class="fas fa-user-md me-2"></i>Médicos
+            </a></li>
+            <li><a class="dropdown-item" (click)="navigateToPatients()">
+              <i class="fas fa-user me-2"></i>Pacientes
+            </a></li>
+            <li><a class="dropdown-item" (click)="navigateToSpecialties()">
+              <i class="fas fa-stethoscope me-2"></i>Especialidades
+            </a></li>
+          </ul>
+        </li>
+        <li class="nav-item" *ngIf="isAdmin">
+          <a class="nav-link" (click)="navigateToRegisterUser()" style="cursor: pointer;">
+            <i class="fas fa-user-plus me-1"></i>Cadastrar Usuário
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="navigateToAppointmentsList()" style="cursor: pointer;">
+            <i class="fas fa-calendar-alt me-1"></i>Agendamentos
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="navigateToHistory()" style="cursor: pointer;">
+            <i class="fas fa-history me-1"></i>Histórico
+          </a>
+        </li>
+      </ul>
+      
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" (click)="logout()" style="cursor: pointer;">
+            <i class="fas fa-sign-out-alt me-1"></i>Sair
+          </a>
+        </li>
+      </ul>
     </div>
+  </div>
+</nav>
 
-    <button mat-button (click)="logout()">Sair</button>
-</mat-toolbar>
-
-<div class="container">
-
-
-    <div class="hero-section">
-        <div class="hero-text">
-
-            @if(name){
-            <h3>Olá, {{ name }}!</h3>
-            <p>Bem-vindo ao nosso sistema de agendamento de consultas médicas.</p>
-            }
-
-            <h1>Cuide da sua saúde<br />com praticidade e confiança!</h1>
-            <p>Agende sua consulta online com apenas alguns cliques.</p>
-
-            <div class="options">
-                <mat-card *ngFor="let opt of options" class="option-card" type="button"
-                    (click)="navigateToAppointments(opt)">
-                    <mat-icon>{{ opt.icon }}</mat-icon>
-                    <span>{{ opt.label }}</span>
-                </mat-card>
+<!-- Main Content -->
+<div class="container-fluid">
+  <!-- Hero Section -->
+  <div class="row min-vh-100 align-items-center">
+    <div class="col-12">
+      <div class="p-5 text-center">
+        <div *ngIf="name" class="mb-4">
+          <h3 class="text-primary">Olá, {{ name }}!</h3>
+          <p class="text-muted">Bem-vindo ao nosso sistema de agendamento de consultas médicas.</p>
+        </div>
+        
+        <h1 class="display-4 fw-bold mb-4">
+          Cuide da sua saúde<br />
+          <span class="text-primary">com praticidade e confiança!</span>
+        </h1>
+        
+        <p class="lead mb-5">Gerencie consultas, médicos, pacientes e especialidades com facilidade.</p>
+        
+        <!-- Options Cards -->
+        <div class="row g-4 justify-content-center">
+          <div class="col-lg-3 col-md-6" *ngFor="let opt of options">
+            <div class="card h-100 option-card" (click)="navigateToAppointments(opt)" style="cursor: pointer;">
+              <div class="card-body text-center p-4">
+                <i class="fas fa-3x mb-3 text-primary" [class]="opt.icon"></i>
+                <h5 class="card-title">{{ opt.label }}</h5>
+                <p class="card-text text-muted small">Acesse e gerencie {{ opt.label.toLowerCase() }}</p>
+              </div>
             </div>
+          </div>
         </div>
-
-        <div class="hero-image">
-            <div class="image-bg"></div>
-            <img src="assets/imgs/medic_japa.jpg" alt="Médico" />
-        </div>
+      </div>
     </div>
+  </div>
 </div>
 
-<div class="secondary-image">
-    <img src="assets/imgs/cirurgiao.jpg" alt="Cirurgia" class="img-cirurgiao" />
-</div>
-
-<!-- Seção de clínicas -->
-<section class="clinics-section">
-    <h2>Clinicas PI π</h2>
-    <div class="clinics-list">
-        <div *ngFor="let clinic of clinics" class="clinic-card">
-            <!-- <img [src]="clinic.mapUrl" alt="{{ clinic.name }}" /> -->
-            <span>{{ clinic.name }}</span>
+<!-- Features Section -->
+<section class="bg-light py-5">
+  <div class="container">
+    <h2 class="text-center mb-5 fw-bold">Nossas Unidades</h2>
+    <div class="row g-4 justify-content-center">
+      <div class="col-lg-4 col-md-6" *ngFor="let clinic of clinics">
+        <div class="card h-100 clinic-card text-center">
+          <div class="card-body p-4">
+            <i class="fas fa-hospital fa-3x text-primary mb-3"></i>
+            <h5 class="card-title">{{ clinic.name }}</h5>
+            <p class="card-text text-muted">Unidade completa com todas as especialidades</p>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </section>
 
-<footer class="footer">
-    <div class="contacts">
-        <span>Atendimentos 24h</span>
-        <span>Cuiabá (65) 9999-9999</span>
-        <span>São Paulo (65) 9999-9999</span>
+<!-- Footer -->
+<footer class="bg-dark text-white py-4">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <div class="row">
+          <div class="col-md-4">
+            <h6 class="fw-bold">Atendimentos 24h</h6>
+          </div>
+          <div class="col-md-4">
+            <p class="mb-0">Cuiabá (65) 9999-9999</p>
+          </div>
+          <div class="col-md-4">
+            <p class="mb-0">São Paulo (65) 9999-9999</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <div class="d-flex justify-content-md-end gap-3">
+          <i class="fab fa-instagram fa-lg"></i>
+          <i class="fab fa-facebook fa-lg"></i>
+        </div>
+      </div>
     </div>
-    <div class="socials">
-        <mat-icon svgIcon="instagram"></mat-icon>
-        <mat-icon svgIcon="facebook"></mat-icon>
-    </div>
+  </div>
 </footer>

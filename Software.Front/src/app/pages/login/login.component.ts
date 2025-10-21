@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { SharedModule } from '../../shared/shared.module';
-import { AppModule } from '../../app.module';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationService } from '../../services/authentication.service';
-import { In_Login } from '../../models/In_login';
+import { Login } from '../../models/Login';
 
 
 @Component({
     selector: 'app-login',
-    imports: [SharedModule],
+    imports: [CommonModule, ReactiveFormsModule],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
     standalone: true,
@@ -23,9 +22,7 @@ export class LoginComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-
         private router: Router,
-        private snackBar: MatSnackBar,
         private authService: AuthenticationService,
     ) { }
 
@@ -38,7 +35,7 @@ export class LoginComponent implements OnInit {
 
     navigateToNewAccount() {
         console.log('Navigating to new account');
-        this.router.navigate(['new-account']);
+        this.router.navigate(['register']);
     }
 
     onLogin() {
@@ -48,7 +45,7 @@ export class LoginComponent implements OnInit {
         }
 
         this.loading = true;
-        const credentials: In_Login = {
+        const credentials: Login = {
             email: this.loginForm.value.email,
             password: this.loginForm.value.password
         }
@@ -59,20 +56,14 @@ export class LoginComponent implements OnInit {
                     this.router.navigate(['home']);
 
                 } else {
-                    this.snackBar.open('email ou senha Incorreto', 'OK', { duration: 4000 });
+                    alert('Email ou senha incorretos');
                 }
             },
             error: (err: any) => {
-                this.snackBar.open(err.error?.message || 'Erro no login', 'OK', { duration: 4000 });
+                alert(err.error?.message || 'Erro no login');
             }
         }).add(() => this.loading = false);
 
     }
-
-    teste() {
-        this.router.navigate(['/home'])
-    }
-
-
 }
 

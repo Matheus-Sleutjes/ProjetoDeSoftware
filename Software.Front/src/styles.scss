@@ -1,1 +1,398 @@
+@use 'bootstrap/scss/bootstrap';
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* ========================================
+   CUSTOMIZAÇÃO DO BOOTSTRAP - PALETA AZUL
+   ======================================== */
+
+// Sobrescrever variáveis do Bootstrap com nossa paleta azul
+$primary: #1976d2;
+$primary-dark: #0d47a1;
+$primary-light: #42a5f5;
+$secondary: #1565c0;
+$success: #4caf50;
+$info: #2196f3;
+$warning: #ff9800;
+$danger: #f44336;
+$light: #f8f9fa;
+$dark: #212121;
+
+// Aplicar as cores customizadas
+:root {
+  --bs-primary: #{$primary};
+  --bs-primary-rgb: #{to-rgb($primary)};
+  --bs-secondary: #{$secondary};
+  --bs-secondary-rgb: #{to-rgb($secondary)};
+  --bs-success: #{$success};
+  --bs-success-rgb: #{to-rgb($success)};
+  --bs-info: #{$info};
+  --bs-info-rgb: #{to-rgb($info)};
+  --bs-warning: #{$warning};
+  --bs-warning-rgb: #{to-rgb($warning)};
+  --bs-danger: #{$danger};
+  --bs-danger-rgb: #{to-rgb($danger)};
+  --bs-light: #{$light};
+  --bs-light-rgb: #{to-rgb($light)};
+  --bs-dark: #{$dark};
+  --bs-dark-rgb: #{to-rgb($dark)};
+}
+
+/* ========================================
+   SISTEMA DE CORES - PALETA AZUL
+   ======================================== */
+:root {
+  /* Cores Primárias */
+  --color-primary: #{$primary};
+  --color-primary-dark: #{$primary-dark};
+  --color-primary-light: #{$primary-light};
+  --color-primary-lighter: #64b5f6;
+  
+  /* Cores Secundárias */
+  --color-secondary: #{$secondary};
+  --color-secondary-dark: #0d47a1;
+  --color-secondary-light: #1976d2;
+  
+  /* Cores Neutras */
+  --color-white: #ffffff;
+  --color-light-gray: #{$light};
+  --color-gray: #e3f2fd;
+  --color-medium-gray: #90caf9;
+  --color-dark-gray: #424242;
+  --color-black: #{$dark};
+  
+  /* Cores de Status */
+  --color-success: #{$success};
+  --color-warning: #{$warning};
+  --color-error: #{$danger};
+  --color-info: #{$info};
+  
+  /* Cores de Fundo */
+  --bg-primary: var(--color-white);
+  --bg-secondary: var(--color-light-gray);
+  --bg-dark: var(--color-primary-dark);
+  --bg-light: var(--color-primary-light);
+  
+  /* Cores de Texto */
+  --text-primary: var(--color-black);
+  --text-secondary: var(--color-dark-gray);
+  --text-light: var(--color-medium-gray);
+  --text-white: var(--color-white);
+  --text-accent: var(--color-primary);
+  
+  /* Sombras */
+  --shadow-sm: 0 2px 4px rgba(25, 118, 210, 0.1);
+  --shadow-md: 0 4px 8px rgba(25, 118, 210, 0.15);
+  --shadow-lg: 0 8px 16px rgba(25, 118, 210, 0.2);
+  --shadow-xl: 0 16px 32px rgba(25, 118, 210, 0.25);
+  
+  /* Bordas */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-full: 50%;
+  
+  /* Espaçamentos */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-xxl: 3rem;
+  
+  /* Tipografia */
+  --font-family: 'Noto Sans', sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-xxl: 1.5rem;
+  --font-size-xxxl: 2rem;
+  
+  /* Pesos de Fonte */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Alturas de Linha */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* Transições */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  
+  /* Z-Index */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+}
+
+/* ========================================
+   RESET E BASE
+   ======================================== */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  line-height: var(--line-height-normal);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-normal);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========================================
+   CUSTOMIZAÇÕES DO BOOTSTRAP
+   ======================================== */
+
+// Botões customizados
+.btn-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  
+  &:hover {
+    background-color: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+  }
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary);
+  
+  &:hover {
+    background-color: var(--color-secondary-dark);
+    border-color: var(--color-secondary-dark);
+  }
+}
+
+.btn-outline-primary {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  
+  &:hover {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+}
+
+// Cards customizados
+.card {
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal);
+  
+  &:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+}
+
+.card-header {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-bottom: none;
+}
+
+// Formulários customizados
+.form-control {
+  border-radius: var(--border-radius-md);
+  border: 2px solid var(--color-gray);
+  transition: border-color var(--transition-fast);
+  
+  &:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.25);
+  }
+}
+
+.form-label {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+// Navbar customizada
+.navbar {
+  background-color: var(--color-primary-dark) !important;
+  box-shadow: var(--shadow-md);
+}
+
+.navbar-brand {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-white) !important;
+}
+
+.navbar-nav .nav-link {
+  color: var(--color-white) !important;
+  transition: background-color var(--transition-fast);
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-md);
+  }
+}
+
+// Alertas customizados
+.alert-primary {
+  background-color: rgba(0, 121, 107, 0.1);
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
+}
+
+.alert-success {
+  background-color: rgba(76, 175, 80, 0.1);
+  border-color: var(--color-success);
+  color: #2e7d32;
+}
+
+.alert-warning {
+  background-color: rgba(255, 152, 0, 0.1);
+  border-color: var(--color-warning);
+  color: #ef6c00;
+}
+
+.alert-danger {
+  background-color: rgba(244, 67, 54, 0.1);
+  border-color: var(--color-error);
+  color: #c62828;
+}
+
+/* ========================================
+   UTILITÁRIOS CUSTOMIZADOS
+   ======================================== */
+
+// Classes de texto
+.text-primary-custom { color: var(--text-primary) !important; }
+.text-secondary-custom { color: var(--text-secondary) !important; }
+.text-light-custom { color: var(--text-light) !important; }
+.text-white-custom { color: var(--text-white) !important; }
+.text-accent { color: var(--text-accent) !important; }
+
+// Classes de fundo
+.bg-primary-custom { background-color: var(--bg-primary) !important; }
+.bg-secondary-custom { background-color: var(--bg-secondary) !important; }
+.bg-dark-custom { background-color: var(--bg-dark) !important; }
+.bg-light-custom { background-color: var(--bg-light) !important; }
+
+// Classes de espaçamento customizadas
+.m-xs { margin: var(--spacing-xs) !important; }
+.m-sm { margin: var(--spacing-sm) !important; }
+.m-md { margin: var(--spacing-md) !important; }
+.m-lg { margin: var(--spacing-lg) !important; }
+.m-xl { margin: var(--spacing-xl) !important; }
+
+.p-xs { padding: var(--spacing-xs) !important; }
+.p-sm { padding: var(--spacing-sm) !important; }
+.p-md { padding: var(--spacing-md) !important; }
+.p-lg { padding: var(--spacing-lg) !important; }
+.p-xl { padding: var(--spacing-xl) !important; }
+
+// Classes de tipografia customizadas
+.font-xs { font-size: var(--font-size-xs) !important; }
+.font-sm { font-size: var(--font-size-sm) !important; }
+.font-md { font-size: var(--font-size-md) !important; }
+.font-lg { font-size: var(--font-size-lg) !important; }
+.font-xl { font-size: var(--font-size-xl) !important; }
+.font-xxl { font-size: var(--font-size-xxl) !important; }
+.font-xxxl { font-size: var(--font-size-xxxl) !important; }
+
+.font-light { font-weight: var(--font-weight-light) !important; }
+.font-normal { font-weight: var(--font-weight-normal) !important; }
+.font-medium { font-weight: var(--font-weight-medium) !important; }
+.font-semibold { font-weight: var(--font-weight-semibold) !important; }
+.font-bold { font-weight: var(--font-weight-bold) !important; }
+
+/* ========================================
+   ANIMAÇÕES CUSTOMIZADAS
+   ======================================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+/* ========================================
+   ESTADOS DE CARREGAMENTO
+   ======================================== */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-gray);
+  border-radius: 50%;
+  border-top-color: var(--color-primary);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   RESPONSIVIDADE
+   ======================================== */
+@media (max-width: 768px) {
+  :root {
+    --spacing-md: 0.75rem;
+    --spacing-lg: 1rem;
+    --spacing-xl: 1.5rem;
+  }
+  
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --font-size-md: 0.875rem;
+    --font-size-lg: 1rem;
+    --font-size-xl: 1.125rem;
+  }
+}

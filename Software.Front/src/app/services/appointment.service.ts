@@ -1,57 +1,91 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { HttpService } from './http.service';
-import { Appointment, NotificationPreference, TimeSlot } from '../models/In_Appointment';
+import { AppointmentDto } from '../models/AppointmentDto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppointmentService {
-  private readonly endpoint = 'Appointments';
 
-  constructor(private http: HttpService) { }
+  constructor(
+    private http: HttpService
+  ) { }
 
-  // Obter horários disponíveis para uma data específica e médico
-  getAvailableTimeSlots(date: string, doctorId: string): Observable<TimeSlot[]> {
-    return this.http.getNotController(`${this.endpoint}/available-slots?date=${date}&doctorId=${doctorId}`);
+  public controller = "Appointment";
+  private readonly baseUrl = 'https://localhost:7055/';
+
+  // GET /Appointment - Get all appointments
+  getAllAppointments(): Observable<any[]> {
+    return this.http.get(`${this.controller}`);
   }
 
-  // Criar um novo agendamento
-  createAppointment(appointment: Appointment): Observable<Appointment> {
-    return this.http.post(this.endpoint, appointment);
+  // GET /Appointment/{id} - Get appointment by ID
+  getAppointmentById(id: number): Observable<any> {
+    return this.http.get(`${this.controller}/${id}`);
   }
 
-  // Obter agendamentos do paciente
-  getPatientAppointments(patientId: string): Observable<Appointment[]> {
-    return this.http.getNotController(`${this.endpoint}/patient/${patientId}`);
+  // GET /Appointment/patient/{patientId} - Get appointments by patient ID
+  getAppointmentsByPatientId(patientId: number): Observable<any[]> {
+    return this.http.get(`${this.controller}/patient/${patientId}`);
   }
 
-  // Obter agendamentos do médico
-  getDoctorAppointments(doctorId: string): Observable<Appointment[]> {
-    return this.http.getNotController(`${this.endpoint}/doctor/${doctorId}`);
+  // GET /Appointment/doctor/{doctorId} - Get appointments by doctor ID
+  getAppointmentsByDoctorId(doctorId: number): Observable<any[]> {
+    return this.http.get(`${this.controller}/doctor/${doctorId}`);
   }
 
-  // Cancelar agendamento
-  cancelAppointment(appointmentId: string): Observable<any> {
-    return this.http.post(`${this.endpoint}/cancel/${appointmentId}`, {});
-  }
-
-  // Reagendar consulta
-  rescheduleAppointment(appointmentId: string, newDate: string, newTime: string): Observable<Appointment> {
-    return this.http.post(`${this.endpoint}/reschedule/${appointmentId}`, {
-      date: newDate,
-      time: newTime
+  // POST /Appointment - Create new appointment
+  createAppointment(appointmentData: AppointmentDto): Observable<boolean> {
+    return new Observable<boolean>((observer) => {
+      this.http.post(`${this.controller}`, appointmentData).subscribe(
+        (response: any) => {
+          console.log('Appointment created:', response);
+          observer.next(true);
+          observer.complete();
+        },
+        (error) => {
+          console.error('Erro ao criar agendamento', error);
+          observer.next(false);
+          observer.complete();
+        }
+      );
     });
   }
 
-  // Salvar preferências de notificação
-  saveNotificationPreferences(preferences: NotificationPreference): Observable<NotificationPreference> {
-    return this.http.post(`${this.endpoint}/notifications/preferences`, preferences);
+  // PUT /Appointment/{id} - Update appointment
+  updateAppointment(id: number, appointmentData: AppointmentDto): Observable<boolean> {
+    return new Observable<boolean>((observer) => {
+      this.http.put(`${this.controller}/${id}`, appointmentData).subscribe(
+        (response: any) => {
+          console.log('Appointment updated:', response);
+          observer.next(true);
+          observer.complete();
+        },
+        (error) => {
+          console.error('Erro ao atualizar agendamento', error);
+          observer.next(false);
+          observer.complete();
+        }
+      );
+    });
   }
 
-  // Obter preferências de notificação do usuário
-  getNotificationPreferences(userId: string): Observable<NotificationPreference> {
-    return this.http.getNotController(`${this.endpoint}/notifications/preferences/${userId}`);
+  // DELETE /Appointment/{id} - Delete appointment
+  deleteAppointment(id: number): Observable<boolean> {
+    return new Observable<boolean>((observer) => {
+      this.http.delete(`${this.controller}/${id}`).subscribe(
+        (response: any) => {
+          console.log('Appointment deleted:', response);
+          observer.next(true);
+          observer.complete();
+        },
+        (error) => {
+          console.error('Erro ao excluir agendamento', error);
+          observer.next(false);
+          observer.complete();
+        }
+      );
+    });
   }
 }

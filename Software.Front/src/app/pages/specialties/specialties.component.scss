@@ -1,19 +1,23 @@
-.table th {
-  border-top: none;
-  font-weight: 600;
-  color: #495057;
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.specialty-card {
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.1);
 }
 
-.table td {
-  vertical-align: middle;
-  border-top: 1px solid #dee2e6;
+.specialty-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(25, 118, 210, 0.2);
 }
 
-.table-hover tbody tr:hover {
-  background-color: rgba(25, 118, 210, 0.05);
+.specialty-icon {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.specialty-stats {
+  margin-top: 1rem;
 }
 
 .badge {
@@ -35,8 +39,7 @@
   border-bottom-left-radius: 0;
 }
 
-.form-control:focus,
-.form-select:focus {
+.form-control:focus {
   border-color: #1976d2;
   box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.25);
 }
@@ -83,21 +86,16 @@
 }
 
 .card {
-  border: none;
-  box-shadow: 0 0.125rem 0.25rem rgba(25, 118, 210, 0.075);
-  border-radius: 0.5rem;
-}
-
-.table-responsive {
   border-radius: 0.5rem;
 }
 
 @media (max-width: 768px) {
-  .table-responsive {
+  .btn-group .btn {
+    padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
   }
   
-  .btn-group .btn {
-    padding: 0.25rem 0.5rem;
+  .specialty-icon {
+    height: 60px;
   }
 }
