@@ -12,48 +12,49 @@ import { SpecialtiesComponent } from './pages/specialties/specialties.component'
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: "full" },
   {
-    path: 'login', 
+    path: 'login',
     component: LoginComponent,
     loadChildren: async () => (await import('./pages/login/routes')).routes
   },
   {
-    path: 'register', 
+    path: 'register',
     component: RegisterComponent,
     loadChildren: async () => (await import('./pages/register/routes')).routes
   },
   {
-    path: 'users', 
+    path: 'users',
     component: UserManagementComponent,
     canActivate: [AuthGuard],
     loadChildren: async () => (await import('./pages/user-management/routes')).routes
   },
   {
-    path: 'doctors', 
+    path: 'doctors',
     component: DoctorsComponent,
     canActivate: [AuthGuard],
     loadChildren: async () => (await import('./pages/doctors/routes')).routes
   },
   {
-    path: 'patients', 
+    path: 'patients',
     component: PatientsComponent,
     canActivate: [AuthGuard],
     loadChildren: async () => (await import('./pages/patients/routes')).routes
   },
   {
-    path: 'appointments', 
+    path: 'appointments',
     component: AppointmentsComponent,
     canActivate: [AuthGuard],
     loadChildren: async () => (await import('./pages/appointments/routes')).routes
   },
   {
-    path: 'specialties', 
+    path: 'specialties',
     component: SpecialtiesComponent,
     canActivate: [AuthGuard],
     loadChildren: async () => (await import('./pages/specialties/routes')).routes
   },
   {
-    path: 'home', 
-    component: HomeComponent, 
+    path: 'home',
+    component: HomeComponent,
     canActivate: [AuthGuard],
+    loadChildren: async () => (await import('./pages/home/routes')).routes
   },
 ];
