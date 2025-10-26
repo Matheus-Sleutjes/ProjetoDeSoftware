@@ -4,29 +4,31 @@
   <div class="row min-vh-100 align-items-center">
     <div class="col-12">
       <div class="p-5 text-center">
-        <div *ngIf="name" class="mb-4">
+        <div class="mb-4">
           <h3 class="text-primary">Olá, {{ name }}!</h3>
           <p class="text-muted">Bem-vindo ao nosso sistema de agendamento de consultas médicas.</p>
         </div>
-        
+
         <h1 class="display-4 fw-bold mb-4">
           Cuide da sua saúde<br />
           <span class="text-primary">com praticidade e confiança!</span>
         </h1>
-        
+
         <p class="lead mb-5">Gerencie consultas, médicos, pacientes e especialidades com facilidade.</p>
-        
+
         <!-- Options Cards -->
         <div class="row g-4 justify-content-center">
-          <div class="col-lg-3 col-md-6" *ngFor="let opt of options">
-            <div class="card h-100 option-card" (click)="navigateToAppointments(opt)" style="cursor: pointer;">
+          @for(item of options; track item) {
+          <div class="col-lg-3 col-md-6">
+            <div class="card option-card" (click)="navigateToAppointments(item)" style="cursor: pointer;">
               <div class="card-body text-center p-4">
-                <i class="fas fa-3x mb-3 text-primary" [class]="opt.icon"></i>
-                <h5 class="card-title">{{ opt.label }}</h5>
-                <p class="card-text text-muted small">Acesse e gerencie {{ opt.label.toLowerCase() }}</p>
+                <i class="fas fa-3x mb-3 text-primary" [class]="item.icon"></i>
+                <h5 class="card-title">{{ item.label }}</h5>
+                <p class="card-text text-muted small">Acesse e gerencie {{ item.label.toLowerCase() }}</p>
               </div>
             </div>
           </div>
+          }
         </div>
       </div>
     </div>
