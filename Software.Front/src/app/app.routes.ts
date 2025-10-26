@@ -18,36 +18,42 @@ export const routes: Routes = [
   },
   {
     path: 'register', 
-    component: RegisterComponent
+    component: RegisterComponent,
+    loadChildren: async () => (await import('./pages/register/routes')).routes
+  },
+  {
+    path: 'users', 
+    component: UserManagementComponent,
+    canActivate: [AuthGuard],
+    loadChildren: async () => (await import('./pages/user-management/routes')).routes
+  },
+  {
+    path: 'doctors', 
+    component: DoctorsComponent,
+    canActivate: [AuthGuard],
+    loadChildren: async () => (await import('./pages/doctors/routes')).routes
+  },
+  {
+    path: 'patients', 
+    component: PatientsComponent,
+    canActivate: [AuthGuard],
+    loadChildren: async () => (await import('./pages/patients/routes')).routes
+  },
+  {
+    path: 'appointments', 
+    component: AppointmentsComponent,
+    canActivate: [AuthGuard],
+    loadChildren: async () => (await import('./pages/appointments/routes')).routes
+  },
+  {
+    path: 'specialties', 
+    component: SpecialtiesComponent,
+    canActivate: [AuthGuard],
+    loadChildren: async () => (await import('./pages/specialties/routes')).routes
   },
   {
     path: 'home', 
     component: HomeComponent, 
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'users', 
-    component: UserManagementComponent, 
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'doctors', 
-    component: DoctorsComponent, 
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'patients', 
-    component: PatientsComponent, 
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'appointments', 
-    component: AppointmentsComponent, 
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'specialties', 
-    component: SpecialtiesComponent, 
     canActivate: [AuthGuard],
   },
 ];
