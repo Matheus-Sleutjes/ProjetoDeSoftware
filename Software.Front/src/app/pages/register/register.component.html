@@ -6,7 +6,8 @@
         <div class="text-center text-white p-5">
           <h1 class="display-4 fw-bold mb-4">Clínicas do Povo</h1>
           <p class="lead mb-4">Crie sua conta e tenha acesso completo ao sistema.</p>
-          <img src="assets/imgs/cirurgia.jpg" alt="Cirurgia" class="img-fluid rounded shadow" style="max-height: 300px;" />
+          <img src="assets/imgs/cirurgia.jpg" alt="Cirurgia" class="img-fluid rounded shadow"
+            style="max-height: 300px;" />
         </div>
       </div>
 
@@ -23,32 +24,27 @@
               <!-- Nome -->
               <div class="col-md-6 mb-3">
                 <label for="name" class="form-label">Nome *</label>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  id="name"
-                  formControlName="name"
-                  placeholder="Seu nome"
+                <input type="text" class="form-control" id="name" formControlName="name" placeholder="Seu nome"
                   [class.is-invalid]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
-                <div class="invalid-feedback" *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
+                <div class="invalid-feedback"
+                  *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
                   <span *ngIf="registerForm.get('name')?.errors?.['required']">Nome é obrigatório</span>
-                  <span *ngIf="registerForm.get('name')?.errors?.['minlength']">Nome deve ter pelo menos 2 caracteres</span>
+                  <span *ngIf="registerForm.get('name')?.errors?.['minlength']">Nome deve ter pelo menos 2
+                    caracteres</span>
                 </div>
               </div>
 
               <!-- Sobrenome -->
               <div class="col-md-6 mb-3">
                 <label for="lastName" class="form-label">Sobrenome *</label>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  id="lastName"
-                  formControlName="lastName"
+                <input type="text" class="form-control" id="lastName" formControlName="lastName"
                   placeholder="Seu sobrenome"
                   [class.is-invalid]="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched">
-                <div class="invalid-feedback" *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched">
+                <div class="invalid-feedback"
+                  *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched">
                   <span *ngIf="registerForm.get('lastName')?.errors?.['required']">Sobrenome é obrigatório</span>
-                  <span *ngIf="registerForm.get('lastName')?.errors?.['minlength']">Sobrenome deve ter pelo menos 2 caracteres</span>
+                  <span *ngIf="registerForm.get('lastName')?.errors?.['minlength']">Sobrenome deve ter pelo menos 2
+                    caracteres</span>
                 </div>
               </div>
             </div>
@@ -56,30 +52,23 @@
             <!-- Username -->
             <div class="mb-3">
               <label for="username" class="form-label">Nome de Usuário *</label>
-              <input 
-                type="text" 
-                class="form-control" 
-                id="username"
-                formControlName="username"
-                placeholder="nomeusuario"
+              <input type="text" class="form-control" id="username" formControlName="username" placeholder="nomeusuario"
                 [class.is-invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
-              <div class="invalid-feedback" *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+              <div class="invalid-feedback"
+                *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
                 <span *ngIf="registerForm.get('username')?.errors?.['required']">Nome de usuário é obrigatório</span>
-                <span *ngIf="registerForm.get('username')?.errors?.['minlength']">Nome de usuário deve ter pelo menos 3 caracteres</span>
+                <span *ngIf="registerForm.get('username')?.errors?.['minlength']">Nome de usuário deve ter pelo menos 3
+                  caracteres</span>
               </div>
             </div>
 
             <!-- Email -->
             <div class="mb-3">
               <label for="email" class="form-label">Email *</label>
-              <input 
-                type="email" 
-                class="form-control" 
-                id="email"
-                formControlName="email"
-                placeholder="seu@exemplo.com"
+              <input type="email" class="form-control" id="email" formControlName="email" placeholder="seu@exemplo.com"
                 [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
-              <div class="invalid-feedback" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+              <div class="invalid-feedback"
+                *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
                 <span *ngIf="registerForm.get('email')?.errors?.['required']">Email é obrigatório</span>
                 <span *ngIf="registerForm.get('email')?.errors?.['email']">Email inválido</span>
               </div>
@@ -90,47 +79,44 @@
               <div class="col-md-6 mb-3">
                 <label for="password" class="form-label">Senha *</label>
                 <div class="input-group">
-                  <input 
-                    [type]="hidePassword ? 'password' : 'text'"
-                    class="form-control" 
-                    id="password"
-                    formControlName="password"
-                    placeholder="••••••••"
+                  <input [type]="hidePassword ? 'password' : 'text'" class="form-control" id="password"
+                    formControlName="password" placeholder="••••••••"
                     [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
-                  <button 
-                    class="btn btn-outline-secondary" 
-                    type="button" 
-                    (click)="hidePassword = !hidePassword">
+                  <button class="btn btn-outline-secondary" type="button" (click)="hidePassword = !hidePassword">
                     <i class="fas" [class.fa-eye]="!hidePassword" [class.fa-eye-slash]="hidePassword"></i>
                   </button>
                 </div>
-                <div class="invalid-feedback" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
-                  <span *ngIf="registerForm.get('password')?.errors?.['required']">Senha é obrigatória</span>
-                  <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Senha deve ter pelo menos 6 caracteres</span>
+                @if(registerForm.get('password')?.invalid && registerForm.get('password')?.touched){
+                <div class="invalid-feedback">
+                  @if(registerForm.get('password')?.errors?.['required']) {
+                    <span>Senha é obrigatória</span>
+                  }
+                  @if(registerForm.get('password')?.errors?.['minlength']) {
+                    <span>Senha deve ter pelo menos 6
+                    caracteres</span>
+                  }
                 </div>
+                }
               </div>
 
               <!-- Confirmar Senha -->
               <div class="col-md-6 mb-3">
                 <label for="confirmPassword" class="form-label">Confirmar Senha *</label>
                 <div class="input-group">
-                  <input 
-                    [type]="hideConfirmPassword ? 'password' : 'text'"
-                    class="form-control" 
-                    id="confirmPassword"
-                    formControlName="confirmPassword"
-                    placeholder="••••••••"
+                  <input [type]="hideConfirmPassword ? 'password' : 'text'" class="form-control" id="confirmPassword"
+                    formControlName="confirmPassword" placeholder="••••••••"
                     [class.is-invalid]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
-                  <button 
-                    class="btn btn-outline-secondary" 
-                    type="button" 
+                  <button class="btn btn-outline-secondary" type="button"
                     (click)="hideConfirmPassword = !hideConfirmPassword">
                     <i class="fas" [class.fa-eye]="!hideConfirmPassword" [class.fa-eye-slash]="hideConfirmPassword"></i>
                   </button>
                 </div>
-                <div class="invalid-feedback" *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
-                  <span *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Confirmação de senha é obrigatória</span>
-                  <span *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordMismatch']">Senhas não coincidem</span>
+                <div class="invalid-feedback"
+                  *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
+                  <span *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Confirmação de senha é
+                    obrigatória</span>
+                  <span *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordMismatch']">Senhas não
+                    coincidem</span>
                 </div>
               </div>
             </div>
@@ -138,44 +124,20 @@
             <!-- CPF -->
             <div class="mb-3">
               <label for="cpf" class="form-label">CPF *</label>
-              <input 
-                type="text" 
-                class="form-control" 
-                id="cpf"
-                formControlName="cpf"
-                placeholder="000.000.000-00"
-                (input)="formatCpf($event)"
-                maxlength="14"
+              <input type="text" class="form-control" id="cpf" formControlName="cpf" placeholder="000.000.000-00"
+                (input)="formatCpf($event)" maxlength="14"
                 [class.is-invalid]="registerForm.get('cpf')?.invalid && registerForm.get('cpf')?.touched">
-              <div class="invalid-feedback" *ngIf="registerForm.get('cpf')?.invalid && registerForm.get('cpf')?.touched">
+              <div class="invalid-feedback"
+                *ngIf="registerForm.get('cpf')?.invalid && registerForm.get('cpf')?.touched">
                 <span *ngIf="registerForm.get('cpf')?.errors?.['required']">CPF é obrigatório</span>
-                <span *ngIf="registerForm.get('cpf')?.errors?.['pattern']">CPF deve estar no formato 000.000.000-00</span>
+                <span *ngIf="registerForm.get('cpf')?.errors?.['pattern']">CPF deve estar no formato
+                  000.000.000-00</span>
               </div>
             </div>
-
-            <!-- Tipo de Usuário -->
-            <div class="mb-4">
-              <label for="role" class="form-label">Tipo de Usuário *</label>
-              <select 
-                class="form-select" 
-                id="role"
-                formControlName="role"
-                [class.is-invalid]="registerForm.get('role')?.invalid && registerForm.get('role')?.touched">
-                <option value="3">Paciente</option>
-                <option value="2">Médico</option>
-                <option value="1">Administrador</option>
-              </select>
-              <div class="invalid-feedback" *ngIf="registerForm.get('role')?.invalid && registerForm.get('role')?.touched">
-                Tipo de usuário é obrigatório
-              </div>
-            </div>
-
+           
             <!-- Botões -->
             <div class="d-grid gap-2 mb-3">
-              <button 
-                type="submit" 
-                class="btn btn-primary btn-lg"
-                [disabled]="registerForm.invalid">
+              <button type="submit" class="btn btn-primary btn-lg" [disabled]="registerForm.invalid">
                 <i class="fas fa-user-plus me-2"></i>
                 Criar Conta
               </button>
@@ -183,7 +145,7 @@
 
             <div class="text-center">
               <p class="mb-0">
-                Já tem uma conta? 
+                Já tem uma conta?
                 <a href="#" class="text-decoration-none" (click)="navigateToLogin()">Faça login aqui</a>
               </p>
             </div>
@@ -199,7 +161,7 @@
 
           <!-- Footer -->
           <div class="text-center mt-5">
-            <p class="text-muted small">© {{ currentYear }} Clínicas PI</p>
+            <p class="text-muted small">© {{ currentYear }} Clínicas do Povo</p>
           </div>
         </div>
       </div>

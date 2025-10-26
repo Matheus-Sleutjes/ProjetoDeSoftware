@@ -1,1 +1,38 @@
+@if (this.isLogedin()){
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold fs-3" href="home">π</a>
+    
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-users me-1"></i>Menu
+                        </a>
+                        <ul class="dropdown-menu">
+                            @for (menu of menus; track menu){
+                            <li><a class="dropdown-item" [href]="menu.route">
+                                    <i class="fas me-2"></i>{{menu.label}}
+                                </a></li>
+                            }
+                        </ul>
+                    </li>
+    
+                </ul>
+    
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" (click)="logout()" style="cursor: pointer;">
+                            <i class="fas fa-sign-out-alt me-1"></i>Sair
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+}
 <router-outlet />
