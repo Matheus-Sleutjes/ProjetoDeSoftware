@@ -1,0 +1,66 @@
+<div class="table-responsive">
+  <table class="table table-hover mb-0">
+    <thead class="table-light">
+      <tr>
+        @for (col of columns; track col.key) {
+          <th>{{ col.header }}</th>
+        }
+        @if (action.length > 0){
+            <th class="text-center">Ações</th>
+          }
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (item of pagedList?.items; track $index) {
+        <tr>
+          @for (col of columns; track col.key) {
+            <td>{{ item[col.key] }}</td>
+          }
+          @if (action.length > 0){
+            <td class="actions-cell">
+              <div class="action-buttons">
+                @for (act of action; track $index) {
+                    <a 
+                      class="btn btn-action" 
+                      [className]="'btn btn-action ' + act.color"
+                      [routerLink]="act.route"
+                      [title]='act.label'>
+                      <i [className]="'fa-solid '+act.icon"></i>
+                    </a>
+                }
+              </div>
+            </td>
+          }
+        </tr>
+      } @empty {
+        <tr>
+          <td [colSpan]="columns.length + (action.length > 0 ? 1 : 0)" class="empty-state">
+            Nenhum item encontrado.
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  @if (pagedList && pagedList.totalPages > 1) {
+    <div class="pagedList-controls">
+      <button 
+        (click)="onPrevious()" 
+        [disabled]="pagedList.pageNumber === 1">
+        Anterior
+      </button>
+      
+      <span>
+        Página {{ pagedList.pageNumber }} de {{ pagedList.totalPages }}
+        (Total: {{ pagedList.totalCount }} itens)
+      </span>
+      
+      <button 
+        (click)="onNext()" 
+        [disabled]="pagedList.pageNumber === pagedList.totalPages">
+        Próxima
+      </button>
+    </div>
+  }
+</div>

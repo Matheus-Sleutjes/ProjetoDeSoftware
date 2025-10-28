@@ -7,10 +7,7 @@
           <h1 class="h3 mb-0 text-dark">Gerenciamento de Usuários</h1>
           <p class="text-muted mb-0">Gerencie todos os usuários do sistema</p>
         </div>
-        <button 
-          class="btn btn-primary"
-          (click)="showCreateForm()"
-          [disabled]="loading">
+        <button class="btn btn-primary" (click)="showCreateForm()" [disabled]="loading">
           <i class="fas fa-plus me-2"></i>
           Novo Usuário
         </button>
@@ -25,19 +22,12 @@
         <span class="input-group-text">
           <i class="fas fa-search"></i>
         </span>
-        <input 
-          type="text" 
-          class="form-control" 
-          placeholder="Buscar por nome, email ou CPF..."
-          [(ngModel)]="searchTerm"
+        <input type="text" class="form-control" placeholder="Buscar por nome, email ou CPF..." [(ngModel)]="searchTerm"
           (input)="onSearchChange()">
       </div>
     </div>
     <div class="col-md-3">
-      <select 
-        class="form-select" 
-        [(ngModel)]="selectedRole"
-        (change)="onRoleChange()">
+      <select class="form-select" [(ngModel)]="selectedRole" (change)="onRoleChange()">
         <option value="0">Todos os tipos</option>
         <option value="1">Administradores</option>
         <option value="2">Médicos</option>
@@ -45,10 +35,7 @@
       </select>
     </div>
     <div class="col-md-3">
-      <button 
-        class="btn btn-outline-secondary w-100"
-        (click)="loadUsers()"
-        [disabled]="loading">
+      <button class="btn btn-outline-secondary w-100" (click)="loadUsers()" [disabled]="loading">
         <i class="fas fa-sync-alt me-2"></i>
         Atualizar
       </button>
@@ -66,65 +53,7 @@
   <!-- Users Table -->
   <div *ngIf="!loading" class="card">
     <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover mb-0">
-          <thead class="table-light">
-            <tr>
-              <th>Nome</th>
-              <th>Email</th>
-              <th>CPF</th>
-              <th>Tipo</th>
-              <th>Username</th>
-              <th class="text-center">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let user of filteredUsers">
-              <td>
-                <div class="d-flex align-items-center">
-                  <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
-                    {{ user.name.charAt(0).toUpperCase() }}{{ user.lastName.charAt(0).toUpperCase() }}
-                  </div>
-                  <div>
-                    <div class="fw-semibold">{{ user.name }} {{ user.lastName }}</div>
-                  </div>
-                </div>
-              </td>
-              <td>{{ user.email }}</td>
-              <td>{{ user.cpf }}</td>
-              <td>
-                <span [class]="getRoleBadgeClass(user.role)">
-                  {{ getRoleDescription(user.role) }}
-                </span>
-              </td>
-              <td>{{ user.username }}</td>
-              <td class="text-center">
-                <div class="btn-group" role="group">
-                  <button 
-                    class="btn btn-sm btn-outline-primary"
-                    (click)="showEditForm(user)"
-                    title="Editar usuário">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button 
-                    class="btn btn-sm btn-outline-danger"
-                    (click)="deleteUser(user)"
-                    title="Excluir usuário">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      
-      <!-- Empty State -->
-      <div *ngIf="filteredUsers.length === 0" class="text-center py-5">
-        <i class="fas fa-users fa-3x text-muted mb-3"></i>
-        <h5 class="text-muted">Nenhum usuário encontrado</h5>
-        <p class="text-muted">Tente ajustar os filtros ou criar um novo usuário.</p>
-      </div>
+      <app-table [action]="action" [columns]="columns" (pageChange)="onSearch()" [pagedList]="pagedList"></app-table>
     </div>
   </div>
 
@@ -136,26 +65,17 @@
           <h5 class="modal-title">
             {{ editingUser ? 'Editar Usuário' : 'Novo Usuário' }}
           </h5>
-          <button 
-            type="button" 
-            class="btn-close" 
-            (click)="hideForm()"
-            [disabled]="loading">
+          <button type="button" class="btn-close" (click)="hideForm()" [disabled]="loading">
           </button>
         </div>
-        
+
         <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
           <div class="modal-body">
             <div class="row">
               <!-- Nome -->
               <div class="col-md-6 mb-3">
                 <label for="name" class="form-label">Nome *</label>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  id="name"
-                  formControlName="name"
-                  placeholder="Nome do usuário"
+                <input type="text" class="form-control" id="name" formControlName="name" placeholder="Nome do usuário"
                   [class.is-invalid]="userForm.get('name')?.invalid && userForm.get('name')?.touched">
                 <div class="invalid-feedback" *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched">
                   <span *ngIf="userForm.get('name')?.errors?.['required']">Nome é obrigatório</span>
@@ -166,16 +86,14 @@
               <!-- Sobrenome -->
               <div class="col-md-6 mb-3">
                 <label for="lastName" class="form-label">Sobrenome *</label>
-                <input 
-                  type="text" 
-                  class="form-control" 
-                  id="lastName"
-                  formControlName="lastName"
+                <input type="text" class="form-control" id="lastName" formControlName="lastName"
                   placeholder="Sobrenome do usuário"
                   [class.is-invalid]="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched">
-                <div class="invalid-feedback" *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched">
+                <div class="invalid-feedback"
+                  *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched">
                   <span *ngIf="userForm.get('lastName')?.errors?.['required']">Sobrenome é obrigatório</span>
-                  <span *ngIf="userForm.get('lastName')?.errors?.['minlength']">Sobrenome deve ter pelo menos 2 caracteres</span>
+                  <span *ngIf="userForm.get('lastName')?.errors?.['minlength']">Sobrenome deve ter pelo menos 2
+                    caracteres</span>
                 </div>
               </div>
             </div>
@@ -183,27 +101,20 @@
             <!-- Username -->
             <div class="mb-3">
               <label for="username" class="form-label">Nome de Usuário *</label>
-              <input 
-                type="text" 
-                class="form-control" 
-                id="username"
-                formControlName="username"
-                placeholder="nomeusuario"
+              <input type="text" class="form-control" id="username" formControlName="username" placeholder="nomeusuario"
                 [class.is-invalid]="userForm.get('username')?.invalid && userForm.get('username')?.touched">
-              <div class="invalid-feedback" *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched">
+              <div class="invalid-feedback"
+                *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched">
                 <span *ngIf="userForm.get('username')?.errors?.['required']">Nome de usuário é obrigatório</span>
-                <span *ngIf="userForm.get('username')?.errors?.['minlength']">Nome de usuário deve ter pelo menos 3 caracteres</span>
+                <span *ngIf="userForm.get('username')?.errors?.['minlength']">Nome de usuário deve ter pelo menos 3
+                  caracteres</span>
               </div>
             </div>
 
             <!-- Email -->
             <div class="mb-3">
               <label for="email" class="form-label">Email *</label>
-              <input 
-                type="email" 
-                class="form-control" 
-                id="email"
-                formControlName="email"
+              <input type="email" class="form-control" id="email" formControlName="email"
                 placeholder="usuario@exemplo.com"
                 [class.is-invalid]="userForm.get('email')?.invalid && userForm.get('email')?.touched">
               <div class="invalid-feedback" *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
@@ -217,30 +128,22 @@
               <label for="password" class="form-label">
                 Senha {{ editingUser ? '(deixe em branco para manter a atual)' : '*' }}
               </label>
-              <input 
-                type="password" 
-                class="form-control" 
-                id="password"
-                formControlName="password"
+              <input type="password" class="form-control" id="password" formControlName="password"
                 placeholder="••••••••"
                 [class.is-invalid]="userForm.get('password')?.invalid && userForm.get('password')?.touched">
-              <div class="invalid-feedback" *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">
+              <div class="invalid-feedback"
+                *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">
                 <span *ngIf="userForm.get('password')?.errors?.['required']">Senha é obrigatória</span>
-                <span *ngIf="userForm.get('password')?.errors?.['minlength']">Senha deve ter pelo menos 6 caracteres</span>
+                <span *ngIf="userForm.get('password')?.errors?.['minlength']">Senha deve ter pelo menos 6
+                  caracteres</span>
               </div>
             </div>
 
             <!-- CPF -->
             <div class="mb-3">
               <label for="cpf" class="form-label">CPF *</label>
-              <input 
-                type="text" 
-                class="form-control" 
-                id="cpf"
-                formControlName="cpf"
-                placeholder="000.000.000-00"
-                (input)="formatCpf($event)"
-                maxlength="14"
+              <input type="text" class="form-control" id="cpf" formControlName="cpf" placeholder="000.000.000-00"
+                (input)="formatCpf($event)" maxlength="14"
                 [class.is-invalid]="userForm.get('cpf')?.invalid && userForm.get('cpf')?.touched">
               <div class="invalid-feedback" *ngIf="userForm.get('cpf')?.invalid && userForm.get('cpf')?.touched">
                 <span *ngIf="userForm.get('cpf')?.errors?.['required']">CPF é obrigatório</span>
@@ -251,10 +154,7 @@
             <!-- Tipo de Usuário -->
             <div class="mb-3">
               <label for="role" class="form-label">Tipo de Usuário *</label>
-              <select 
-                class="form-select" 
-                id="role"
-                formControlName="role"
+              <select class="form-select" id="role" formControlName="role"
                 [class.is-invalid]="userForm.get('role')?.invalid && userForm.get('role')?.touched">
                 <option value="3">Paciente</option>
                 <option value="2">Médico</option>
@@ -267,17 +167,10 @@
           </div>
 
           <div class="modal-footer">
-            <button 
-              type="button" 
-              class="btn btn-secondary" 
-              (click)="hideForm()"
-              [disabled]="loading">
+            <button type="button" class="btn btn-secondary" (click)="hideForm()" [disabled]="loading">
               Cancelar
             </button>
-            <button 
-              type="submit" 
-              class="btn btn-primary"
-              [disabled]="userForm.invalid || loading">
+            <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid || loading">
               <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
               {{ editingUser ? 'Atualizar' : 'Criar' }} Usuário
             </button>

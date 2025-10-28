@@ -5,13 +5,15 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AuthenticationService } from '../../services/authentication.service';
 import { In_Users } from '../../models/In_users';
 import { In_CreateAccount } from '../../models/In_createAccount';
+import { ActionDefinition, ColumnDefinition, PagedList } from '../../shared/table/table.models';
+import { TableComponent } from "../../shared/table/table.component";
 
 @Component({
   selector: 'app-user-management',
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule]
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, TableComponent]
 })
 export class UserManagementComponent implements OnInit {
   users: In_Users[] = [];
@@ -21,6 +23,33 @@ export class UserManagementComponent implements OnInit {
   editingUser: In_Users | null = null;
   searchTerm = '';
   selectedRole = 0; // 0 = Todos, 1 = Admin, 2 = Doctor, 3 = Patient
+
+  columns: ColumnDefinition[] = [
+    { key: 'id', header: 'ID' },
+    { key: 'nome', header: 'Nome' },
+    { key: 'email', header: 'E-mail' },
+  ];
+
+  action: ActionDefinition[] = [
+    { label: 'Editar', color: 'btn-primary', icon: 'fa-edit', route: './edit' },
+    { label: 'Visualizar', color: 'btn-primary', icon: 'fa-eye', route: './view' },
+  ];
+
+  pagedList: PagedList<any> = {
+    items: [
+      {id: '1', nome: 'matheus', email: 'matheussleutjes@gmail.com'},
+      {id: '1', nome: 'matheus', email: 'matheussleutjes@gmail.com'},
+      {id: '1', nome: 'matheus', email: 'matheussleutjes@gmail.com'},
+      {id: '1', nome: 'matheus', email: 'matheussleutjes@gmail.com'},
+      {id: '1', nome: 'matheus', email: 'matheussleutjes@gmail.com'}
+    ],
+    pageNumber: 1,
+    pageSize: 10,
+    totalPages: 1
+  }
+  
+  currentPage = 1;
+  pageSize = 10;
 
   userForm!: FormGroup;
 
@@ -32,6 +61,10 @@ export class UserManagementComponent implements OnInit {
   ngOnInit(): void {
     this.initializeForm();
     this.loadUsers();
+  }
+
+  onSearch() {
+
   }
 
   initializeForm(): void {
