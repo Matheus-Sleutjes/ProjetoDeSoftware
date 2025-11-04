@@ -41,6 +41,12 @@ export class UserManagementComponent implements OnInit {
       {id: '1', nome: 'matheus', email: 'matheussleutjes@gmail.com'},
       {id: '1', nome: 'matheus', email: 'matheussleutjes@gmail.com'},
       {id: '1', nome: 'matheus', email: 'matheussleutjes@gmail.com'},
+      {id: '1', nome: 'matheus', email: 'matheussleutjes@gmail.com'},
+      {id: '1', nome: 'matheus', email: 'matheussleutjes@gmail.com'},
+      {id: '1', nome: 'matheus', email: 'matheussleutjes@gmail.com'},
+      {id: '1', nome: 'matheus', email: 'matheussleutjes@gmail.com'},
+      {id: '1', nome: 'matheus', email: 'matheussleutjes@gmail.com'},
+      {id: '1', nome: 'matheus', email: 'matheussleutjes@gmail.com'},
       {id: '1', nome: 'matheus', email: 'matheussleutjes@gmail.com'}
     ],
     pageNumber: 1,
@@ -48,8 +54,8 @@ export class UserManagementComponent implements OnInit {
     totalPages: 1
   }
   
-  currentPage = 1;
-  pageSize = 10;
+  // currentPage = 1;
+  // pageSize = 10;
 
   userForm!: FormGroup;
 
