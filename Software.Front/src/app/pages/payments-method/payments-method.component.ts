@@ -2,30 +2,51 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TableComponent } from '../../shared/table/table.component';
+import { ColumnDefinition, ActionDefinition, PagedList } from '../../shared/table/table.models';
 
 @Component({
   selector: 'app-payments-method',
   templateUrl: './payments-method.component.html',
   styleUrls: ['./payments-method.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, TableComponent]
 })
 export class PaymentsMethodComponent implements OnInit {
-  doctors: any[] = [];
   loading = false;
-  searchTerm = '';
+
+  columns: ColumnDefinition[] = [
+    { key: 'name', header: 'Nome' },
+    { key: 'crm', header: 'CRM' },
+    { key: 'specialty', header: 'Especialidade' },
+    { key: 'email', header: 'Email' },
+    { key: 'phone', header: 'Telefone' }
+  ];
+
+  action: ActionDefinition[] = [
+    { label: 'Editar', color: 'btn-primary', icon: 'fa-edit', route: './edit' },
+    { label: 'Excluir', color: 'btn-danger', icon: 'fa-trash', route: './delete' }
+  ];
+
+  pagedList: PagedList<any> = {
+    items: [],
+    pageNumber: 1,
+    pageSize: 10,
+    totalPages: 1,
+    totalCount: 0
+  };
 
   constructor(private router: Router) { }
 
   ngOnInit(): void {
-    this.loadDoctors();
+    this.loadPaymentMethods();
   }
 
-  loadDoctors(): void {
+  loadPaymentMethods(): void {
     this.loading = true;
-    // Simulando dados de médicos - substituir por chamada real da API
+    // Simulando dados de métodos de pagamento - substituir por chamada real da API
     setTimeout(() => {
-      this.doctors = [
+      const paymentMethods = [
         {
           id: 1,
           name: 'Dr. João Silva',
@@ -51,33 +72,34 @@ export class PaymentsMethodComponent implements OnInit {
           phone: '(65) 77777-7777'
         }
       ];
+      
+      this.pagedList = {
+        items: paymentMethods,
+        pageNumber: 1,
+        pageSize: 10,
+        totalPages: 1,
+        totalCount: paymentMethods.length
+      };
+      
       this.loading = false;
     }, 1000);
   }
 
-  searchDoctors(): void {
-    // Implementar busca quando necessário
+  onPagedListChange(pagedList: PagedList<any>): void {
+    // Aqui você pode enviar para o backend e atualizar
+    this.pagedList = pagedList;
+    this.loadPaymentMethods();
   }
 
-  addDoctor(): void {
-    alert('Funcionalidade de adicionar médico será implementada em breve!');
+  addPaymentMethod(): void {
+    alert('Funcionalidade de adicionar método de pagamento será implementada em breve!');
   }
 
-  editDoctor(doctor: any): void {
-    alert(`Editar médico: ${doctor.name} - Funcionalidade será implementada em breve!`);
-  }
-
-  deleteDoctor(doctor: any): void {
-    if (confirm(`Tem certeza que deseja excluir o médico ${doctor.name}?`)) {
-      alert(`Médico ${doctor.name} excluído! - Funcionalidade será implementada em breve!`);
-    }
+  editPaymentMethod(paymentMethod: any): void {
+    alert(`Editar método de pagamento: ${paymentMethod.name} - Funcionalidade será implementada em breve!`);
   }
 
   goBack(): void {
     this.router.navigate(['/home']);
-  }
-
-  getInitials(name: string): string {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
   }
 }

@@ -20,43 +20,6 @@
     </div>
   </div>
 
-  <!-- Filters -->
-  <div class="row mb-4">
-    <div class="col-md-4">
-      <div class="input-group">
-        <span class="input-group-text">
-          <i class="fas fa-search"></i>
-        </span>
-        <input 
-          type="text" 
-          class="form-control" 
-          placeholder="Buscar por paciente ou médico..."
-          [(ngModel)]="searchTerm"
-          (input)="searchAppointments()">
-      </div>
-    </div>
-    <div class="col-md-3">
-      <select 
-        class="form-select" 
-        [(ngModel)]="selectedStatus"
-        (change)="filterByStatus()">
-        <option value="all">Todos os status</option>
-        <option value="agendado">Agendado</option>
-        <option value="concluído">Concluído</option>
-        <option value="cancelado">Cancelado</option>
-      </select>
-    </div>
-    <div class="col-md-2">
-      <button 
-        class="btn btn-outline-secondary w-100"
-        (click)="loadAppointments()"
-        [disabled]="loading">
-        <i class="fas fa-sync-alt me-2"></i>
-        Atualizar
-      </button>
-    </div>
-  </div>
-
   <!-- Loading State -->
   <div *ngIf="loading" class="text-center py-5">
     <div class="spinner-border text-primary" role="status">
@@ -68,62 +31,12 @@
   <!-- Appointments Table -->
   <div *ngIf="!loading" class="card">
     <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover mb-0">
-          <thead class="table-light">
-            <tr>
-              <th>Paciente</th>
-              <th>Médico</th>
-              <th>Especialidade</th>
-              <th>Data</th>
-              <th>Horário</th>
-              <th>Status</th>
-              <th class="text-center">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let appointment of appointments">
-              <td>
-                <div class="fw-semibold">{{ appointment.patientName }}</div>
-                <small class="text-muted">{{ appointment.notes }}</small>
-              </td>
-              <td>{{ appointment.doctorName }}</td>
-              <td>{{ appointment.specialty }}</td>
-              <td>{{ appointment.date }}</td>
-              <td>{{ appointment.time }}</td>
-              <td>
-                <span [class]="getStatusBadgeClass(appointment.status)">
-                  {{ appointment.status }}
-                </span>
-              </td>
-              <td class="text-center">
-                <div class="btn-group" role="group">
-                  <button 
-                    class="btn btn-sm btn-outline-primary"
-                    (click)="editAppointment(appointment)"
-                    title="Editar agendamento">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button 
-                    class="btn btn-sm btn-outline-danger"
-                    (click)="cancelAppointment(appointment)"
-                    title="Cancelar agendamento"
-                    [disabled]="appointment.status === 'Cancelado'">
-                    <i class="fas fa-times"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      
-      <!-- Empty State -->
-      <div *ngIf="appointments.length === 0" class="text-center py-5">
-        <i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
-        <h5 class="text-muted">Nenhum agendamento encontrado</h5>
-        <p class="text-muted">Clique em "Novo Agendamento" para criar o primeiro agendamento.</p>
-      </div>
+      <app-table 
+        [columns]="columns" 
+        [action]="action" 
+        [(pagedList)]="pagedList"
+        (pagedListChange)="onPagedListChange($event)">
+      </app-table>
     </div>
   </div>
 </div>

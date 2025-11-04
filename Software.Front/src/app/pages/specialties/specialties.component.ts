@@ -2,18 +2,37 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TableComponent } from '../../shared/table/table.component';
+import { ColumnDefinition, ActionDefinition, PagedList } from '../../shared/table/table.models';
 
 @Component({
   selector: 'app-specialties',
   templateUrl: './specialties.component.html',
   styleUrls: ['./specialties.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, TableComponent]
 })
 export class SpecialtiesComponent implements OnInit {
-  specialties: any[] = [];
   loading = false;
-  searchTerm = '';
+
+  columns: ColumnDefinition[] = [
+    { key: 'name', header: 'Nome' },
+    { key: 'description', header: 'Descrição' },
+    { key: 'doctorCount', header: 'Quantidade de Médicos' }
+  ];
+
+  action: ActionDefinition[] = [
+    { label: 'Editar', color: 'btn-primary', icon: 'fa-edit', route: './edit' },
+    { label: 'Excluir', color: 'btn-danger', icon: 'fa-trash', route: './delete' }
+  ];
+
+  pagedList: PagedList<any> = {
+    items: [],
+    pageNumber: 1,
+    pageSize: 10,
+    totalPages: 1,
+    totalCount: 0
+  };
 
   constructor(private router: Router) { }
 
@@ -25,7 +44,7 @@ export class SpecialtiesComponent implements OnInit {
     this.loading = true;
     // Simulando dados de especialidades - substituir por chamada real da API
     setTimeout(() => {
-      this.specialties = [
+      const specialties = [
         {
           id: 1,
           name: 'Cardiologia',
@@ -75,12 +94,23 @@ export class SpecialtiesComponent implements OnInit {
           doctorCount: 6
         }
       ];
+      
+      this.pagedList = {
+        items: specialties,
+        pageNumber: 1,
+        pageSize: 10,
+        totalPages: 1,
+        totalCount: specialties.length
+      };
+      
       this.loading = false;
     }, 1000);
   }
 
-  searchSpecialties(): void {
-    // Implementar busca quando necessário
+  onPagedListChange(pagedList: PagedList<any>): void {
+    // Aqui você pode enviar para o backend e atualizar
+    this.pagedList = pagedList;
+    this.loadSpecialties();
   }
 
   addSpecialty(): void {
@@ -91,25 +121,7 @@ export class SpecialtiesComponent implements OnInit {
     alert(`Editar especialidade: ${specialty.name} - Funcionalidade será implementada em breve!`);
   }
 
-  deleteSpecialty(specialty: any): void {
-    if (confirm(`Tem certeza que deseja excluir a especialidade ${specialty.name}?`)) {
-      alert(`Especialidade ${specialty.name} excluída! - Funcionalidade será implementada em breve!`);
-    }
-  }
-
   goBack(): void {
     this.router.navigate(['/home']);
-  }
-
-  getSpecialtyColor(color: string): string {
-    const colors: { [key: string]: string } = {
-      'danger': '#dc3545',
-      'primary': '#1976d2',
-      'warning': '#ffc107',
-      'info': '#17a2b8',
-      'success': '#28a745',
-      'secondary': '#6c757d'
-    };
-    return colors[color] || '#6c757d';
   }
 }

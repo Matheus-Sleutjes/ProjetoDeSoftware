@@ -2,18 +2,39 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TableComponent } from '../../shared/table/table.component';
+import { ColumnDefinition, ActionDefinition, PagedList } from '../../shared/table/table.models';
 
 @Component({
   selector: 'app-patients',
   templateUrl: './patients.component.html',
   styleUrls: ['./patients.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, TableComponent]
 })
 export class PatientsComponent implements OnInit {
-  patients: any[] = [];
   loading = false;
-  searchTerm = '';
+
+  columns: ColumnDefinition[] = [
+    { key: 'name', header: 'Nome' },
+    { key: 'cpf', header: 'CPF' },
+    { key: 'email', header: 'Email' },
+    { key: 'phone', header: 'Telefone' },
+    { key: 'birthDate', header: 'Data Nascimento' }
+  ];
+
+  action: ActionDefinition[] = [
+    { label: 'Editar', color: 'btn-primary', icon: 'fa-edit', route: './edit' },
+    { label: 'Excluir', color: 'btn-danger', icon: 'fa-trash', route: './delete' }
+  ];
+
+  pagedList: PagedList<any> = {
+    items: [],
+    pageNumber: 1,
+    pageSize: 10,
+    totalPages: 1,
+    totalCount: 0
+  };
 
   constructor(private router: Router) { }
 
@@ -25,7 +46,7 @@ export class PatientsComponent implements OnInit {
     this.loading = true;
     // Simulando dados de pacientes - substituir por chamada real da API
     setTimeout(() => {
-      this.patients = [
+      const patients = [
         {
           id: 1,
           name: 'Ana Silva',
@@ -54,12 +75,23 @@ export class PatientsComponent implements OnInit {
           address: 'Rua da Paz, 789'
         }
       ];
+      
+      this.pagedList = {
+        items: patients,
+        pageNumber: 1,
+        pageSize: 10,
+        totalPages: 1,
+        totalCount: patients.length
+      };
+      
       this.loading = false;
     }, 1000);
   }
 
-  searchPatients(): void {
-    // Implementar busca quando necessário
+  onPagedListChange(pagedList: PagedList<any>): void {
+    // Aqui você pode enviar para o backend e atualizar
+    this.pagedList = pagedList;
+    this.loadPatients();
   }
 
   addPatient(): void {
@@ -70,17 +102,7 @@ export class PatientsComponent implements OnInit {
     alert(`Editar paciente: ${patient.name} - Funcionalidade será implementada em breve!`);
   }
 
-  deletePatient(patient: any): void {
-    if (confirm(`Tem certeza que deseja excluir o paciente ${patient.name}?`)) {
-      alert(`Paciente ${patient.name} excluído! - Funcionalidade será implementada em breve!`);
-    }
-  }
-
   goBack(): void {
     this.router.navigate(['/home']);
-  }
-
-  getInitials(name: string): string {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
   }
 }

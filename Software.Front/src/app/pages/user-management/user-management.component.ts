@@ -7,6 +7,7 @@ import { In_Users } from '../../models/In_users';
 import { In_CreateAccount } from '../../models/In_createAccount';
 import { ActionDefinition, ColumnDefinition, PagedList } from '../../shared/table/table.models';
 import { TableComponent } from "../../shared/table/table.component";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-management',
@@ -61,7 +62,8 @@ export class UserManagementComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -69,8 +71,14 @@ export class UserManagementComponent implements OnInit {
     this.loadUsers();
   }
 
-  onSearch() {
+  goBack(): void {
+    this.router.navigate(['/home']);
+  }
 
+  onPagedListChange(pagedList: PagedList<any>): void {
+    // Aqui você pode enviar para o backend e atualizar
+    this.pagedList = pagedList;
+    this.loadUsers();
   }
 
   initializeForm(): void {

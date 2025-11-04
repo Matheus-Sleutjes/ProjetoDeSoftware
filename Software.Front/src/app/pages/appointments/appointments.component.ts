@@ -2,19 +2,41 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TableComponent } from '../../shared/table/table.component';
+import { ColumnDefinition, ActionDefinition, PagedList } from '../../shared/table/table.models';
 
 @Component({
   selector: 'app-appointments',
   templateUrl: './appointments.component.html',
   styleUrls: ['./appointments.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, TableComponent]
 })
 export class AppointmentsComponent implements OnInit {
-  appointments: any[] = [];
   loading = false;
-  searchTerm = '';
   selectedStatus = 'all';
+
+  columns: ColumnDefinition[] = [
+    { key: 'patientName', header: 'Paciente' },
+    { key: 'doctorName', header: 'Médico' },
+    { key: 'specialty', header: 'Especialidade' },
+    { key: 'date', header: 'Data' },
+    { key: 'time', header: 'Horário' },
+    { key: 'status', header: 'Status' }
+  ];
+
+  action: ActionDefinition[] = [
+    { label: 'Editar', color: 'btn-primary', icon: 'fa-edit', route: './edit' },
+    { label: 'Cancelar', color: 'btn-danger', icon: 'fa-times', route: './cancel' }
+  ];
+
+  pagedList: PagedList<any> = {
+    items: [],
+    pageNumber: 1,
+    pageSize: 10,
+    totalPages: 1,
+    totalCount: 0
+  };
 
   constructor(private router: Router) { }
 
@@ -26,7 +48,7 @@ export class AppointmentsComponent implements OnInit {
     this.loading = true;
     // Simulando dados de agendamentos - substituir por chamada real da API
     setTimeout(() => {
-      this.appointments = [
+      const appointments = [
         {
           id: 1,
           patientName: 'Ana Silva',
@@ -58,16 +80,23 @@ export class AppointmentsComponent implements OnInit {
           notes: 'Paciente cancelou'
         }
       ];
+      
+      this.pagedList = {
+        items: appointments,
+        pageNumber: 1,
+        pageSize: 10,
+        totalPages: 1,
+        totalCount: appointments.length
+      };
+      
       this.loading = false;
     }, 1000);
   }
 
-  searchAppointments(): void {
-    // Implementar busca quando necessário
-  }
-
-  filterByStatus(): void {
-    // Implementar filtro por status quando necessário
+  onPagedListChange(pagedList: PagedList<any>): void {
+    // Aqui você pode enviar para o backend e atualizar
+    this.pagedList = pagedList;
+    this.loadAppointments();
   }
 
   addAppointment(): void {
@@ -81,15 +110,6 @@ export class AppointmentsComponent implements OnInit {
   cancelAppointment(appointment: any): void {
     if (confirm(`Tem certeza que deseja cancelar o agendamento de ${appointment.patientName}?`)) {
       alert(`Agendamento cancelado! - Funcionalidade será implementada em breve!`);
-    }
-  }
-
-  getStatusBadgeClass(status: string): string {
-    switch (status.toLowerCase()) {
-      case 'agendado': return 'badge bg-primary';
-      case 'concluído': return 'badge bg-success';
-      case 'cancelado': return 'badge bg-danger';
-      default: return 'badge bg-secondary';
     }
   }
 
