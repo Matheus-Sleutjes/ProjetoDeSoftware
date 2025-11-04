@@ -1,3 +1,38 @@
+<!-- Search and Filters Section -->
+<div class="table-search-section mb-3">
+  <div class="row g-2">
+    <div class="col-md-8">
+      <div class="input-group">
+        <span class="input-group-text">
+          <i class="fas fa-search"></i>
+        </span>
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Pesquisar..."
+          [(ngModel)]="searchTerm"
+          (keydown.enter)=" onSearch()">
+      </div>
+    </div>
+    <div class="col-md-2">
+      <button 
+        class="btn btn-primary w-100"
+        (click)="onSearch()">
+        <i class="fas fa-search me-2"></i>
+        Pesquisar
+      </button>
+    </div>
+    <div class="col-md-2">
+      <button 
+        class="btn btn-outline-secondary w-100"
+        (click)="onRefresh()">
+        <i class="fas fa-sync-alt me-2"></i>
+        Atualizar
+      </button>
+    </div>
+  </div>
+</div>
+
 <div class="table-responsive">
   <table class="table table-hover mb-0">
     <thead class="table-light">

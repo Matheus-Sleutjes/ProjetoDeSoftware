@@ -1,3 +1,52 @@
+// Search section styling
+.table-search-section {
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 0.5rem;
+  border: 1px solid #dee2e6;
+
+  .input-group-text {
+    background-color: #ffffff;
+    border-color: #ced4da;
+    color: #6c757d;
+  }
+
+  .form-control {
+    border-color: #ced4da;
+    
+    &:focus {
+      border-color: #1976d2;
+      box-shadow: 0 0 0 0.2rem rgba(25, 118, 210, 0.25);
+    }
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+    border: none;
+    transition: all 0.3s ease;
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
+    }
+  }
+
+  .btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+    transition: all 0.3s ease;
+
+    &:hover:not(:disabled) {
+      background-color: #6c757d;
+      border-color: #6c757d;
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+    }
+  }
+}
+
 // Actions cell styling
 .actions-cell {
   white-space: nowrap;
