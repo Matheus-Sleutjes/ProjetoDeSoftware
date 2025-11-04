@@ -6,15 +6,17 @@
 
 .action-buttons {
   display: flex;
+  flex-direction: row;
   gap: 0.5rem;
   justify-content: center;
-  flex-wrap: wrap;
+  align-items: center;
+  flex-wrap: nowrap;
 }
 
 // Action button base styles
 .btn-action {
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   padding: 0;
   display: flex;
   align-items: center;
@@ -23,11 +25,11 @@
   border: none;
   transition: all 0.2s ease;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   text-decoration: none;
   
   i {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   // Hover effects
@@ -171,11 +173,15 @@
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  padding-top: 0.375rem !important;
+  padding-bottom: 0.375rem !important;
 }
 
 .table td {
   vertical-align: middle;
   border-top: 1px solid #dee2e6;
+  padding-top: 0.375rem !important;
+  padding-bottom: 0.375rem !important;
 }
 
 .table-hover tbody tr:hover {
