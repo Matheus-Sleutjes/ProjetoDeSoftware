@@ -14,6 +14,7 @@ namespace Software.Domain.Models
             AppointmentDate = appointmentDate;
             Description = description;
             Status = AppointmentStatus.Scheduled;
+            CreatedAt = DateTime.Now;
         }
 
         [Key]
@@ -36,7 +37,7 @@ namespace Software.Domain.Models
         [Required]
         public AppointmentStatus Status { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
 } 

@@ -29,29 +29,37 @@ namespace Software.Api.Controllers
             return Ok(response);
         }
 
-        [Authorize]
-        [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        [HttpPost("Pagination")]
+        public IActionResult Pagination([FromBody] PaginationDto pagination)
         {
-            var user = _authenticationService.GetById(id);
-            return Ok(user);
+            
+
+            return Ok(pagination);
         }
 
-        [Authorize]
-        [HttpGet("GetByCpf")]
-        public IActionResult GetById([FromQuery] string cpf)
-        {
-            var user = _authenticationService.GetByCpf(cpf);
-            return Ok(user);
-        }
+        //[Authorize]
+        //[HttpGet("{id}")]
+        //public IActionResult GetById(int id)
+        //{
+        //    var user = _authenticationService.GetById(id);
+        //    return Ok(user);
+        //}
 
-        [Authorize]
-        [HttpGet("GetAllByParameter")]
-        public IActionResult GetAllByParameter([FromQuery]int roleId)
-        {
-            var users = _authenticationService.GetAllByParameter(roleId);
-            return Ok(users);
-        }
+        //[Authorize]
+        //[HttpGet("GetByCpf")]
+        //public IActionResult GetById([FromQuery] string cpf)
+        //{
+        //    var user = _authenticationService.GetByCpf(cpf);
+        //    return Ok(user);
+        //}
+
+        //[Authorize]
+        //[HttpGet("GetAllByParameter")]
+        //public IActionResult GetAllByParameter([FromQuery]int roleId)
+        //{
+        //    var users = _authenticationService.GetAllByParameter(roleId);
+        //    return Ok(users);
+        //}
 
         [Authorize]
         [HttpDelete("{id}")]

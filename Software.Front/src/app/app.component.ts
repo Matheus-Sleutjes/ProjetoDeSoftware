@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { AuthenticationService } from './services/authentication.service';
 import { MenuItens } from './menu-item';
+import { ToastComponent } from './shared/toast/toast.component';
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet],
+    imports: [RouterOutlet, ToastComponent],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
 })

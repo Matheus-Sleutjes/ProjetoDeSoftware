@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { HttpService } from './http.service';
 import { In_Login } from '../models/In_login';
 import { In_CreateAccount } from '../models/In_createAccount';
+import { PagedList } from '../shared/table/table.models';
 
 @Injectable({
   providedIn: 'root'
@@ -101,15 +102,12 @@ export class AuthenticationService {
       this.http.post(`${this.controller}`, credentials).subscribe(
         (response: any) => {
           response = JSON.stringify(response)
-          console.log(response);
-          console.log("criar conta", response);
           observer.next(true); // Emite falso no erro
           observer.complete();
 
 
         },
         (error) => {
-          console.error('Erro no login', error);
           observer.next(false); // Emite falso no erro
           observer.complete();
         }
@@ -143,16 +141,29 @@ export class AuthenticationService {
     return localStorage.getItem('token') !== null;
   }
 
-  getAllUsersByRole(roleId: number): Observable<any[]> {
-    return this.http.get(`${this.controller}/GetAllByParameter?roleId=${roleId}`);
-  }
+  // getAllUsersByRole(roleId: number): Observable<any[]> {
+  //   return this.http.get(`${this.controller}/GetAllByParameter?roleId=${roleId}`);
+  // }
 
-  getUserById(id: number): Observable<any> {
-    return this.http.get(`${this.controller}/${id}`);
-  }
+  // getUserById(id: number): Observable<any> {
+  //   return this.http.get(`${this.controller}/${id}`);
+  // }
 
-  getUserByCpf(cpf: string): Observable<any> {
-    return this.http.get(`${this.controller}/GetByCpf?cpf=${cpf}`);
+  // getUserByCpf(cpf: string): Observable<any> {
+  //   return this.http.get(`${this.controller}/GetByCpf?cpf=${cpf}`);
+  // }
+
+
+  pagination(pagedList: PagedList<any>): Observable<any> {
+    return this.http.post(`${this.controller}/Pagination`, pagedList);
+    // return new Observable<boolean>((observer) => {
+    //   this.http.post(`${this.controller}/Pagination`, pagedList).subscribe(
+    //     (response: any) => {
+    //       observer.next(response);
+    //       observer.complete();
+    //     },
+    //   );
+    // });
   }
 
   updateUser(id: number, userData: any): Observable<boolean> {

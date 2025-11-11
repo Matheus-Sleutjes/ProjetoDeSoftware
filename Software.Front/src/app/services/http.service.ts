@@ -24,7 +24,7 @@ export class HttpService {
 
   // Método genérico para requisições GET
   get(endpoint: string, params?: any): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/${this.controller}/${endpoint}`, { params, headers: this.getHeaders() });
+    return this.http.get<any>(`${this.baseUrl}/${endpoint}`, { params, headers: this.getHeaders() });
   }
 
   getNotController(endpoint: string, params?: any): Observable<any> {
@@ -40,11 +40,11 @@ export class HttpService {
 
   // Método genérico para requisições PUT
   put(id: string, body: {}): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/${this.controller}/${id}`, body, { headers: this.getHeaders() });
+    return this.http.put<any>(`${this.baseUrl}/${id}`, body, { headers: this.getHeaders() });
   }
 
   // Método genérico para requisições DELETE
   delete(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.baseUrl}/${this.controller}/${id}`, { headers: this.getHeaders() });
+    return this.http.delete<any>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
   }
 }
