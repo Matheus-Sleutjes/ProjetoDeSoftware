@@ -61,5 +61,10 @@ namespace Software.Application.Services
             var result = _patientRepository.Update(entity);
             return result;
         }
+
+        public PagedListDto<PatientDto> GetPaged(int pageNumber, int pageSize, string? search = null)
+        {
+            return _patientRepository.GetPaged(pageNumber, pageSize, search);
+        }
     }
 }

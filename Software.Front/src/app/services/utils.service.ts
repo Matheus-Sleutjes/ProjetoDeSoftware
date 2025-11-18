@@ -17,15 +17,11 @@ export class UtilsService {
         const payloadObj = JSON.parse(decodedPayload);
         const name = payloadObj.name;
         const acr = payloadObj.acr;
-        console.log('Name:', name);
-        console.log('ACR:', acr);
         return { name, acr };
       } catch (e) {
-        console.error('Failed to parse JWT payload:', e);
         return null;
       }
     } else {
-      console.error('Token not found in localStorage');
       return null;
     }
   }

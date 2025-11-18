@@ -14,11 +14,14 @@ namespace Software.Api.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] UserDto dto)
         {
-            if (dto == null) return BadRequest(new { Message = "Informa��es invalidas" });
+            if (dto == null) return BadRequest(new { Message = "Informa��es invalidas" });
 
-            var response = _authenticationService.Create(dto);
+            var userId = _authenticationService.Create(dto);
+            
+            if (userId == 0)
+                return BadRequest(new { Message = "Usuário já existe" });
 
-            return Ok(new { Message = response });
+            return Ok(new { Message = "Usuário criado com sucesso", UserId = userId });
         }
 
         [HttpPost("Login")]
@@ -29,21 +32,30 @@ namespace Software.Api.Controllers
             return Ok(response);
         }
 
+        [Authorize]
         [HttpPost("Pagination")]
         public IActionResult Pagination([FromBody] PaginationDto pagination)
         {
-            
+            if (pagination == null)
+                return BadRequest(new { Message = "Parâmetros de paginação inválidos" });
 
-            return Ok(pagination);
+            var result = _authenticationService.GetPaged(
+                pagination.PageNumber, 
+                pagination.PageSize, 
+                pagination.Search);
+
+            return Ok(result);
         }
 
-        //[Authorize]
-        //[HttpGet("{id}")]
-        //public IActionResult GetById(int id)
-        //{
-        //    var user = _authenticationService.GetById(id);
-        //    return Ok(user);
-        //}
+        [Authorize]
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            var user = _authenticationService.GetById(id);
+            if (user == null)
+                return NotFound(new { Message = "Usuário não encontrado!" });
+            return Ok(user);
+        }
 
         //[Authorize]
         //[HttpGet("GetByCpf")]
@@ -70,7 +82,7 @@ namespace Software.Api.Controllers
             if (isSuccess)
                 return Ok(new { Message = "Usuario deletado com sucesso!" });
             else
-                return NotFound(new { Message = "User n�o encontrado!" });
+                return NotFound(new { Message = "User n�o encontrado!" });
         }
 
         [Authorize]

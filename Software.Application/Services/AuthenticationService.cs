@@ -13,10 +13,10 @@ namespace Software.Application.Services
     {
         private readonly IAuthenticationRepository _authenticationRepository = authenticationRepository;
 
-        public string Create(UserDto dto)
+        public int Create(UserDto dto)
         {
             var Exists = _authenticationRepository.ValidateUserExists(dto.Email, dto.Username);
-            if (Exists) return "Usuario já existe";
+            if (Exists) return 0;
 
             var user = new User(dto.Name, dto.LastName, dto.Username, dto.Email, ConvertStringToBase64(dto.Password), dto.Cpf);
 
@@ -102,6 +102,11 @@ namespace Software.Application.Services
         public List<UserDto> GetAllByParameter(int roleId)
         {
             return _authenticationRepository.GetAllByParameter(roleId);
+        }
+
+        public PagedListDto<UserDto> GetPaged(int pageNumber, int pageSize, string? search = null)
+        {
+            return _authenticationRepository.GetPaged(pageNumber, pageSize, search);
         }
 
         private string GenerateToken(User user)

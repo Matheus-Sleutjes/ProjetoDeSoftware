@@ -3,106 +3,145 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TableComponent } from '../../shared/table/table.component';
+import { ConfirmModalComponent } from '../../shared/modal/confirm-modal.component';
 import { ColumnDefinition, ActionDefinition, PagedList } from '../../shared/table/table.models';
+import { PatientService } from '../../services/patient.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-patients',
   templateUrl: './patients.component.html',
   styleUrls: ['./patients.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, TableComponent]
+  imports: [CommonModule, FormsModule, TableComponent, ConfirmModalComponent]
 })
 export class PatientsComponent implements OnInit {
   loading = false;
+  searchTerm = '';
 
   columns: ColumnDefinition[] = [
+    { key: 'patientId', header: 'ID' },
     { key: 'name', header: 'Nome' },
-    { key: 'cpf', header: 'CPF' },
-    { key: 'email', header: 'Email' },
-    { key: 'phone', header: 'Telefone' },
-    { key: 'birthDate', header: 'Data Nascimento' }
+    { key: 'email', header: 'E-mail' },
+    { key: 'cpf', header: 'CPF' }
   ];
 
-  action: ActionDefinition[] = [
-    { label: 'Editar', color: 'btn-primary', icon: 'fa-edit', route: './edit' },
-    { label: 'Excluir', color: 'btn-danger', icon: 'fa-trash', route: './delete' }
-  ];
+  action: ActionDefinition[] = [];
+
+  showDeleteModal = false;
+  itemToDelete: any = null;
+  deleteModalTitle = 'Confirmar Exclusão';
+  deleteModalBody = '';
 
   pagedList: PagedList<any> = {
     items: [],
     pageNumber: 1,
     pageSize: 10,
     totalPages: 1,
-    totalCount: 0
+    search: ''
   };
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private patientService: PatientService,
+    private toastService: ToastService
+  ) { }
 
   ngOnInit(): void {
-    this.loadPatients();
+    this.action = [
+      { label: 'Editar', color: 'btn-primary', icon: 'fa-edit', route: './edit/:id' },
+      { label: 'Visualizar', color: 'btn-primary', icon: 'fa-eye', route: './view/:id' },
+      { label: 'Remover', color: 'btn-danger', icon: 'fa-trash', action: (item: any) => this.openDeleteModal(item) }
+    ];
+    this.onSearch();
   }
 
-  loadPatients(): void {
+  onSearch(): void {
     this.loading = true;
-    // Simulando dados de pacientes - substituir por chamada real da API
-    setTimeout(() => {
-      const patients = [
-        {
-          id: 1,
-          name: 'Ana Silva',
-          email: 'ana.silva@email.com',
-          cpf: '123.456.789-00',
-          phone: '(65) 99999-9999',
-          birthDate: '15/03/1990',
-          address: 'Rua das Flores, 123'
-        },
-        {
-          id: 2,
-          name: 'Carlos Santos',
-          email: 'carlos.santos@email.com',
-          cpf: '987.654.321-00',
-          phone: '(65) 88888-8888',
-          birthDate: '22/07/1985',
-          address: 'Av. Principal, 456'
-        },
-        {
-          id: 3,
-          name: 'Maria Costa',
-          email: 'maria.costa@email.com',
-          cpf: '456.789.123-00',
-          phone: '(65) 77777-7777',
-          birthDate: '10/12/1992',
-          address: 'Rua da Paz, 789'
-        }
-      ];
-      
+    const paginationRequest = {
+      ...this.pagedList,
+      search: this.pagedList.search || this.searchTerm || ''
+    };
+    
+    this.patientService.pagination(paginationRequest).then((response: any) => {
       this.pagedList = {
-        items: patients,
-        pageNumber: 1,
-        pageSize: 10,
-        totalPages: 1,
-        totalCount: patients.length
+        items: response.items || [],
+        pageNumber: response.pageNumber,
+        pageSize: response.pageSize,
+        totalCount: response.totalCount,
+        totalPages: response.totalPages,
+        search: response.search || ''
       };
-      
       this.loading = false;
-    }, 1000);
-  }
-
-  onPagedListChange(pagedList: PagedList<any>): void {
-    // Aqui você pode enviar para o backend e atualizar
-    this.pagedList = pagedList;
-    this.loadPatients();
-  }
-
-  addPatient(): void {
-    alert('Funcionalidade de adicionar paciente será implementada em breve!');
-  }
-
-  editPatient(patient: any): void {
-    alert(`Editar paciente: ${patient.name} - Funcionalidade será implementada em breve!`);
+    }).catch((error) => {
+      this.toastService.show(
+        'Erro ao carregar pacientes',
+        '#dc3545',
+        '#ffffff',
+        4000
+      );
+      this.loading = false;
+    });
   }
 
   goBack(): void {
     this.router.navigate(['/home']);
+  }
+
+  routerCreate(): void {
+    this.router.navigate(['/patients/create']);
+  }
+
+  openDeleteModal(item: any): void {
+    this.itemToDelete = item;
+    const itemName = item.name || `item ${item.patientId || item.id || ''}`;
+    this.deleteModalTitle = 'Confirmar Exclusão';
+    this.deleteModalBody = `Tem certeza que deseja remover ${itemName}?`;
+    this.showDeleteModal = true;
+  }
+
+  confirmDelete(): void {
+    if (this.itemToDelete) {
+      this.loading = true;
+      this.patientService.deletePatient(this.itemToDelete.patientId).then(
+        (success: boolean) => {
+          if (success) {
+            this.toastService.show(
+              'Paciente excluído com sucesso!',
+              '#28a745',
+              '#ffffff',
+              3000
+            );
+            this.onSearch();
+          } else {
+            this.toastService.show(
+              'Erro ao excluir paciente.',
+              '#dc3545',
+              '#ffffff',
+              4000
+            );
+          }
+          this.loading = false;
+          this.closeDeleteModal();
+        },
+        (err) => {
+          this.toastService.show(
+            err.error?.message || 'Erro ao excluir paciente',
+            '#dc3545',
+            '#ffffff',
+            4000
+          );
+          this.loading = false;
+          this.closeDeleteModal();
+        }
+      );
+    }
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.itemToDelete = null;
+    this.deleteModalTitle = 'Confirmar Exclusão';
+    this.deleteModalBody = '';
   }
 }

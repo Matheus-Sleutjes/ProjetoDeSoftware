@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { HttpService } from './http.service';
 import { DoctorDto } from '../models/DoctorDto';
+import { PagedList } from '../shared/table/table.models';
 
 @Injectable({
   providedIn: 'root'
@@ -13,67 +13,37 @@ export class DoctorService {
   ) { }
 
   public controller = "Doctor";
-  private readonly baseUrl = 'https://localhost:7055/';
 
-  // GET /Doctor - Get all doctors
-  getAllDoctors(): Observable<any[]> {
-    return this.http.get(`${this.controller}`);
+  getAllDoctors(): Promise<any[]> {
+    return this.http.get<any[]>(`${this.controller}`);
   }
 
-  // GET /Doctor/{id} - Get doctor by ID
-  getDoctorById(id: number): Observable<any> {
-    return this.http.get(`${this.controller}/${id}`);
+  getDoctorById(id: number): Promise<any> {
+    return this.http.get<any>(`${this.controller}/${id}`);
   }
 
-  // POST /Doctor - Create new doctor
-  createDoctor(doctorData: DoctorDto): Observable<boolean> {
-    return new Observable<boolean>((observer) => {
-      this.http.post(`${this.controller}`, doctorData).subscribe(
+  pagination(pagedList: PagedList<any>): Promise<any> {
+    return this.http.post<any>(`${this.controller}/Pagination`, pagedList);
+  }
+
+  createDoctor(doctorData: DoctorDto): Promise<boolean> {
+    return this.http.post<any>(`${this.controller}`, doctorData)
+      .then(() => true);
+  }
+
+  updateDoctor(id: number, doctorData: DoctorDto): Promise<boolean> {
+    return this.http.put<any>(`${this.controller}/${id}`, doctorData)
+      .then(() => true);
+  }
+
+  deleteDoctor(id: number): Promise<boolean> {
+    return new Promise<boolean>((resolve, reject) => {
+      this.http.delete(`${this.controller}/${id}`).then(
         (response: any) => {
-          console.log('Doctor created:', response);
-          observer.next(true);
-          observer.complete();
+          resolve(true);
         },
         (error) => {
-          console.error('Erro ao criar médico', error);
-          observer.next(false);
-          observer.complete();
-        }
-      );
-    });
-  }
-
-  // PUT /Doctor/{id} - Update doctor
-  updateDoctor(id: number, doctorData: DoctorDto): Observable<boolean> {
-    return new Observable<boolean>((observer) => {
-      this.http.put(`${this.controller}/${id}`, doctorData).subscribe(
-        (response: any) => {
-          console.log('Doctor updated:', response);
-          observer.next(true);
-          observer.complete();
-        },
-        (error) => {
-          console.error('Erro ao atualizar médico', error);
-          observer.next(false);
-          observer.complete();
-        }
-      );
-    });
-  }
-
-  // DELETE /Doctor/{id} - Delete doctor
-  deleteDoctor(id: number): Observable<boolean> {
-    return new Observable<boolean>((observer) => {
-      this.http.delete(`${this.controller}/${id}`).subscribe(
-        (response: any) => {
-          console.log('Doctor deleted:', response);
-          observer.next(true);
-          observer.complete();
-        },
-        (error) => {
-          console.error('Erro ao excluir médico', error);
-          observer.next(false);
-          observer.complete();
+          reject(error);
         }
       );
     });

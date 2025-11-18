@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationService } from '../../services/authentication.service';
+import { ToastService } from '../../services/toast.service';
 import { Login } from '../../models/Login';
 
 
@@ -24,6 +25,7 @@ export class LoginComponent implements OnInit {
         private fb: FormBuilder,
         private router: Router,
         private authService: AuthenticationService,
+        private toastService: ToastService,
     ) { }
 
     ngOnInit(): void {
@@ -34,7 +36,6 @@ export class LoginComponent implements OnInit {
     }
 
     navigateToNewAccount() {
-        console.log('Navigating to new account');
         this.router.navigate(['register']);
     }
 
@@ -50,19 +51,30 @@ export class LoginComponent implements OnInit {
             password: this.loginForm.value.password
         }
 
-        this.authService.login(credentials).subscribe({
-            next: (response: any) => {
-                if (response) {
+        this.authService.login(credentials)
+            .then((success: boolean) => {
+                if (success) {
                     this.router.navigate(['home']);
-
                 } else {
-                    alert('Email ou senha incorretos');
+                    this.toastService.show(
+                        'Email ou senha incorretos',
+                        '#dc3545',
+                        '#ffffff',
+                        4000
+                    );
                 }
-            },
-            error: (err: any) => {
-                alert(err.error?.message || 'Erro no login');
-            }
-        }).add(() => this.loading = false);
+            })
+            .catch((err: any) => {
+                this.toastService.show(
+                    err?.error?.message || 'Erro no login',
+                    '#dc3545',
+                    '#ffffff',
+                    4000
+                );
+            })
+            .finally(() => {
+                this.loading = false;
+            });
 
     }
 }

@@ -1,1 +1,148 @@
-<p>user-edit works!</p>
+<div class="container-fluid">
+    <div class="page-header">
+        <button type="button" class="btn btn-outline-secondary" (click)="goBack()">
+            <i class="fas fa-arrow-left me-2"></i>Voltar
+        </button>
+        <div class="page-header-center">
+            <h2 class="h3 mb-0">
+                <i class="fas fa-user-edit me-2 text-primary"></i>Editar Usuário
+            </h2>
+            <p class="text-muted mt-2 mb-0">Atualize as informações do usuário</p>
+        </div>
+        <div class="page-header-spacer"></div>
+    </div>
+    
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <div class="modal-body p-3 card mb-2">
+            <div class="row">
+                <!-- Nome -->
+                <div class="col-md-6 mb-3">
+                    <label for="name" class="form-label">Nome *</label>
+                    <input type="text" class="form-control" id="name" formControlName="name"
+                        placeholder="Nome do usuário"
+                        [class.is-invalid]="userForm.get('name')?.invalid && userForm.get('name')?.touched">
+                    @if (userForm.get('name')?.invalid && userForm.get('name')?.touched) {
+                        <div class="invalid-feedback">
+                            @if (userForm.get('name')?.errors?.['required']) {
+                                Nome é obrigatório.
+                            } @else if (userForm.get('name')?.errors?.['minlength']) {
+                                Nome deve ter pelo menos 2 caracteres.
+                            }
+                        </div>
+                    }
+
+                </div>
+
+                <!-- Sobrenome -->
+                <div class="col-md-6 mb-3">
+                    <label for="lastName" class="form-label">Sobrenome *</label>
+                    <input type="text" class="form-control" id="lastName" formControlName="lastName"
+                        placeholder="Sobrenome do usuário"
+                        [class.is-invalid]="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched">
+                    @if (userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched) {
+                        <div class="invalid-feedback">
+                            @if (userForm.get('lastName')?.errors?.['required']) {
+                                Sobrenome é obrigatório.
+                            } @else if (userForm.get('lastName')?.errors?.['minlength']) {
+                                Sobrenome deve ter pelo menos 2 caracteres.
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Username -->
+            <div class="mb-3">
+                <label for="username" class="form-label">Nome de Usuário *</label>
+                <input type="text" class="form-control" id="username" formControlName="username"
+                    placeholder="nomeusuario"
+                    [class.is-invalid]="userForm.get('username')?.invalid && userForm.get('username')?.touched">
+                @if (userForm.get('username')?.invalid && userForm.get('username')?.touched) {
+                    <div class="invalid-feedback">
+                        @if (userForm.get('username')?.errors?.['required']) {
+                            Nome de usuário é obrigatório.
+                        } @else if (userForm.get('username')?.errors?.['minlength']) {
+                            Nome de usuário deve ter pelo menos 3 caracteres.
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label for="email" class="form-label">Email *</label>
+                <input type="email" class="form-control" id="email" formControlName="email"
+                    placeholder="usuario@exemplo.com"
+                    [class.is-invalid]="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+                @if (userForm.get('email')?.invalid && userForm.get('email')?.touched) {
+                    <div class="invalid-feedback">
+                        @if (userForm.get('email')?.errors?.['required']) {
+                            Email é obrigatório.
+                        } @else if (userForm.get('email')?.errors?.['email']) {
+                            Por favor, insira um email válido.
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Senha (Opcional) -->
+            <div class="mb-3">
+                <label for="password" class="form-label">
+                    Senha (deixe em branco para manter a atual)
+                </label>
+                <input type="password" class="form-control" id="password" formControlName="password"
+                    placeholder="••••••••"
+                    [class.is-invalid]="userForm.get('password')?.invalid && userForm.get('password')?.touched">
+                @if (userForm.get('password')?.invalid && userForm.get('password')?.touched) {
+                    <div class="invalid-feedback">
+                        @if (userForm.get('password')?.errors?.['minlength']) {
+                            Senha deve ter pelo menos 6 caracteres.
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- CPF -->
+            <div class="mb-3">
+                <label for="cpf" class="form-label">CPF *</label>
+                <input type="text" class="form-control" id="cpf" formControlName="cpf" placeholder="000.000.000-00"
+                    (input)="formatCpf($event)" maxlength="14"
+                    [class.is-invalid]="userForm.get('cpf')?.invalid && userForm.get('cpf')?.touched">
+                @if (userForm.get('cpf')?.invalid && userForm.get('cpf')?.touched) {
+                    <div class="invalid-feedback">
+                        @if (userForm.get('cpf')?.errors?.['required']) {
+                            CPF é obrigatório.
+                        } @else if (userForm.get('cpf')?.errors?.['pattern']) {
+                            Por favor, insira um CPF válido (000.000.000-00).
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Role -->
+            <div class="mb-3">
+                <label for="role" class="form-label">Perfil *</label>
+                <select class="form-control" id="role" formControlName="role"
+                    [class.is-invalid]="userForm.get('role')?.invalid && userForm.get('role')?.touched">
+                    <option value="1">Administrador</option>
+                    <option value="2">Médico</option>
+                    <option value="3">Paciente</option>
+                </select>
+                @if (userForm.get('role')?.invalid && userForm.get('role')?.touched) {
+                    <div class="invalid-feedback">
+                        Perfil é obrigatório.
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid || loading">
+                @if (loading) {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                }
+                Atualizar Usuário
+            </button>
+        </div>
+    </form>
+</div>

@@ -27,6 +27,28 @@ namespace Software.Application.Services
                         Description = x.Description
                     }).ToList();
         }
+
+        public SpecialtyDto? GetById(int id)
+        {
+            var entity = _specialtyRepository.GetById(id);
+            if (entity == null) return null;
+
+            return new SpecialtyDto
+            {
+                SpecialtyId = entity.SpecialtyId,
+                Description = entity.Description
+            };
+        }
+
+        public bool Update(int id, SpecialtyDto dto)
+        {
+            var entity = _specialtyRepository.GetById(id);
+            if (entity == null) return false;
+
+            entity.Description = dto.Description;
+            return _specialtyRepository.Update(entity);
+        }
+
         public bool DeleteById(int id)
         {
             var entity = _specialtyRepository.GetById(id);
@@ -34,6 +56,11 @@ namespace Software.Application.Services
             if (entity == null) return false;
 
             return _specialtyRepository.Delete(entity);
+        }
+
+        public PagedListDto<SpecialtyDto> GetPaged(int pageNumber, int pageSize, string? search = null)
+        {
+            return _specialtyRepository.GetPaged(pageNumber, pageSize, search);
         }
     }
 }

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TableComponent } from '../../shared/table/table.component';
 import { ColumnDefinition, ActionDefinition, PagedList } from '../../shared/table/table.models';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-payments-method',
@@ -36,7 +37,10 @@ export class PaymentsMethodComponent implements OnInit {
     totalCount: 0
   };
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private toastService: ToastService
+  ) { }
 
   ngOnInit(): void {
     this.loadPaymentMethods();
@@ -86,17 +90,26 @@ export class PaymentsMethodComponent implements OnInit {
   }
 
   onPagedListChange(pagedList: PagedList<any>): void {
-    // Aqui você pode enviar para o backend e atualizar
     this.pagedList = pagedList;
     this.loadPaymentMethods();
   }
 
   addPaymentMethod(): void {
-    alert('Funcionalidade de adicionar método de pagamento será implementada em breve!');
+    this.toastService.show(
+      'Funcionalidade de adicionar método de pagamento será implementada em breve!',
+      '#ffc107',
+      '#000000',
+      3000
+    );
   }
 
   editPaymentMethod(paymentMethod: any): void {
-    alert(`Editar método de pagamento: ${paymentMethod.name} - Funcionalidade será implementada em breve!`);
+    this.toastService.show(
+      `Editar método de pagamento: ${paymentMethod.name} - Funcionalidade será implementada em breve!`,
+      '#ffc107',
+      '#000000',
+      3000
+    );
   }
 
   goBack(): void {

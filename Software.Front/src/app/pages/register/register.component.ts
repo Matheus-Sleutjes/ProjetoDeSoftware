@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationService } from '../../services/authentication.service';
+import { ToastService } from '../../services/toast.service';
 import { In_CreateAccount } from '../../models/In_createAccount';
 
 @Component({
@@ -24,6 +25,7 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private authService: AuthenticationService,
+    private toastService: ToastService,
   ) { }
 
   ngOnInit(): void {
@@ -35,7 +37,7 @@ export class RegisterComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]],
       cpf: ['', [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]],
-      role: [3] // Default: Patient (fixed)
+      role: [3]
     }, { validators: this.passwordMatchValidator });
   }
 
@@ -78,19 +80,27 @@ export class RegisterComponent implements OnInit {
       role: formValue.role
     };
 
-    this.authService.createdAccount(newUser).subscribe({
-      next: (success: boolean) => {
-        if (success) {
-          alert('Conta criada com sucesso! Faça login para continuar.');
-          this.router.navigate(['/login']);
-        } else {
-          alert('Erro ao criar conta. Tente novamente.');
-        }
-      },
-      error: (err: any) => {
-        alert(err.error?.message || 'Erro ao criar conta');
-      }
-    }).add(() => this.loading = false);
+    this.authService.createdAccount(newUser)
+      .then((response: any) => {
+        this.toastService.show(
+          'Conta criada com sucesso! Faça login para continuar.',
+          '#28a745',
+          '#ffffff',
+          3000
+        );
+        this.router.navigate(['/login']);
+      })
+      .catch((err: any) => {
+        this.toastService.show(
+          err?.error?.message || 'Erro ao criar conta',
+          '#dc3545',
+          '#ffffff',
+          4000
+        );
+      })
+      .finally(() => {
+        this.loading = false;
+      });
   }
 
   navigateToLogin() {

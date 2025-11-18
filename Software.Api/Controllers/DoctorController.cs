@@ -24,7 +24,24 @@ namespace Software.Api.Controllers
         public IActionResult GetById(int id)
         {
             var doctor = _doctorService.GetById(id);
+            if (doctor == null)
+                return NotFound(new { Message = "Médico não encontrado!" });
             return Ok(doctor);
+        }
+
+        [Authorize]
+        [HttpPost("Pagination")]
+        public IActionResult Pagination([FromBody] PaginationDto pagination)
+        {
+            if (pagination == null)
+                return BadRequest(new { Message = "Parâmetros de paginação inválidos" });
+
+            var result = _doctorService.GetPaged(
+                pagination.PageNumber,
+                pagination.PageSize,
+                pagination.Search);
+
+            return Ok(result);
         }
 
         [Authorize]

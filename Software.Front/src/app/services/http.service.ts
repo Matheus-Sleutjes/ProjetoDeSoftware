@@ -1,6 +1,5 @@
 import { HttpParams, HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -23,28 +22,61 @@ export class HttpService {
   }
 
   // Método genérico para requisições GET
-  get(endpoint: string, params?: any): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/${endpoint}`, { params, headers: this.getHeaders() });
+  get<T>(endpoint: string, params?: any): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      this.http.get<T>(`${this.baseUrl}/${endpoint}`, { params, headers: this.getHeaders() }).subscribe(
+        result => {
+          resolve(result);
+        },
+        error => reject(error)
+      );
+    });
   }
 
-  getNotController(endpoint: string, params?: any): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/${endpoint}`, { params, headers: this.getHeaders() });
+  getNotController<T>(endpoint: string, params?: any): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      this.http.get<T>(`${this.baseUrl}/${endpoint}`, { params, headers: this.getHeaders() }).subscribe(
+        result => {
+          resolve(result);
+        },
+        error => reject(error)
+      );
+    });
   }
-
-
 
   // Método genérico para requisições POST
-  post(endpoint: string, body: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/${endpoint}`, body, { headers: this.getHeaders() });
+  post<T>(endpoint: string, body: any): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      this.http.post<T>(`${this.baseUrl}/${endpoint}`, body, { headers: this.getHeaders() }).subscribe(
+        result => {
+          resolve(result);
+        },
+        error => reject(error)
+      );
+    });
   }
 
   // Método genérico para requisições PUT
-  put(id: string, body: {}): Observable<any> {
-    return this.http.put<any>(`${this.baseUrl}/${id}`, body, { headers: this.getHeaders() });
+  put<T>(id: string, body: {}): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      this.http.put<T>(`${this.baseUrl}/${id}`, body, { headers: this.getHeaders() }).subscribe(
+        result => {
+          resolve(result);
+        },
+        error => reject(error)
+      );
+    });
   }
 
   // Método genérico para requisições DELETE
-  delete(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() });
+  delete<T>(id: string): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      this.http.delete<T>(`${this.baseUrl}/${id}`, { headers: this.getHeaders() }).subscribe(
+        result => {
+          resolve(result);
+        },
+        error => reject(error)
+      );
+    });
   }
 }

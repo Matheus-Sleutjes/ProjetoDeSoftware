@@ -3,103 +3,146 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TableComponent } from '../../shared/table/table.component';
+import { ConfirmModalComponent } from '../../shared/modal/confirm-modal.component';
 import { ColumnDefinition, ActionDefinition, PagedList } from '../../shared/table/table.models';
+import { DoctorService } from '../../services/doctor.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-doctors',
   templateUrl: './doctors.component.html',
   styleUrls: ['./doctors.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, TableComponent]
+  imports: [CommonModule, FormsModule, TableComponent, ConfirmModalComponent]
 })
 export class DoctorsComponent implements OnInit {
   loading = false;
+  searchTerm = '';
 
   columns: ColumnDefinition[] = [
+    { key: 'doctorId', header: 'ID' },
     { key: 'name', header: 'Nome' },
     { key: 'crm', header: 'CRM' },
-    { key: 'specialty', header: 'Especialidade' },
-    { key: 'email', header: 'Email' },
-    { key: 'phone', header: 'Telefone' }
+    { key: 'specialtyName', header: 'Especialidade' },
+    { key: 'email', header: 'E-mail' }
   ];
 
-  action: ActionDefinition[] = [
-    { label: 'Editar', color: 'btn-primary', icon: 'fa-edit', route: './edit' },
-    { label: 'Excluir', color: 'btn-danger', icon: 'fa-trash', route: './delete' }
-  ];
+  action: ActionDefinition[] = [];
+
+  showDeleteModal = false;
+  itemToDelete: any = null;
+  deleteModalTitle = 'Confirmar Exclusão';
+  deleteModalBody = '';
 
   pagedList: PagedList<any> = {
     items: [],
     pageNumber: 1,
     pageSize: 10,
     totalPages: 1,
-    totalCount: 0
+    search: ''
   };
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private doctorService: DoctorService,
+    private toastService: ToastService
+  ) { }
 
   ngOnInit(): void {
-    this.loadDoctors();
+    this.action = [
+      { label: 'Editar', color: 'btn-primary', icon: 'fa-edit', route: './edit/:id' },
+      { label: 'Visualizar', color: 'btn-primary', icon: 'fa-eye', route: './view/:id' },
+      { label: 'Remover', color: 'btn-danger', icon: 'fa-trash', action: (item: any) => this.openDeleteModal(item) }
+    ];
+    this.onSearch();
   }
 
-  loadDoctors(): void {
+  onSearch(): void {
     this.loading = true;
-    // Simulando dados de médicos - substituir por chamada real da API
-    setTimeout(() => {
-      const doctors = [
-        {
-          id: 1,
-          name: 'Dr. João Silva',
-          email: 'joao.silva@clinica.com',
-          crm: '12345',
-          specialty: 'Cardiologia',
-          phone: '(65) 99999-9999'
-        },
-        {
-          id: 2,
-          name: 'Dra. Maria Santos',
-          email: 'maria.santos@clinica.com',
-          crm: '67890',
-          specialty: 'Pediatria',
-          phone: '(65) 88888-8888'
-        },
-        {
-          id: 3,
-          name: 'Dr. Pedro Costa',
-          email: 'pedro.costa@clinica.com',
-          crm: '54321',
-          specialty: 'Ortopedia',
-          phone: '(65) 77777-7777'
-        }
-      ];
-      
+    const paginationRequest = {
+      ...this.pagedList,
+      search: this.pagedList.search || this.searchTerm || ''
+    };
+    
+    this.doctorService.pagination(paginationRequest).then((response: any) => {
       this.pagedList = {
-        items: doctors,
-        pageNumber: 1,
-        pageSize: 10,
-        totalPages: 1,
-        totalCount: doctors.length
+        items: response.items || [],
+        pageNumber: response.pageNumber,
+        pageSize: response.pageSize,
+        totalCount: response.totalCount,
+        totalPages: response.totalPages,
+        search: response.search || ''
       };
-      
       this.loading = false;
-    }, 1000);
-  }
-
-  onPagedListChange(pagedList: PagedList<any>): void {
-    // Aqui você pode enviar para o backend e atualizar
-    this.pagedList = pagedList;
-    this.loadDoctors();
-  }
-
-  addDoctor(): void {
-    alert('Funcionalidade de adicionar médico será implementada em breve!');
-  }
-
-  editDoctor(doctor: any): void {
-    alert(`Editar médico: ${doctor.name} - Funcionalidade será implementada em breve!`);
+    }).catch((error) => {
+      this.toastService.show(
+        'Erro ao carregar médicos',
+        '#dc3545',
+        '#ffffff',
+        4000
+      );
+      this.loading = false;
+    });
   }
 
   goBack(): void {
     this.router.navigate(['/home']);
+  }
+
+  routerCreate(): void {
+    this.router.navigate(['/doctors/create']);
+  }
+
+  openDeleteModal(item: any): void {
+    this.itemToDelete = item;
+    const itemName = item.name || `item ${item.doctorId || item.id || ''}`;
+    this.deleteModalTitle = 'Confirmar Exclusão';
+    this.deleteModalBody = `Tem certeza que deseja remover ${itemName}?`;
+    this.showDeleteModal = true;
+  }
+
+  confirmDelete(): void {
+    if (this.itemToDelete) {
+      this.loading = true;
+      this.doctorService.deleteDoctor(this.itemToDelete.doctorId).then(
+        (success: boolean) => {
+          if (success) {
+            this.toastService.show(
+              'Médico excluído com sucesso!',
+              '#28a745',
+              '#ffffff',
+              3000
+            );
+            this.onSearch();
+          } else {
+            this.toastService.show(
+              'Erro ao excluir médico.',
+              '#dc3545',
+              '#ffffff',
+              4000
+            );
+          }
+          this.loading = false;
+          this.closeDeleteModal();
+        },
+        (err) => {
+          this.toastService.show(
+            err.error?.message || 'Erro ao excluir médico',
+            '#dc3545',
+            '#ffffff',
+            4000
+          );
+          this.loading = false;
+          this.closeDeleteModal();
+        }
+      );
+    }
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.itemToDelete = null;
+    this.deleteModalTitle = 'Confirmar Exclusão';
+    this.deleteModalBody = '';
   }
 }

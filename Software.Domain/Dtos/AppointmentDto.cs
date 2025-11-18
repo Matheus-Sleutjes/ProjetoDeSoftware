@@ -12,5 +12,8 @@ namespace Software.Domain.Dtos
         public AppointmentStatus Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public string? PatientName { get; set; }
+        public string? DoctorName { get; set; }
+        public string? SpecialtyName { get; set; }
     }
 } 

@@ -12,12 +12,12 @@ export const routes: Routes = [
         loadComponent: async () => (await import('./user-create/user-create.component')).UserCreateComponent
     },
     {
-        path: 'edit',
+        path: 'edit/:id',
         title: 'edit',
         loadComponent: async () => (await import('./user-edit/user-edit.component')).UserEditComponent
     },
     {
-        path: 'view',
+        path: 'view/:id',
         title: 'view',
         loadComponent: async () => (await import('./user-view/user-view.component')).UserViewComponent
     },

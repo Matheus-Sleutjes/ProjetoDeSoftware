@@ -10,9 +10,10 @@ namespace Software.Infraestructure.Contracts
         User? GetById(int id);
         User? GetByCpf(string cpf);
         bool ValidateUserExists(string email, string username);
-        string Create(User user);
+        int Create(User user);
         void Delete(User user);
         void Update(User user);
         List<UserDto> GetAllByParameter(int roleId);
+        PagedListDto<UserDto> GetPaged(int pageNumber, int pageSize, string? search = null);
     }
 }

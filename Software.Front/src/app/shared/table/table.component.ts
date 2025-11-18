@@ -60,4 +60,15 @@ export class TableComponent<T> {
       this.pagedListChange.emit(pagedListWithSearch);
     }
   }
+
+  getRoute(route: string | undefined, item: any): string {
+    if (!route) return '';
+    if (route.includes(':id') && item) {
+      const id = item.userId || item.patientId || item.doctorId || item.appointmentId || item.specialtyId || item.id || '';
+      if (id) {
+        return route.replace(':id', id);
+      }
+    }
+    return route;
+  }
 }

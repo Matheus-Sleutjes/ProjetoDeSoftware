@@ -56,13 +56,23 @@
             <td class="actions-cell">
               <div class="action-buttons">
                 @for (act of action; track $index) {
-                    <a 
-                      class="btn btn-action" 
-                      [className]="'btn btn-action ' + act.color"
-                      [routerLink]="act.route"
-                      [title]='act.label'>
-                      <i [className]="'fa-solid '+act.icon"></i>
-                    </a>
+                    @if (act.action) {
+                      <button 
+                        class="btn btn-action" 
+                        [className]="'btn btn-action ' + act.color"
+                        (click)="act.action!(item)"
+                        [title]='act.label'>
+                        <i [className]="'fa-solid '+act.icon"></i>
+                      </button>
+                    } @else if (act.route) {
+                      <a 
+                        class="btn btn-action" 
+                        [className]="'btn btn-action ' + act.color"
+                        [routerLink]="getRoute(act.route, item)"
+                        [title]='act.label'>
+                        <i [className]="'fa-solid '+act.icon"></i>
+                      </a>
+                    }
                 }
               </div>
             </td>

@@ -1,0 +1,34 @@
+@if (show) {
+  <div class="modal-backdrop fade show" (click)="onBackdropClick($event)"></div>
+  <div class="modal fade show d-block" tabindex="-1" role="dialog" style="z-index: 1055;">
+    <div class="modal-dialog modal-dialog-centered" role="document" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            @if (showTitleIcon) {
+              <i [className]="'fas ' + titleIcon + ' me-2 ' + titleIconClass"></i>
+            }
+            {{ title }}
+          </h5>
+          <button type="button" class="btn-close" (click)="onClose()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          @if (bodyAsHtml) {
+            <div [innerHTML]="body"></div>
+          } @else {
+            <p class="mb-0">{{ body }}</p>
+          }
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" [ngClass]="cancelButtonClass" (click)="onCancel()">
+            {{ cancelText }}
+          </button>
+          <button type="button" class="btn" [ngClass]="confirmButtonClass" (click)="onConfirm()">
+            {{ confirmText }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+

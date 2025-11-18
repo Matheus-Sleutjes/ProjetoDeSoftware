@@ -41,9 +41,10 @@ namespace Software.Application.Services
                 }).ToList();
         }
 
-        public DoctorDto GetById(int id)
+        public DoctorDto? GetById(int id)
         {
             var entity = _doctorRepository.GetDoctorById(id);
+            if (entity == null) return null;
 
             var dto = new DoctorDto()
             {
@@ -65,6 +66,11 @@ namespace Software.Application.Services
 
             var result = _doctorRepository.Update(entity);
             return result;
+        }
+
+        public PagedListDto<DoctorDto> GetPaged(int pageNumber, int pageSize, string? search = null)
+        {
+            return _doctorRepository.GetPaged(pageNumber, pageSize, search);
         }
     }
 }

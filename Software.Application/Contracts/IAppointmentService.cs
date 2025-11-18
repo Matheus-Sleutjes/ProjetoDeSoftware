@@ -11,5 +11,6 @@ namespace Software.Application.Contracts
         bool DeleteById(int id);
         List<AppointmentDto> GetByPatientId(int patientId);
         List<AppointmentDto> GetByDoctorId(int doctorId);
+        PagedListDto<AppointmentDto> GetPaged(int pageNumber, int pageSize, string? search = null);
     }
 } 

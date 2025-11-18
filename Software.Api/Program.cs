@@ -31,12 +31,16 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    });
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Software API", Version = "v1" });
 
-    // Define o esquema de segurança JWT
+    // Define o esquema de seguranï¿½a JWT
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -47,7 +51,7 @@ builder.Services.AddSwaggerGen(c =>
         Description = "Insira o token JWT como: Bearer {seu token}"
     });
 
-    // Aplica o esquema de segurança em todas as operações
+    // Aplica o esquema de seguranï¿½a em todas as operaï¿½ï¿½es
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {

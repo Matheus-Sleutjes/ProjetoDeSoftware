@@ -6,6 +6,9 @@ namespace Software.Application.Contracts
     {
         string Create(SpecialtyDto dto);
         List<SpecialtyDto> GetAll();
+        SpecialtyDto? GetById(int id);
+        bool Update(int id, SpecialtyDto dto);
         bool DeleteById(int id);
+        PagedListDto<SpecialtyDto> GetPaged(int pageNumber, int pageSize, string? search = null);
     }
 }

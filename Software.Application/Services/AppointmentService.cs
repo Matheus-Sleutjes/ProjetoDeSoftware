@@ -114,5 +114,10 @@ namespace Software.Application.Services
                     UpdatedAt = entity.UpdatedAt
                 }).ToList();
         }
+
+        public PagedListDto<AppointmentDto> GetPaged(int pageNumber, int pageSize, string? search = null)
+        {
+            return _appointmentRepository.GetPaged(pageNumber, pageSize, search);
+        }
     }
 } 

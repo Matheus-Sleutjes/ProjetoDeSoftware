@@ -20,6 +20,16 @@ namespace Software.Api.Controllers
         }
 
         [Authorize]
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            var specialty = _specialtyService.GetById(id);
+            if (specialty == null)
+                return NotFound(new { Message = "Especialidade não encontrada!" });
+            return Ok(specialty);
+        }
+
+        [Authorize]
         [HttpPost]
         public IActionResult Post([FromBody] SpecialtyDto dto)
         {
@@ -27,6 +37,33 @@ namespace Software.Api.Controllers
 
             var result = _specialtyService.Create(dto);
             return Ok(new { Message= result });
+        }
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] SpecialtyDto dto)
+        {
+            var isSuccess = _specialtyService.Update(id, dto);
+
+            if (isSuccess)
+                return Ok(new { Message = "Especialidade atualizada com sucesso!" });
+            else
+                return NotFound(new { Message = "Especialidade não encontrada!" });
+        }
+
+        [Authorize]
+        [HttpPost("Pagination")]
+        public IActionResult Pagination([FromBody] PaginationDto pagination)
+        {
+            if (pagination == null)
+                return BadRequest(new { Message = "Parâmetros de paginação inválidos" });
+
+            var result = _specialtyService.GetPaged(
+                pagination.PageNumber,
+                pagination.PageSize,
+                pagination.Search);
+
+            return Ok(result);
         }
 
         [Authorize]

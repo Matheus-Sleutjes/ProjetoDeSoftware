@@ -52,28 +52,25 @@ export class UserCreateComponent implements OnInit{
       return;
     }
 
-    this.authService.createdAccount(this.userForm.value).subscribe({
-      next: (response: any) => {
-        console.log("criar conta", response);
+    this.authService.createdAccount(this.userForm.value)
+      .then((response: any) => {
         this.toastService.show(
           'Usuário criado com sucesso!',
-          '#28a745', // verde
+          '#28a745',
           '#ffffff',
           3000
         );
         this.userForm.reset();
         this.initializeForm();
-      },
-      error: (error: any) => {
-        console.error("Erro ao criar conta", error);
+      })
+      .catch((error: any) => {
         this.toastService.show(
-          error.error?.message || 'Erro ao criar usuário. Tente novamente.',
-          '#dc3545', // vermelho
+          error?.error?.message || 'Erro ao criar usuário. Tente novamente.',
+          '#dc3545',
           '#ffffff',
           4000
         );
-      }
-    });
+      });
   }
 
   initializeForm(): void {

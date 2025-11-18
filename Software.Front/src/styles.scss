@@ -322,6 +322,37 @@ body {
 .font-bold { font-weight: var(--font-weight-bold) !important; }
 
 /* ========================================
+   LAYOUT PADRÃO DE PÁGINA / HEADERS
+   ======================================== */
+
+// Header usado em todas as telas (lista, create, edit, view)
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg) 0;
+}
+
+// Container central do título/subtítulo
+.page-header-center {
+  flex-grow: 1;
+  text-align: center;
+}
+
+// Espaçador direito para alinhar com o botão "Voltar"
+.page-header-spacer {
+  width: 120px;
+}
+
+// Subtítulo padrão abaixo do título
+.page-header-subtitle {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* ========================================
    ANIMAÇÕES CUSTOMIZADAS
    ======================================== */
 @keyframes fadeIn {

@@ -1,3 +1,4 @@
+using Software.Domain.Dtos;
 using Software.Domain.Models;
 
 namespace Software.Infraestructure.Contracts
@@ -11,5 +12,6 @@ namespace Software.Infraestructure.Contracts
         bool Create(Appointment entity);
         bool Update(Appointment entity);
         bool Delete(Appointment entity);
+        PagedListDto<AppointmentDto> GetPaged(int pageNumber, int pageSize, string? search = null);
     }
 } 

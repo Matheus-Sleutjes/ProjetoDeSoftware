@@ -47,6 +47,21 @@ namespace Software.Api.Controllers
         }
 
         [Authorize]
+        [HttpPost("Pagination")]
+        public IActionResult Pagination([FromBody] PaginationDto pagination)
+        {
+            if (pagination == null)
+                return BadRequest(new { Message = "Parâmetros de paginação inválidos" });
+
+            var result = _appointmentService.GetPaged(
+                pagination.PageNumber,
+                pagination.PageSize,
+                pagination.Search);
+
+            return Ok(result);
+        }
+
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] AppointmentDto dto)
         {

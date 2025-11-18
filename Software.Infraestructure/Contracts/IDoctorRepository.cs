@@ -1,4 +1,5 @@
-﻿using Software.Domain.Models;
+﻿using Software.Domain.Dtos;
+using Software.Domain.Models;
 
 namespace Software.Infraestructure.Contracts
 {
@@ -9,5 +10,6 @@ namespace Software.Infraestructure.Contracts
         bool Create(Doctor doctor);
         bool Update(Doctor doctor);
         bool Delete(Doctor doctor);
+        PagedListDto<DoctorDto> GetPaged(int pageNumber, int pageSize, string? search = null);
     }
 }
