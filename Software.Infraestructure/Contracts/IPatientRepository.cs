@@ -7,6 +7,7 @@ namespace Software.Infraestructure.Contracts
     {
         Patient? GetPatientById(int id);
         List<Patient> GetAll();
+        List<Patient> Search(string? term = null);
         bool Create(Patient entity);
         bool Update(Patient entity);
         bool Delete(Patient entity);

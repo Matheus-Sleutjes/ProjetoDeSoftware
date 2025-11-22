@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { PatientService } from '../../../services/patient.service';
 import { AuthenticationService } from '../../../services/authentication.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -23,7 +22,6 @@ export class PatientEditComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private patientService: PatientService,
     private authService: AuthenticationService,
     private router: Router,
     private route: ActivatedRoute,
@@ -64,37 +62,25 @@ export class PatientEditComponent implements OnInit {
 
   loadPatient(): void {
     this.loading = true;
-    this.patientService.getPatientById(this.patientId).then(
-      (patient: any) => {
-        this.userId = patient.userId;
-        this.authService.getUserById(this.userId).then(
-          (user: any) => {
-            this.patientForm.patchValue({
-              name: user.name || '',
-              lastName: user.lastName || '',
-              username: user.username || '',
-              email: user.email || '',
-              cpf: user.cpf || '',
-              phone: patient.phone || '',
-              birthDate: patient.birthDate || ''
-            });
-            this.loading = false;
-          },
-          (error: any) => {
-            this.toastService.show(
-              error.error?.message || 'Erro ao carregar dados do usuário.',
-              '#dc3545',
-              '#ffffff',
-              4000
-            );
-            this.loading = false;
-            this.goBack();
-          }
-        );
+    // Como Patient agora é apenas um User com Role.Patient,
+    // usamos diretamente o ID do paciente como ID do usuário.
+    this.userId = this.patientId;
+    this.authService.getUserById(this.userId).then(
+      (user: any) => {
+        this.patientForm.patchValue({
+          name: user.name || '',
+          lastName: user.lastName || '',
+          username: user.username || '',
+          email: user.email || '',
+          cpf: user.cpf || '',
+          phone: '',
+          birthDate: ''
+        });
+        this.loading = false;
       },
       (error: any) => {
         this.toastService.show(
-          error.error?.message || 'Erro ao carregar dados do paciente.',
+          error.error?.message || 'Erro ao carregar dados do usuário.',
           '#dc3545',
           '#ffffff',
           4000
@@ -120,33 +106,17 @@ export class PatientEditComponent implements OnInit {
     this.loading = true;
     const userData = { ...this.patientForm.value };
     delete userData.password;
-    
+
     this.authService.updateUser(this.userId, userData)
       .then((success: boolean) => {
         if (success) {
-          const patientData = {
-            userId: this.userId
-          };
-          
-          this.patientService.updatePatient(this.patientId, patientData)
-            .then((updateSuccess: boolean) => {
-              if (updateSuccess) {
-                this.toastService.show(
-                  'Paciente atualizado com sucesso!',
-                  '#28a745',
-                  '#ffffff',
-                  3000
-                );
-                this.goBack();
-              } else {
-                this.toastService.show(
-                  'Erro ao atualizar paciente.',
-                  '#dc3545',
-                  '#ffffff',
-                  4000
-                );
-              }
-            });
+          this.toastService.show(
+            'Paciente atualizado com sucesso!',
+            '#28a745',
+            '#ffffff',
+            3000
+          );
+          this.goBack();
         } else {
           this.toastService.show(
             'Erro ao atualizar usuário.',

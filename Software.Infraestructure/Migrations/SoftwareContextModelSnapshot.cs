@@ -107,6 +107,55 @@ namespace Software.Infraestructure.Migrations
                     b.ToTable("Patient");
                 });
 
+            modelBuilder.Entity("Software.Domain.Models.Payment", b =>
+                {
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PaymentId"));
+
+                    b.Property<int>("AppointmentId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("PaymentMethodId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("AppointmentId");
+
+                    b.HasIndex("PaymentMethodId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Payment");
+                });
+
+            modelBuilder.Entity("Software.Domain.Models.PaymentMethod", b =>
+                {
+                    b.Property<int>("PaymentMethodId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PaymentMethodId"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("PaymentMethodId");
+
+                    b.ToTable("PaymentMethod");
+                });
+
             modelBuilder.Entity("Software.Domain.Models.Specialty", b =>
                 {
                     b.Property<int>("SpecialtyId")
@@ -214,6 +263,33 @@ namespace Software.Infraestructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Software.Domain.Models.Payment", b =>
+                {
+                    b.HasOne("Software.Domain.Models.Appointment", "Appointment")
+                        .WithMany()
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Software.Domain.Models.PaymentMethod", "PaymentMethod")
+                        .WithMany()
+                        .HasForeignKey("PaymentMethodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Software.Domain.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Appointment");
+
+                    b.Navigation("PaymentMethod");
 
                     b.Navigation("User");
                 });

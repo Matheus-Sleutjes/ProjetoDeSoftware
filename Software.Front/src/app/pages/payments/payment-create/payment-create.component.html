@@ -1,0 +1,90 @@
+<div class="container-fluid">
+  <div class="page-header">
+    <button type="button" class="btn btn-outline-secondary" (click)="goBack()">
+      <i class="fas fa-arrow-left me-2"></i>Voltar
+    </button>
+    <div class="page-header-center">
+      <h2 class="h3 mb-0">
+        <i class="fas fa-receipt me-2 text-primary"></i>Cadastro de Pagamento
+      </h2>
+      <p class="text-muted mt-2 mb-0">Preencha os dados abaixo para registrar um novo pagamento</p>
+    </div>
+    <div class="page-header-spacer"></div>
+  </div>
+
+  <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+    <div class="modal-body p-3 card mb-2">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="paymentDate" class="form-label">Data do Pagamento *</label>
+          <input type="date" class="form-control" id="paymentDate" formControlName="paymentDate"
+                 [class.is-invalid]="paymentForm.get('paymentDate')?.invalid && paymentForm.get('paymentDate')?.touched">
+          @if (paymentForm.get('paymentDate')?.invalid && paymentForm.get('paymentDate')?.touched) {
+            <div class="invalid-feedback">
+              Data do pagamento é obrigatória.
+            </div>
+          }
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label for="paymentMethodId" class="form-label">Método de Pagamento *</label>
+          <select class="form-select" id="paymentMethodId" formControlName="paymentMethodId"
+                  [class.is-invalid]="paymentForm.get('paymentMethodId')?.invalid && paymentForm.get('paymentMethodId')?.touched">
+            <option value="">Selecione um método</option>
+            @for (method of paymentMethods; track method.paymentMethodId) {
+              <option [value]="method.paymentMethodId">{{ method.description || ('Método ' + method.paymentMethodId) }}</option>
+            }
+          </select>
+          @if (paymentForm.get('paymentMethodId')?.invalid && paymentForm.get('paymentMethodId')?.touched) {
+            <div class="invalid-feedback">
+              Método de pagamento é obrigatório.
+            </div>
+          }
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label for="appointmentId" class="form-label">Agendamento *</label>
+          <select class="form-select" id="appointmentId" formControlName="appointmentId"
+                  [class.is-invalid]="paymentForm.get('appointmentId')?.invalid && paymentForm.get('appointmentId')?.touched">
+            <option value="">Selecione um agendamento</option>
+            @for (appointment of appointments; track appointment.appointmentId) {
+              <option [value]="appointment.appointmentId">
+                {{ appointment.appointmentDate | date:'dd/MM/yyyy' }} - {{ appointment.patientName || ('Paciente ' + appointment.patientId) }}
+              </option>
+            }
+          </select>
+          @if (paymentForm.get('appointmentId')?.invalid && paymentForm.get('appointmentId')?.touched) {
+            <div class="invalid-feedback">
+              Agendamento é obrigatório.
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="userId" class="form-label">Usuário (ID) *</label>
+          <input type="number" class="form-control" id="userId" formControlName="userId"
+                 placeholder="Informe o ID do usuário associado"
+                 [class.is-invalid]="paymentForm.get('userId')?.invalid && paymentForm.get('userId')?.touched">
+          @if (paymentForm.get('userId')?.invalid && paymentForm.get('userId')?.touched) {
+            <div class="invalid-feedback">
+              Usuário é obrigatório.
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary" [disabled]="paymentForm.invalid || loading">
+        @if (loading) {
+          <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+        }
+        Criar Pagamento
+      </button>
+    </div>
+  </form>
+</div>
+
+

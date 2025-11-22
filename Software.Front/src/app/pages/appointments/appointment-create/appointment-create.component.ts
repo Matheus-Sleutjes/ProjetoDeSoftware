@@ -21,6 +21,8 @@ export class AppointmentCreateComponent implements OnInit {
   loading = false;
   patients: any[] = [];
   doctors: any[] = [];
+  filteredPatients: any[] = [];
+  filteredDoctors: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -36,16 +38,18 @@ export class AppointmentCreateComponent implements OnInit {
     this.initializeForm();
     this.loadPatients();
     this.loadDoctors();
+    this.setupAutocomplete();
   }
 
   goBack(): void {
     this.location.back();
   }
 
-  loadPatients(): void {
-    this.patientService.getAllPatients().then(
+  loadPatients(term?: string): void {
+    this.patientService.searchPatients(term).then(
       (patients: any[]) => {
         this.patients = patients || [];
+        this.filteredPatients = this.patients;
       },
       (error: any) => {
         this.toastService.show(
@@ -62,6 +66,7 @@ export class AppointmentCreateComponent implements OnInit {
     this.doctorService.getAllDoctors().then(
       (doctors: any[]) => {
         this.doctors = doctors || [];
+        this.filteredDoctors = this.doctors;
       },
       (error: any) => {
         this.toastService.show(
@@ -134,7 +139,64 @@ export class AppointmentCreateComponent implements OnInit {
       doctorId: ['', [Validators.required]],
       appointmentDate: ['', [Validators.required]],
       description: [''],
-      status: [1, [Validators.required]]
+      status: [1, [Validators.required]],
+      patientSearch: [''],
+      doctorSearch: ['']
+    });
+  }
+
+  private setupAutocomplete(): void {
+    this.appointmentForm.get('patientSearch')?.valueChanges.subscribe(term => {
+      const value = (term || '').trim();
+      if (!value) {
+        this.loadPatients();
+      } else {
+        this.loadPatients(value);
+      }
+      this.filteredPatients = this.filterPatients(value);
+    });
+
+    this.appointmentForm.get('doctorSearch')?.valueChanges.subscribe(term => {
+      this.filteredDoctors = this.filterDoctors(term || '');
+    });
+  }
+
+  private filterPatients(term: string): any[] {
+    if (!term) {
+      return this.patients;
+    }
+    const lower = term.toLowerCase();
+    return this.patients.filter((p: any) =>
+      (p.name || '').toLowerCase().includes(lower) ||
+      (p.cpf || '').toLowerCase().includes(lower) ||
+      (p.email || '').toLowerCase().includes(lower)
+    );
+  }
+
+  private filterDoctors(term: string): any[] {
+    if (!term) {
+      return this.doctors;
+    }
+    const lower = term.toLowerCase();
+    return this.doctors.filter((d: any) =>
+      (d.name || '').toLowerCase().includes(lower) ||
+      (d.crm || '').toLowerCase().includes(lower) ||
+      (d.specialtyName || '').toLowerCase().includes(lower) ||
+      (d.email || '').toLowerCase().includes(lower)
+    );
+  }
+
+  selectPatient(patient: any): void {
+    this.appointmentForm.patchValue({
+      patientId: patient.patientId,
+      patientSearch: patient.name || `Paciente ${patient.patientId}`
+    });
+  }
+
+  selectDoctor(doctor: any): void {
+    this.appointmentForm.patchValue({
+      doctorId: doctor.doctorId,
+      doctorSearch: doctor.name || `Médico ${doctor.doctorId}`
     });
   }
 }

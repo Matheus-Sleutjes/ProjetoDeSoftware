@@ -18,6 +18,10 @@ export class AppointmentService {
     return this.http.get<any[]>(`${this.controller}`);
   }
 
+  getAvailableForPayment(): Promise<any[]> {
+    return this.http.get<any[]>(`${this.controller}/available-for-payment`);
+  }
+
   getAppointmentById(id: number): Promise<any> {
     return this.http.get<any>(`${this.controller}/${id}`);
   }

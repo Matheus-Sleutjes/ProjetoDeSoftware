@@ -84,6 +84,21 @@ namespace Software.Infraestructure.Repository
                                       .ToList();
         }
 
+        public List<Appointment> GetAvailableForPayment()
+        {
+            var paidAppointmentIds = _context.Payment
+                .Select(p => p.AppointmentId)
+                .Distinct()
+                .ToList();
+
+            return _context.Appointment.AsNoTracking()
+                                      .Include(a => a.Patient)
+                                      .ThenInclude(p => p.User)
+                                      .Where(a => !paidAppointmentIds.Contains(a.AppointmentId))
+                                      .OrderBy(a => a.AppointmentDate)
+                                      .ToList();
+        }
+
         public PagedListDto<AppointmentDto> GetPaged(int pageNumber, int pageSize, string? search = null)
         {
             var query = _context.Appointment.AsNoTracking()

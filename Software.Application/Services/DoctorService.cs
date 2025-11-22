@@ -49,6 +49,7 @@ namespace Software.Application.Services
             var dto = new DoctorDto()
             {
                 DoctorId = entity.DoctorId,
+                UserId = entity.UserId,
                 SpecialtyId = entity.SpecialtyId,
                 CRM = entity.CRM,
             };

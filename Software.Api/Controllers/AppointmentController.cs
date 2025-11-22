@@ -20,6 +20,14 @@ namespace Software.Api.Controllers
         }
 
         [Authorize]
+        [HttpGet("available-for-payment")]
+        public IActionResult GetAvailableForPayment()
+        {
+            var appointments = _appointmentService.GetAvailableForPayment();
+            return Ok(appointments);
+        }
+
+        [Authorize]
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {

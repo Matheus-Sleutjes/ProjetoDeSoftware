@@ -9,6 +9,7 @@ namespace Software.Application.Contracts
         string Create(PatientDto dto);
         bool Update(int id, PatientDto dto);
         bool DeleteById(int id);
+        List<PatientDto> Search(string? term = null);
         PagedListDto<PatientDto> GetPaged(int pageNumber, int pageSize, string? search = null);
     }
 }

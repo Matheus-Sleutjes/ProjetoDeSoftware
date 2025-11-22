@@ -115,6 +115,25 @@ namespace Software.Application.Services
                 }).ToList();
         }
 
+        public List<AppointmentDto> GetAvailableForPayment()
+        {
+            return _appointmentRepository.GetAvailableForPayment()
+                .Select(entity => new AppointmentDto()
+                {
+                    AppointmentId = entity.AppointmentId,
+                    PatientId = entity.PatientId,
+                    DoctorId = entity.DoctorId,
+                    AppointmentDate = entity.AppointmentDate,
+                    Description = entity.Description,
+                    Status = entity.Status,
+                    CreatedAt = entity.CreatedAt,
+                    UpdatedAt = entity.UpdatedAt,
+                    PatientName = entity.Patient != null && entity.Patient.User != null
+                        ? entity.Patient.User.Name + " " + entity.Patient.User.LastName
+                        : string.Empty
+                }).ToList();
+        }
+
         public PagedListDto<AppointmentDto> GetPaged(int pageNumber, int pageSize, string? search = null)
         {
             return _appointmentRepository.GetPaged(pageNumber, pageSize, search);

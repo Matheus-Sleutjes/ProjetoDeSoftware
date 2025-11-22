@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { PatientService } from '../../../services/patient.service';
 import { AuthenticationService } from '../../../services/authentication.service';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -21,7 +20,6 @@ export class PatientCreateComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private patientService: PatientService,
     private authService: AuthenticationService,
     private router: Router,
     private toastService: ToastService,
@@ -70,7 +68,7 @@ export class PatientCreateComponent implements OnInit {
 
     this.authService.createdAccount(userData).then((response: any) => {
         const userId = response.userId;
-        
+
         if (!userId) {
           this.toastService.show(
             'Usuário criado, mas não foi possível obter o ID. Tente novamente.',
@@ -82,41 +80,15 @@ export class PatientCreateComponent implements OnInit {
           return;
         }
 
-        const patientData: any = {
-          userId: userId
-        };
-
-        this.patientService.createPatient(patientData)
-          .then((success: boolean) => {
-            if (success) {
-              this.toastService.show(
-                'Paciente criado com sucesso!',
-                '#28a745',
-                '#ffffff',
-                3000
-              );
-              this.patientForm.reset();
-              this.initializeForm();
-            } else {
-              this.toastService.show(
-                'Erro ao criar paciente.',
-                '#dc3545',
-                '#ffffff',
-                4000
-              );
-            }
-          })
-          .catch((error: any) => {
-            this.toastService.show(
-              error?.error?.message || 'Erro ao criar paciente. Tente novamente.',
-              '#dc3545',
-              '#ffffff',
-              4000
-            );
-          })
-          .finally(() => {
-            this.loading = false;
-          });
+        this.toastService.show(
+          'Paciente criado com sucesso!',
+          '#28a745',
+          '#ffffff',
+          3000
+        );
+        this.patientForm.reset();
+        this.initializeForm();
+        this.loading = false;
       })
       .catch((error: any) => {
         this.toastService.show(

@@ -9,6 +9,7 @@ namespace Software.Infraestructure.Contracts
         List<Appointment> GetAll();
         List<Appointment> GetByPatientId(int patientId);
         List<Appointment> GetByDoctorId(int doctorId);
+        List<Appointment> GetAvailableForPayment();
         bool Create(Appointment entity);
         bool Update(Appointment entity);
         bool Delete(Appointment entity);

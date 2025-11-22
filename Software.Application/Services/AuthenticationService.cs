@@ -89,11 +89,18 @@ namespace Software.Application.Services
             var user = _authenticationRepository.GetById(id);
             if (user == null) return false;
 
-            user.Name = dto.Name == "" ? user.Name : dto.Name;
-            user.LastName = dto.LastName == "" ? user.LastName : dto.LastName;
-            user.Username = dto.Username == "" ? user.Username : dto.Username;
-            user.Role = dto.Role ;
-            user.Cpf = dto.Cpf == "" ? user.Cpf : dto.Cpf;
+            user.Name = string.IsNullOrWhiteSpace(dto.Name) ? user.Name : dto.Name;
+            user.LastName = string.IsNullOrWhiteSpace(dto.LastName) ? user.LastName : dto.LastName;
+            user.Username = string.IsNullOrWhiteSpace(dto.Username) ? user.Username : dto.Username;
+            user.Email = string.IsNullOrWhiteSpace(dto.Email) ? user.Email : dto.Email;
+
+            // Se Role não vier informado (0), mantém o perfil atual
+            if (dto.Role != 0)
+            {
+                user.Role = dto.Role;
+            }
+
+            user.Cpf = string.IsNullOrWhiteSpace(dto.Cpf) ? user.Cpf : dto.Cpf;
 
             _authenticationRepository.Update(user);
             return true;

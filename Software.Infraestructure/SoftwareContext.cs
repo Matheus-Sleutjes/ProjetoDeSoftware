@@ -11,5 +11,7 @@ namespace Software.Infraestructure
         public DbSet<Specialty> Specialty { get; set; }
         public DbSet<Patient> Patient { get; set; }
         public DbSet<Appointment> Appointment { get; set; }
+        public DbSet<PaymentMethod> PaymentMethod { get; set; }
+        public DbSet<Payment> Payment { get; set; }
     }
 }

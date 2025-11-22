@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TableComponent } from '../../shared/table/table.component';
 import { ColumnDefinition, ActionDefinition, PagedList } from '../../shared/table/table.models';
+import { PaymentMethodService } from '../../services/payment-method.service';
 import { ToastService } from '../../services/toast.service';
 
 @Component({
@@ -17,11 +18,8 @@ export class PaymentsMethodComponent implements OnInit {
   loading = false;
 
   columns: ColumnDefinition[] = [
-    { key: 'name', header: 'Nome' },
-    { key: 'crm', header: 'CRM' },
-    { key: 'specialty', header: 'Especialidade' },
-    { key: 'email', header: 'Email' },
-    { key: 'phone', header: 'Telefone' }
+    { key: 'paymentMethodId', header: 'ID' },
+    { key: 'description', header: 'Descrição' }
   ];
 
   action: ActionDefinition[] = [
@@ -39,7 +37,8 @@ export class PaymentsMethodComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private paymentMethodService: PaymentMethodService
   ) { }
 
   ngOnInit(): void {
@@ -48,50 +47,41 @@ export class PaymentsMethodComponent implements OnInit {
 
   loadPaymentMethods(): void {
     this.loading = true;
-    // Simulando dados de métodos de pagamento - substituir por chamada real da API
-    setTimeout(() => {
-      const paymentMethods = [
-        {
-          id: 1,
-          name: 'Dr. João Silva',
-          email: 'joao.silva@clinica.com',
-          crm: '12345',
-          specialty: 'Cardiologia',
-          phone: '(65) 99999-9999'
-        },
-        {
-          id: 2,
-          name: 'Dra. Maria Santos',
-          email: 'maria.santos@clinica.com',
-          crm: '67890',
-          specialty: 'Pediatria',
-          phone: '(65) 88888-8888'
-        },
-        {
-          id: 3,
-          name: 'Dr. Pedro Costa',
-          email: 'pedro.costa@clinica.com',
-          crm: '54321',
-          specialty: 'Ortopedia',
-          phone: '(65) 77777-7777'
-        }
-      ];
-      
-      this.pagedList = {
-        items: paymentMethods,
-        pageNumber: 1,
-        pageSize: 10,
-        totalPages: 1,
-        totalCount: paymentMethods.length
-      };
-      
-      this.loading = false;
-    }, 1000);
+    const paginationRequest = {
+      ...this.pagedList,
+      search: this.pagedList.search || ''
+    };
+
+    this.paymentMethodService.pagination(paginationRequest)
+      .then((response: any) => {
+        this.pagedList = {
+          items: response.items || [],
+          pageNumber: response.pageNumber,
+          pageSize: response.pageSize,
+          totalCount: response.totalCount,
+          totalPages: response.totalPages,
+          search: response.search || ''
+        };
+        this.loading = false;
+      })
+      .catch(() => {
+        this.toastService.show(
+          'Erro ao carregar métodos de pagamento',
+          '#dc3545',
+          '#ffffff',
+          3000
+        );
+        this.loading = false;
+      });
   }
 
   onPagedListChange(pagedList: PagedList<any>): void {
     this.pagedList = pagedList;
     this.loadPaymentMethods();
+  }
+
+  routerCreate(): void {
+    this.router.navigate(['/payments-method/create']);
   }
 
   addPaymentMethod(): void {

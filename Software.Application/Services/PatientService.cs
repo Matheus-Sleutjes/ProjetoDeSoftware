@@ -38,6 +38,21 @@ namespace Software.Application.Services
                 }).ToList();
         }
 
+        public List<PatientDto> Search(string? term = null)
+        {
+            return _patientRepository.Search(term)
+                .Select(entity => new PatientDto()
+                {
+                    PatientId = entity.PatientId,
+                    UserId = entity.UserId,
+                    Name = entity.User != null ? entity.User.Name + " " + entity.User.LastName : null,
+                    Email = entity.User?.Email,
+                    Cpf = entity.User?.Cpf,
+                    Phone = null,
+                    BirthDate = null
+                }).ToList();
+        }
+
         public PatientDto? GetById(int id)
         {
             var entity = _patientRepository.GetPatientById(id);

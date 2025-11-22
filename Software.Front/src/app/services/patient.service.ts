@@ -18,6 +18,11 @@ export class PatientService {
     return this.http.get<any[]>(`${this.controller}`);
   }
 
+  searchPatients(term?: string): Promise<any[]> {
+    const params = term ? { term } : {};
+    return this.http.get<any[]>(`${this.controller}/search`, params);
+  }
+
   getPatientById(id: number): Promise<any> {
     return this.http.get<any>(`${this.controller}/${id}`);
   }

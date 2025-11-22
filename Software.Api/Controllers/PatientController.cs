@@ -20,6 +20,14 @@ namespace Software.Api.Controllers
         }
 
         [Authorize]
+        [HttpGet("search")]
+        public IActionResult Search([FromQuery] string? term = null)
+        {
+            var patients = _patientService.Search(term);
+            return Ok(patients);
+        }
+
+        [Authorize]
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
