@@ -32,6 +32,17 @@ export class UserViewComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    if (!this.authService.isAdmin()) {
+      this.toastService.show(
+        'Você não tem permissão de administrador para visualizar usuários.',
+        '#dc3545',
+        '#ffffff',
+        4000
+      );
+      this.goBack();
+      return;
+    }
+
     this.route.params.subscribe(params => {
       this.userId = +params['id'];
       if (this.userId) {

@@ -1,17 +1,51 @@
 ﻿using Software.Application.Contracts;
 using Software.Domain.Dtos;
+using Software.Domain.Enums;
 using Software.Domain.Models;
 using Software.Infraestructure.Contracts;
-using Software.Infraestructure.Migrations;
 
 namespace Software.Application.Services
 {
-    public class DoctorService(IDoctorRepository doctorRepository) : IDoctorService
+    public class DoctorService(IDoctorRepository doctorRepository, IAuthenticationService authenticationService) : IDoctorService
     {
         private readonly IDoctorRepository _doctorRepository = doctorRepository;
+        private readonly IAuthenticationService _authenticationService = authenticationService;
 
         public string Create(DoctorDto dto)
         {
+            // Se não foi informado UserId, tenta criar o usuário automaticamente
+            if (dto.UserId <= 0)
+            {
+                if (string.IsNullOrWhiteSpace(dto.Name) ||
+                    string.IsNullOrWhiteSpace(dto.LastName) ||
+                    string.IsNullOrWhiteSpace(dto.Username) ||
+                    string.IsNullOrWhiteSpace(dto.Email) ||
+                    string.IsNullOrWhiteSpace(dto.Password) ||
+                    string.IsNullOrWhiteSpace(dto.Cpf))
+                {
+                    return "Dados de usuário são obrigatórios para criação automática do médico.";
+                }
+
+                var userDto = new UserDto
+                {
+                    Name = dto.Name,
+                    LastName = dto.LastName,
+                    Username = dto.Username,
+                    Email = dto.Email,
+                    Password = dto.Password,
+                    Cpf = dto.Cpf,
+                    Role = Role.Doctor
+                };
+
+                var userId = _authenticationService.Create(userDto);
+                if (userId == 0)
+                {
+                    return "Usuário já existe ou não pôde ser criado.";
+                }
+
+                dto.UserId = userId;
+            }
+
             var entity = new Doctor(dto.CRM, dto.UserId, dto.SpecialtyId);
 
             var result = _doctorRepository.Create(entity);

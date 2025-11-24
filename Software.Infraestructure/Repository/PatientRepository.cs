@@ -11,17 +11,9 @@ namespace Software.Infraestructure.Repository
     
         public Patient? GetPatientById(int id)
         {
-            var user = _context.Users.AsNoTracking()
-                                     .FirstOrDefault(u => u.UserId == id && u.Role == Domain.Enums.Role.Patient);
-
-            if (user == null) return null;
-
-            return new Patient
-            {
-                PatientId = user.UserId,
-                UserId = user.UserId,
-                User = user
-            };
+            return _context.Patient.AsNoTracking()
+                                   .Include(p => p.User)
+                                   .FirstOrDefault(p => p.PatientId == id);
         }
 
         public bool Create(Patient entity)
@@ -47,73 +39,63 @@ namespace Software.Infraestructure.Repository
 
         public List<Patient> GetAll()
         {
-            return _context.Users.AsNoTracking()
-                                 .Where(u => u.Role == Domain.Enums.Role.Patient)
-                                 .Select(u => new Patient
-                                 {
-                                     PatientId = u.UserId,
-                                     UserId = u.UserId,
-                                     User = u
-                                 })
-                                 .ToList();
+            return _context.Patient.AsNoTracking()
+                                   .Include(p => p.User)
+                                   .ToList();
         }
 
         public List<Patient> Search(string? term = null)
         {
-            var query = _context.Users.AsNoTracking()
-                                      .Where(u => u.Role == Domain.Enums.Role.Patient)
-                                      .AsQueryable();
+            var query = _context.Patient.AsNoTracking()
+                                        .Include(p => p.User)
+                                        .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(term))
             {
                 term = term.Trim();
-                query = query.Where(u =>
-                    u.Name.Contains(term) ||
-                    u.LastName.Contains(term) ||
-                    u.Email.Contains(term) ||
-                    u.Cpf.Contains(term));
+                query = query.Where(p =>
+                    p.User != null && (
+                        p.User.Name.Contains(term) ||
+                        p.User.LastName.Contains(term) ||
+                        p.User.Email.Contains(term) ||
+                        p.User.Cpf.Contains(term)));
             }
 
             return query
-                .OrderBy(u => u.Name)
-                .Select(u => new Patient
-                {
-                    PatientId = u.UserId,
-                    UserId = u.UserId,
-                    User = u
-                })
+                .OrderBy(p => p.User != null ? p.User.Name : "")
                 .ToList();
         }
 
         public PagedListDto<PatientDto> GetPaged(int pageNumber, int pageSize, string? search = null)
         {
-            var query = _context.Users.AsNoTracking()
-                                      .Where(u => u.Role == Domain.Enums.Role.Patient)
-                                      .AsQueryable();
+            var query = _context.Patient.AsNoTracking()
+                                        .Include(p => p.User)
+                                        .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                query = query.Where(u => 
-                    u.Name.Contains(search) ||
-                    u.LastName.Contains(search) ||
-                    u.Email.Contains(search) ||
-                    u.Cpf.Contains(search));
+                query = query.Where(p =>
+                    p.User != null && (
+                        p.User.Name.Contains(search) ||
+                        p.User.LastName.Contains(search) ||
+                        p.User.Email.Contains(search) ||
+                        p.User.Cpf.Contains(search)));
             }
 
             var totalCount = query.Count();
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
             var items = query
-                .OrderBy(u => u.Name)
+                .OrderBy(p => p.User != null ? p.User.Name : "")
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .Select(u => new PatientDto
+                .Select(p => new PatientDto
                 {
-                    PatientId = u.UserId,
-                    UserId = u.UserId,
-                    Name = u.Name + " " + u.LastName,
-                    Email = u.Email,
-                    Cpf = u.Cpf,
+                    PatientId = p.PatientId,
+                    UserId = p.UserId,
+                    Name = p.User != null ? p.User.Name + " " + p.User.LastName : null,
+                    Email = p.User != null ? p.User.Email : null,
+                    Cpf = p.User != null ? p.User.Cpf : null,
                     Phone = "",
                     BirthDate = null
                 })

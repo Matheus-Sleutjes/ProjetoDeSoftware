@@ -83,7 +83,7 @@ export class DoctorCreateComponent implements OnInit {
       lastName: this.doctorForm.value.lastName,
       username: this.doctorForm.value.username,
       email: this.doctorForm.value.email,
-      password: '123456',
+      password: this.doctorForm.value.password,
       cpf: this.doctorForm.value.cpf,
       role: 2 as 1 | 2 | 3
     };
@@ -157,6 +157,7 @@ export class DoctorCreateComponent implements OnInit {
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
       cpf: ['', [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]],
       crm: ['', [Validators.required]],
       specialtyId: ['', [Validators.required]],

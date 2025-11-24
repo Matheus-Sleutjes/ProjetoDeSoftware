@@ -28,6 +28,17 @@ export class UserEditComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    if (!this.authService.isAdmin()) {
+      this.toastService.show(
+        'Você não tem permissão de administrador para editar usuários.',
+        '#dc3545',
+        '#ffffff',
+        4000
+      );
+      this.router.navigate(['/home']);
+      return;
+    }
+
     this.route.params.subscribe(params => {
       this.userId = +params['id'];
       if (this.userId) {

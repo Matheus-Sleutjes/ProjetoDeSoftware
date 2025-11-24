@@ -37,6 +37,7 @@ export class RegisterComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]],
       cpf: ['', [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]],
+      // role sempre será paciente para registro público
       role: [3]
     }, { validators: this.passwordMatchValidator });
   }
@@ -77,7 +78,8 @@ export class RegisterComponent implements OnInit {
       email: formValue.email,
       password: formValue.password,
       cpf: formValue.cpf,
-      role: formValue.role
+      // força role paciente no registro público
+      role: 3
     };
 
     this.authService.createdAccount(newUser)

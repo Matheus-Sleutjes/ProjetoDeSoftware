@@ -19,7 +19,12 @@ export class AppComponent {
     // private util: UtilsService,
     private authService: AuthenticationService
   ) {
-    // Agora você pode usar name e acr conforme necessário
+  }
+
+  get visibleMenus() {
+    return this.menus.filter(menu =>
+      menu.route !== 'users' || this.authService.isAdmin()
+    );
   }
 
   isLogedin(){

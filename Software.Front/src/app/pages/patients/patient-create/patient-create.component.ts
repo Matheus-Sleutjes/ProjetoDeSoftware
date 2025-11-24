@@ -61,7 +61,7 @@ export class PatientCreateComponent implements OnInit {
       lastName: this.patientForm.value.lastName,
       username: this.patientForm.value.username,
       email: this.patientForm.value.email,
-      password: '123456',
+      password: this.patientForm.value.password,
       cpf: this.patientForm.value.cpf,
       role: 3 as 1 | 2 | 3
     };
@@ -107,6 +107,7 @@ export class PatientCreateComponent implements OnInit {
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
       cpf: ['', [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]],
       phone: [''],
       birthDate: ['']

@@ -81,6 +81,22 @@
             </div>
 
             <div class="mb-3">
+                <label for="password" class="form-label">Senha *</label>
+                <input type="password" class="form-control" id="password" formControlName="password"
+                    placeholder="••••••••"
+                    [class.is-invalid]="patientForm.get('password')?.invalid && patientForm.get('password')?.touched">
+                @if (patientForm.get('password')?.invalid && patientForm.get('password')?.touched) {
+                    <div class="invalid-feedback">
+                        @if (patientForm.get('password')?.errors?.['required']) {
+                            Senha é obrigatória.
+                        } @else if (patientForm.get('password')?.errors?.['minlength']) {
+                            Senha deve ter pelo menos 6 caracteres.
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="mb-3">
                 <label for="cpf" class="form-label">CPF *</label>
                 <input type="text" class="form-control" id="cpf" formControlName="cpf" placeholder="000.000.000-00"
                     (input)="formatCpf($event)" maxlength="14"

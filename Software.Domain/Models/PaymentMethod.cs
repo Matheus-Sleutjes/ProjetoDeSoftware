@@ -19,6 +19,3 @@ namespace Software.Domain.Models
     }
 }
 
-
-
-

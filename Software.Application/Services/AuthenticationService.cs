@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Software.Application.Contracts;
 using Software.Domain.Dtos;
+using Software.Domain.Enums;
 using Software.Domain.Models;
 using Software.Infraestructure.Contracts;
 using System.IdentityModel.Tokens.Jwt;
@@ -19,6 +20,8 @@ namespace Software.Application.Services
             if (Exists) return 0;
 
             var user = new User(dto.Name, dto.LastName, dto.Username, dto.Email, ConvertStringToBase64(dto.Password), dto.Cpf);
+
+            user.Role = dto.Role == 0 ? Role.Patient : dto.Role;
 
             var result = _authenticationRepository.Create(user);
             return result;

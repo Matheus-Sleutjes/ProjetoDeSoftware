@@ -24,6 +24,16 @@ export class UserCreateComponent implements OnInit{
     private location: Location,
   ) { }
   ngOnInit() {
+    if (!this.authService.isAdmin()) {
+      this.toastService.show(
+        'Você não tem permissão de administrador para criar usuários.',
+        '#dc3545',
+        '#ffffff',
+        4000
+      );
+      this.router.navigate(['/home']);
+      return;
+    }
     this.initializeForm();
   }
 

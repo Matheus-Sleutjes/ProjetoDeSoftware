@@ -5,10 +5,9 @@ using Software.Infraestructure.Contracts;
 
 namespace Software.Application.Services
 {
-    public class AppointmentService(IAppointmentRepository appointmentRepository, IAppointmentNotificationService appointmentNotificationService) : IAppointmentService
+    public class AppointmentService(IAppointmentRepository appointmentRepository) : IAppointmentService
     {
         private readonly IAppointmentRepository _appointmentRepository = appointmentRepository;
-        private readonly IAppointmentNotificationService _notificationService = appointmentNotificationService;
 
         public async Task<string> CreateAsync(AppointmentDto dto)
         {
@@ -19,8 +18,6 @@ namespace Software.Application.Services
                 return "Erro ao criar o agendamento!";
 
             var savedAppointment = _appointmentRepository.GetAppointmentById(entity.AppointmentId);
-            if (savedAppointment != null)
-                await _notificationService.NotifyAppointmentCreatedAsync(savedAppointment);
 
             return "Agendamento criado com sucesso!";
         }

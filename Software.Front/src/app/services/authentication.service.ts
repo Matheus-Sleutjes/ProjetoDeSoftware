@@ -66,6 +66,22 @@ export class AuthenticationService {
     return localStorage.getItem('token') !== null;
   }
 
+  getUserRole(): string | null {
+    const token = localStorage.getItem(this.tokenKey);
+    if (!token) return null;
+
+    try {
+      const decodedToken = jwtDecode<any>(token);
+      return decodedToken && (decodedToken as any).acr ? (decodedToken as any).acr : null;
+    } catch {
+      return null;
+    }
+  }
+
+  isAdmin(): boolean {
+    return this.getUserRole() === 'Admin';
+  }
+
   getUserById(id: number): Promise<any> {
     return this.http.get<any>(`${this.controller}/${id}`);
   }

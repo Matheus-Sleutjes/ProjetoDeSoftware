@@ -19,6 +19,14 @@ namespace Software.Infraestructure.Repository
 
         public bool Create(Doctor doctor)
         {
+            // Garante que o usuário vinculado ao médico exista
+            var userExists = _context.Users.AsNoTracking()
+                                           .Any(u => u.UserId == doctor.UserId);
+            if (!userExists)
+            {
+                return false;
+            }
+
             _context.Doctor.Add(doctor);
             SaveChanges();
             return true;

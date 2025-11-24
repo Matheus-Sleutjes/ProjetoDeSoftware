@@ -57,6 +57,17 @@ export class UserManagementComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    if (!this.authService.isAdmin()) {
+      this.toastService.show(
+        'Você não tem permissão de administrador para acessar a gestão de usuários.',
+        '#dc3545',
+        '#ffffff',
+        4000
+      );
+      this.router.navigate(['/home']);
+      return;
+    }
+
     this.action = [
       { label: 'Editar', color: 'btn-primary', icon: 'fa-edit', route: './edit/:id' },
       { label: 'Visualizar', color: 'btn-primary', icon: 'fa-eye', route: './view/:id' },

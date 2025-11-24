@@ -14,10 +14,12 @@
                             <i class="fas fa-users me-1"></i>Menu
                         </a>
                         <ul class="dropdown-menu">
-                            @for (menu of menus; track menu){
-                            <li><a class="dropdown-item" [href]="menu.route">
+                            @for (menu of visibleMenus; track menu){
+                            <li>
+                                <a class="dropdown-item" [href]="menu.route">
                                     <i class="fas me-2"></i>{{menu.label}}
-                                </a></li>
+                                </a>
+                            </li>
                             }
                         </ul>
                     </li>
