@@ -15,7 +15,7 @@ namespace Software.Application.Services
                 ? dto.AppointmentDate
                 : DateTime.SpecifyKind(dto.AppointmentDate, DateTimeKind.Utc);
             
-            ando var entity = new Appointment(dto.PatientId, dto.DoctorId, appointmentDateUtc, dto.Description);
+            var entity = new Appointment(dto.PatientId, dto.DoctorId, appointmentDateUtc, dto.Description);
 
             var result = _appointmentRepository.Create(entity);
             if (!result)
