@@ -22,47 +22,49 @@
     } @else {
         <div class="modal-body p-3 card mb-2">
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="name" class="form-label">Nome</label>
-                    <input type="text" class="form-control" id="name" [value]="user.name || ''" readonly>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Nome</label>
+                    <input type="text" class="form-control-plaintext" [value]="user.name || 'Não informado'" readonly>
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label for="lastName" class="form-label">Sobrenome</label>
-                    <input type="text" class="form-control" id="lastName" [value]="user.lastName || ''" readonly>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Sobrenome</label>
+                    <input type="text" class="form-control-plaintext" [value]="user.lastName || 'Não informado'" readonly>
                 </div>
-            </div>
 
-            <div class="mb-3">
-                <label for="username" class="form-label">Nome de Usuário</label>
-                <input type="text" class="form-control" id="username" [value]="user.username || ''" readonly>
-            </div>
-
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" [value]="user.email || ''" readonly>
-            </div>
-
-            <div class="mb-3">
-                <label for="cpf" class="form-label">CPF</label>
-                <input type="text" class="form-control" id="cpf" [value]="user.cpf || ''" readonly>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Nome de Usuário</label>
+                    <input type="text" class="form-control-plaintext" [value]="user.username || 'Não informado'" readonly>
+                </div>
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="crm" class="form-label">CRM</label>
-                    <input type="text" class="form-control" id="crm" [value]="doctor.crm || ''" readonly>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="text" class="form-control-plaintext" [value]="user.email || 'Não informado'" readonly>
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label for="specialty" class="form-label">Especialidade</label>
-                    <input type="text" class="form-control" id="specialty" [value]="specialty.description || ''" readonly>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">CPF</label>
+                    <input type="text" class="form-control-plaintext" [value]="user.cpf || 'Não informado'" readonly>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Telefone</label>
+                    <input type="text" class="form-control-plaintext" [value]="user.phone || 'Não informado'" readonly>
                 </div>
             </div>
 
-            <div class="mb-3">
-                <label for="phone" class="form-label">Telefone</label>
-                <input type="text" class="form-control" id="phone" [value]="doctor.phone || ''" readonly>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">CRM</label>
+                    <input type="text" class="form-control-plaintext" [value]="doctor.crm || 'Não informado'" readonly>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Especialidade</label>
+                    <input type="text" class="form-control-plaintext" [value]="specialty.description || 'Não informado'" readonly>
+                </div>
             </div>
         </div>
     }

@@ -70,8 +70,7 @@ export class UserCreateComponent implements OnInit{
           '#ffffff',
           3000
         );
-        this.userForm.reset();
-        this.initializeForm();
+        this.router.navigate(['/users']);
       })
       .catch((error: any) => {
         this.toastService.show(

@@ -405,6 +405,119 @@ body {
 }
 
 /* ========================================
+   COMPONENTE AUTOCOMPLETE
+   ======================================== */
+.autocomplete-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.autocomplete-container {
+  position: relative;
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: var(--z-dropdown);
+  background: var(--color-white);
+  border: 2px solid var(--color-gray);
+  border-top: none;
+  border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: -2px;
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .list-group-item {
+    cursor: pointer;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+    padding: var(--spacing-md);
+    transition: background-color var(--transition-fast);
+    border-color: var(--color-gray);
+
+    &:first-child {
+      border-top: none;
+    }
+
+    &:last-child {
+      border-bottom: none;
+      border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+    }
+
+    &:hover {
+      background-color: var(--color-light-gray);
+    }
+
+    &.active {
+      background-color: var(--color-primary);
+      color: var(--color-white);
+      border-color: var(--color-primary);
+    }
+  }
+
+  .p-3 {
+    padding: var(--spacing-md);
+  }
+}
+
+.autocomplete-wrapper {
+  .input-group {
+    .form-control {
+      &[readonly] {
+        background-color: var(--color-white);
+        cursor: pointer;
+        border-right: none;
+        
+        &.is-valid {
+          border-color: var(--color-success);
+          
+          &:focus {
+            border-color: var(--color-success);
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+          }
+        }
+      }
+    }
+
+    .btn-outline-secondary {
+      border-color: var(--color-gray);
+      color: var(--text-secondary);
+      transition: all var(--transition-fast);
+      border-left: none;
+      
+      &:hover {
+        background-color: var(--color-error);
+        border-color: var(--color-error);
+        color: var(--color-white);
+      }
+    }
+
+    .input-group-text {
+      border-left: none;
+      
+      &.bg-white {
+        background-color: var(--color-white) !important;
+      }
+      
+      &.border-start-0 {
+        border-left: none;
+      }
+    }
+  }
+}
+
+/* ========================================
    RESPONSIVIDADE
    ======================================== */
 @media (max-width: 768px) {

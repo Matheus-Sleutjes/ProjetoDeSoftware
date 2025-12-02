@@ -61,8 +61,7 @@ export class PaymentMethodCreateComponent implements OnInit {
             '#ffffff',
             3000
           );
-          this.methodForm.reset();
-          this.initializeForm();
+          this.router.navigate(['/payments-method']);
         } else {
           this.toastService.show(
             'Erro ao criar método de pagamento.',

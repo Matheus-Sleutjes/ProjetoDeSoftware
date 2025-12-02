@@ -35,6 +35,12 @@ namespace Software.Infraestructure.Repository
             return _context.Payment
                 .Include(p => p.PaymentMethod)
                 .Include(p => p.User)
+                .Include(p => p.Appointment)
+                    .ThenInclude(a => a.Patient)
+                    .ThenInclude(pt => pt.User)
+                .Include(p => p.Appointment)
+                    .ThenInclude(a => a.Doctor)
+                    .ThenInclude(d => d.User)
                 .AsNoTracking()
                 .ToList();
         }
@@ -44,6 +50,12 @@ namespace Software.Infraestructure.Repository
             return _context.Payment
                 .Include(p => p.PaymentMethod)
                 .Include(p => p.User)
+                .Include(p => p.Appointment)
+                    .ThenInclude(a => a.Patient)
+                    .ThenInclude(pt => pt.User)
+                .Include(p => p.Appointment)
+                    .ThenInclude(a => a.Doctor)
+                    .ThenInclude(d => d.User)
                 .AsNoTracking()
                 .FirstOrDefault(x => x.PaymentId == id);
         }
@@ -53,6 +65,12 @@ namespace Software.Infraestructure.Repository
             var query = _context.Payment
                 .Include(p => p.PaymentMethod)
                 .Include(p => p.User)
+                .Include(p => p.Appointment)
+                    .ThenInclude(a => a.Patient)
+                    .ThenInclude(pt => pt.User)
+                .Include(p => p.Appointment)
+                    .ThenInclude(a => a.Doctor)
+                    .ThenInclude(d => d.User)
                 .AsNoTracking()
                 .AsQueryable();
 
@@ -60,7 +78,11 @@ namespace Software.Infraestructure.Repository
             {
                 query = query.Where(p =>
                     (p.PaymentMethod != null && p.PaymentMethod.Description.Contains(search)) ||
-                    (p.User != null && (p.User.Name + " " + p.User.LastName).Contains(search)));
+                    (p.User != null && (p.User.Name + " " + p.User.LastName).Contains(search)) ||
+                    (p.Appointment != null && p.Appointment.Patient != null && p.Appointment.Patient.User != null && 
+                        (p.Appointment.Patient.User.Name + " " + p.Appointment.Patient.User.LastName).Contains(search)) ||
+                    (p.Appointment != null && p.Appointment.Doctor != null && p.Appointment.Doctor.User != null && 
+                        (p.Appointment.Doctor.User.Name + " " + p.Appointment.Doctor.User.LastName).Contains(search)));
             }
 
             var totalCount = query.Count();
@@ -78,7 +100,14 @@ namespace Software.Infraestructure.Repository
                     UserId = p.UserId,
                     AppointmentId = p.AppointmentId,
                     PaymentMethodDescription = p.PaymentMethod != null ? p.PaymentMethod.Description : string.Empty,
-                    UserName = p.User != null ? (p.User.Name + " " + p.User.LastName) : string.Empty
+                    UserName = p.User != null ? (p.User.Name + " " + p.User.LastName) : string.Empty,
+                    AppointmentDate = p.Appointment != null ? p.Appointment.AppointmentDate : null,
+                    PatientName = p.Appointment != null && p.Appointment.Patient != null && p.Appointment.Patient.User != null
+                        ? (p.Appointment.Patient.User.Name + " " + p.Appointment.Patient.User.LastName)
+                        : string.Empty,
+                    DoctorName = p.Appointment != null && p.Appointment.Doctor != null && p.Appointment.Doctor.User != null
+                        ? (p.Appointment.Doctor.User.Name + " " + p.Appointment.Doctor.User.LastName)
+                        : string.Empty
                 })
                 .ToList();
 

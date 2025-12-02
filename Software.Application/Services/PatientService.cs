@@ -33,6 +33,8 @@ namespace Software.Application.Services
                     Email = dto.Email,
                     Password = dto.Password,
                     Cpf = dto.Cpf,
+                    Phone = dto.Phone,
+                    BirthDate = dto.BirthDate,
                     Role = Role.Patient
                 };
 
@@ -69,6 +71,12 @@ namespace Software.Application.Services
                 {
                     PatientId = entity.PatientId,
                     UserId = entity.UserId,
+                    Name = entity.User != null ? entity.User.Name + " " + entity.User.LastName : null,
+                    Username = entity.User?.Username,
+                    Email = entity.User?.Email,
+                    Cpf = entity.User?.Cpf,
+                    Phone = entity.User?.Phone,
+                    BirthDate = entity.User?.BirthDate
                 }).ToList();
         }
 
@@ -80,10 +88,11 @@ namespace Software.Application.Services
                     PatientId = entity.PatientId,
                     UserId = entity.UserId,
                     Name = entity.User != null ? entity.User.Name + " " + entity.User.LastName : null,
+                    Username = entity.User?.Username,
                     Email = entity.User?.Email,
                     Cpf = entity.User?.Cpf,
-                    Phone = null,
-                    BirthDate = null
+                    Phone = entity.User?.Phone,
+                    BirthDate = entity.User?.BirthDate
                 }).ToList();
         }
 
@@ -96,6 +105,12 @@ namespace Software.Application.Services
             {
                 PatientId = entity.PatientId,
                 UserId = entity.UserId,
+                Name = entity.User != null ? entity.User.Name + " " + entity.User.LastName : null,
+                Username = entity.User?.Username,
+                Email = entity.User?.Email,
+                Cpf = entity.User?.Cpf,
+                Phone = entity.User?.Phone,
+                BirthDate = entity.User?.BirthDate
             };
             return dto;
         }

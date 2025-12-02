@@ -23,9 +23,9 @@
     <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
       <div class="modal-body p-3 card mb-2">
         <div class="row">
-          <div class="col-md-6 mb-3">
+          <div class="col-md-4 mb-3">
             <label for="paymentDate" class="form-label">Data do Pagamento *</label>
-            <input type="datetime-local" class="form-control" id="paymentDate" formControlName="paymentDate"
+            <input type="date" class="form-control" id="paymentDate" formControlName="paymentDate"
                    [class.is-invalid]="paymentForm.get('paymentDate')?.invalid && paymentForm.get('paymentDate')?.touched">
             @if (paymentForm.get('paymentDate')?.invalid && paymentForm.get('paymentDate')?.touched) {
               <div class="invalid-feedback">
@@ -34,34 +34,27 @@
             }
           </div>
 
-          <div class="col-md-6 mb-3">
-            <label for="paymentMethodId" class="form-label">Método de Pagamento *</label>
-            <select class="form-select" id="paymentMethodId" formControlName="paymentMethodId"
-                    [class.is-invalid]="paymentForm.get('paymentMethodId')?.invalid && paymentForm.get('paymentMethodId')?.touched">
-              <option value="">Selecione um método</option>
-              @for (method of paymentMethods; track method.paymentMethodId) {
-                <option [value]="method.paymentMethodId">{{ method.description || ('Método ' + method.paymentMethodId) }}</option>
-              }
-            </select>
+          <div class="col-md-4 mb-3">
+            <app-autocomplete
+              label="Método de Pagamento"
+              placeholder="Digite o nome do método de pagamento"
+              [required]="true"
+              [options]="paymentMethodOptions"
+              [debounceTime]="300"
+              [minChars]="0"
+              formControlName="paymentMethodId"
+              (searchChange)="onPaymentMethodSearch($event)"
+            ></app-autocomplete>
             @if (paymentForm.get('paymentMethodId')?.invalid && paymentForm.get('paymentMethodId')?.touched) {
-              <div class="invalid-feedback">
+              <div class="text-danger small mt-1">
                 Método de pagamento é obrigatório.
               </div>
             }
           </div>
-        </div>
 
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="userId" class="form-label">Usuário (ID) *</label>
-            <input type="number" class="form-control" id="userId" formControlName="userId"
-                   placeholder="Informe o ID do usuário associado"
-                   [class.is-invalid]="paymentForm.get('userId')?.invalid && paymentForm.get('userId')?.touched">
-            @if (paymentForm.get('userId')?.invalid && paymentForm.get('userId')?.touched) {
-              <div class="invalid-feedback">
-                Usuário é obrigatório.
-              </div>
-            }
+          <div class="col-md-4 mb-3">
+            <label for="userName" class="form-label">Usuário Responsável</label>
+            <input type="text" class="form-control" id="userName" [value]="userName || 'Carregando...'" readonly>
           </div>
         </div>
       </div>

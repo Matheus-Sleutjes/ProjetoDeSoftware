@@ -7,9 +7,10 @@ namespace Software.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AppointmentController(IAppointmentService appointmentService) : ControllerBase
+    public class AppointmentController(IAppointmentService appointmentService, IPaymentService paymentService) : ControllerBase
     {
         private readonly IAppointmentService _appointmentService = appointmentService;
+        private readonly IPaymentService _paymentService = paymentService;
 
         [Authorize]
         [HttpGet]
@@ -71,11 +72,11 @@ namespace Software.Api.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] AppointmentDto dto)
+        public IActionResult Post([FromBody] AppointmentDto dto)
         {
             if (dto == null) return BadRequest(new { Message = "Informações inválidas" });
 
-            var response = await _appointmentService.CreateAsync(dto);
+            var response = _appointmentService.Create(dto);
             return Ok(new { Message = response });
         }
 
@@ -95,6 +96,15 @@ namespace Software.Api.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
+            // Valida se existe pagamento vinculado ao agendamento
+            var payments = _paymentService.GetAll()
+                                          .Where(p => p.AppointmentId == id)
+                                          .ToList();
+            if (payments.Any())
+            {
+                return BadRequest(new { Message = "Não é possível remover o agendamento, pois existe(m) pagamento(s) vinculado(s)." });
+            }
+
             var isSuccess = _appointmentService.DeleteById(id);
 
             if (isSuccess)
@@ -103,4 +113,4 @@ namespace Software.Api.Controllers
                 return NotFound(new { Message = "Agendamento não encontrado!" });
         }
     }
-} 
+}

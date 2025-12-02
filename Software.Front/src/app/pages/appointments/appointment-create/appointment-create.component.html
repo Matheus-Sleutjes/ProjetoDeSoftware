@@ -1,0 +1,86 @@
+<div class="container-fluid">
+  <div class="page-header">
+    <button type="button" class="btn btn-outline-secondary" (click)="goBack()">
+      <i class="fas fa-arrow-left me-2"></i>Voltar
+    </button>
+    <div class="page-header-center">
+      <h2 class="h3 mb-0">
+        <i class="fas fa-calendar-check me-2 text-primary"></i>Novo Agendamento
+      </h2>
+      <p class="text-muted mt-2 mb-0">Preencha os dados abaixo para criar um novo agendamento</p>
+    </div>
+    <div class="page-header-spacer"></div>
+  </div>
+  
+  <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
+    <div class="modal-body p-3 card mb-2">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <app-autocomplete
+            label="Paciente"
+            placeholder="Digite o CPF ou nome do paciente"
+            [required]="true"
+            [options]="patientOptions"
+            [debounceTime]="300"
+            [minChars]="0"
+            formControlName="patientId"
+            (searchChange)="onPatientSearch($event)"
+          ></app-autocomplete>
+          @if (appointmentForm.get('patientId')?.invalid && appointmentForm.get('patientId')?.touched) {
+            <div class="text-danger small mt-1">
+              Paciente é obrigatório.
+            </div>
+          }
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <app-autocomplete
+            label="Médico"
+            placeholder="Digite o CRM ou nome do médico"
+            [required]="true"
+            [options]="doctorOptions"
+            [debounceTime]="300"
+            [minChars]="0"
+            formControlName="doctorId"
+            (searchChange)="onDoctorSearch($event)"
+          ></app-autocomplete>
+          @if (appointmentForm.get('doctorId')?.invalid && appointmentForm.get('doctorId')?.touched) {
+            <div class="text-danger small mt-1">
+              Médico é obrigatório.
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="appointmentDate" class="form-label">Data e Hora *</label>
+          <input type="datetime-local" class="form-control" id="appointmentDate" formControlName="appointmentDate"
+                 [class.is-invalid]="appointmentForm.get('appointmentDate')?.invalid && appointmentForm.get('appointmentDate')?.touched">
+          @if (appointmentForm.get('appointmentDate')?.invalid && appointmentForm.get('appointmentDate')?.touched) {
+            <div class="invalid-feedback">
+              Data e hora são obrigatórias.
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="description" class="form-label">Observações</label>
+        <textarea class="form-control" id="description" formControlName="description" rows="3"
+                  placeholder="Observações sobre o agendamento"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-primary" [disabled]="appointmentForm.invalid || loading">
+        @if (loading) {
+          <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+        }
+        Criar Agendamento
+      </button>
+    </div>
+  </form>
+</div>
+
+

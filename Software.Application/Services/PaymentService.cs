@@ -13,7 +13,12 @@ namespace Software.Application.Services
         {
             if (dto == null) return "Informações inválidas";
 
-            var entity = new Payment(dto.PaymentDate, dto.PaymentMethodId, dto.UserId, dto.AppointmentId);
+            // Garante que a data seja tratada como UTC para o PostgreSQL
+            var paymentDateUtc = dto.PaymentDate.Kind == DateTimeKind.Utc
+                ? dto.PaymentDate
+                : DateTime.SpecifyKind(dto.PaymentDate, DateTimeKind.Utc);
+
+            var entity = new Payment(paymentDateUtc, dto.PaymentMethodId, dto.UserId, dto.AppointmentId);
             _paymentRepository.Create(entity);
 
             return "Pagamento registrado com sucesso!";
@@ -30,7 +35,14 @@ namespace Software.Application.Services
                     UserId = p.UserId,
                     AppointmentId = p.AppointmentId,
                     PaymentMethodDescription = p.PaymentMethod?.Description,
-                    UserName = p.User != null ? $"{p.User.Name} {p.User.LastName}" : null
+                    UserName = p.User != null ? $"{p.User.Name} {p.User.LastName}" : null,
+                    AppointmentDate = p.Appointment?.AppointmentDate,
+                    PatientName = p.Appointment?.Patient?.User != null 
+                        ? $"{p.Appointment.Patient.User.Name} {p.Appointment.Patient.User.LastName}" 
+                        : null,
+                    DoctorName = p.Appointment?.Doctor?.User != null 
+                        ? $"{p.Appointment.Doctor.User.Name} {p.Appointment.Doctor.User.LastName}" 
+                        : null
                 }).ToList();
         }
 
@@ -47,7 +59,14 @@ namespace Software.Application.Services
                 UserId = entity.UserId,
                 AppointmentId = entity.AppointmentId,
                 PaymentMethodDescription = entity.PaymentMethod?.Description,
-                UserName = entity.User != null ? $"{entity.User.Name} {entity.User.LastName}" : null
+                UserName = entity.User != null ? $"{entity.User.Name} {entity.User.LastName}" : null,
+                AppointmentDate = entity.Appointment?.AppointmentDate,
+                PatientName = entity.Appointment?.Patient?.User != null 
+                    ? $"{entity.Appointment.Patient.User.Name} {entity.Appointment.Patient.User.LastName}" 
+                    : null,
+                DoctorName = entity.Appointment?.Doctor?.User != null 
+                    ? $"{entity.Appointment.Doctor.User.Name} {entity.Appointment.Doctor.User.LastName}" 
+                    : null
             };
         }
 
@@ -56,7 +75,10 @@ namespace Software.Application.Services
             var entity = _paymentRepository.GetById(id);
             if (entity == null) return false;
 
-            entity.PaymentDate = dto.PaymentDate;
+            // Garante que a data seja tratada como UTC para o PostgreSQL
+            entity.PaymentDate = dto.PaymentDate.Kind == DateTimeKind.Utc
+                ? dto.PaymentDate
+                : DateTime.SpecifyKind(dto.PaymentDate, DateTimeKind.Utc);
             entity.PaymentMethodId = dto.PaymentMethodId;
             entity.UserId = dto.UserId;
             entity.AppointmentId = dto.AppointmentId;

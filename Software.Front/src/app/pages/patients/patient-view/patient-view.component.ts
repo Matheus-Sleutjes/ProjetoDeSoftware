@@ -55,22 +55,18 @@ export class PatientViewComponent implements OnInit {
     this.patientService.getPatientById(this.patientId).then(
       (patient: any) => {
         this.patient = patient;
-        this.authService.getUserById(patient.userId).then(
-          (user: any) => {
-            this.user = user;
-            this.loading = false;
-          },
-          (error: any) => {
-            this.toastService.show(
-              error.error?.message || 'Erro ao carregar dados do usuário.',
-              '#dc3545',
-              '#ffffff',
-              4000
-            );
-            this.loading = false;
-            this.goBack();
-          }
-        );
+        // Como o PatientDto agora retorna todos os dados do usuário,
+        // não precisa buscar separadamente
+        this.user = {
+          name: patient.name?.split(' ')[0] || '',
+          lastName: patient.name?.split(' ').slice(1).join(' ') || '',
+          username: patient.username || '',
+          email: patient.email || '',
+          cpf: patient.cpf || '',
+          phone: patient.phone || '',
+          birthDate: patient.birthDate || ''
+        };
+        this.loading = false;
       },
       (error: any) => {
         this.toastService.show(

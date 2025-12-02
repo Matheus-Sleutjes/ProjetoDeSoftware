@@ -63,12 +63,26 @@ export class TableComponent<T> {
 
   getRoute(route: string | undefined, item: any): string {
     if (!route) return '';
-    if (route.includes(':id') && item) {
-      const id = item.userId || item.patientId || item.doctorId || item.appointmentId || item.specialtyId || item.id || '';
-      if (id) {
-        return route.replace(':id', id);
-      }
+    
+    // Busca o ID do item em ordem de prioridade
+    // IDs específicos da entidade têm prioridade sobre userId
+    const id = item.patientId || item.doctorId || item.appointmentId || 
+               item.specialtyId || item.paymentId || item.paymentMethodId || 
+               item.userId || item.id || '';
+    
+    if (!id) return route;
+    
+    // Se a rota já tem :id, substitui
+    if (route.includes(':id')) {
+      return route.replace(':id', id.toString());
     }
-    return route;
+    
+    // Se a rota termina com /, adiciona o ID
+    if (route.endsWith('/')) {
+      return route + id;
+    }
+    
+    // Caso contrário, adiciona / e o ID
+    return route + '/' + id;
   }
 }

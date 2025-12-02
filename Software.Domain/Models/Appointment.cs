@@ -14,7 +14,7 @@ namespace Software.Domain.Models
             AppointmentDate = appointmentDate;
             Description = description;
             Status = AppointmentStatus.Scheduled;
-            CreatedAt = DateTime.Now;
+            CreatedAt = DateTime.UtcNow;
         }
 
         [Key]

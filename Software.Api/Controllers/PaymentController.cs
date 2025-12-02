@@ -2,14 +2,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Software.Application.Contracts;
 using Software.Domain.Dtos;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Software.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class PaymentController(IPaymentService paymentService) : ControllerBase
+    public class PaymentController(IPaymentService paymentService, IAuthenticationService authenticationService) : ControllerBase
     {
         private readonly IPaymentService _paymentService = paymentService;
+        private readonly IAuthenticationService _authenticationService = authenticationService;
 
         [Authorize]
         [HttpGet]
@@ -35,6 +38,20 @@ namespace Software.Api.Controllers
         public IActionResult Post([FromBody] PaymentDto dto)
         {
             if (dto == null) return BadRequest("Informações inválidas");
+
+            // Obtém o email do usuário autenticado a partir do token
+            var emailClaim = User?.Claims.FirstOrDefault(c =>
+                c.Type == JwtRegisteredClaimNames.Email || c.Type == ClaimTypes.Email);
+
+            if (emailClaim == null)
+                return BadRequest(new { Message = "Usuário autenticado não identificado." });
+
+            var user = _authenticationService.GetByEmail(emailClaim.Value);
+            if (user == null)
+                return BadRequest(new { Message = "Usuário autenticado não encontrado." });
+
+            // Define o UserId com base no usuário autenticado
+            dto.UserId = user.UserId;
 
             var result = _paymentService.Create(dto);
             return Ok(new { Message = result });

@@ -18,6 +18,18 @@ export class DoctorService {
     return this.http.get<any[]>(`${this.controller}`);
   }
 
+  searchDoctors(term?: string): Promise<any[]> {
+    const pagedList: PagedList<any> = {
+      items: [],
+      pageNumber: 1,
+      pageSize: 50,
+      totalPages: 1,
+      search: term || ''
+    };
+
+    return this.pagination(pagedList).then(response => response.items || []);
+  }
+
   getDoctorById(id: number): Promise<any> {
     return this.http.get<any>(`${this.controller}/${id}`);
   }

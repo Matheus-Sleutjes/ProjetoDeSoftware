@@ -7,11 +7,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../../services/toast.service';
+import { AutocompleteComponent, AutocompleteOption } from '../../../components/autocomplete/autocomplete.component';
 
 @Component({
   selector: 'app-appointment-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, AutocompleteComponent],
   templateUrl: './appointment-edit.component.html',
   styleUrl: './appointment-edit.component.scss',
 })
@@ -20,8 +21,8 @@ export class AppointmentEditComponent implements OnInit {
   appointmentForm!: FormGroup;
   appointmentId!: number;
   loading = false;
-  patients: any[] = [];
-  doctors: any[] = [];
+  patientOptions: AutocompleteOption[] = [];
+  doctorOptions: AutocompleteOption[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -39,8 +40,8 @@ export class AppointmentEditComponent implements OnInit {
       this.appointmentId = +params['id'];
       if (this.appointmentId) {
         this.initializeForm();
-        this.loadPatients();
-        this.loadDoctors();
+        this.loadPatients('');
+        this.loadDoctors('');
         this.loadAppointment();
       } else {
         this.toastService.show(
@@ -58,10 +59,15 @@ export class AppointmentEditComponent implements OnInit {
     this.location.back();
   }
 
-  loadPatients(): void {
-    this.patientService.getAllPatients().then(
+  loadPatients(term: string): void {
+    const search = (term || '').trim() || undefined;
+    this.patientService.searchPatients(search).then(
       (patients: any[]) => {
-        this.patients = patients || [];
+        this.patientOptions = (patients || []).map(patient => ({
+          id: patient.patientId,
+          displayLabel: `${patient.cpf || 'CPF não informado'} - ${patient.name || 'Paciente ' + patient.patientId}`,
+          data: patient
+        }));
       },
       (error: any) => {
         this.toastService.show(
@@ -74,10 +80,15 @@ export class AppointmentEditComponent implements OnInit {
     );
   }
 
-  loadDoctors(): void {
-    this.doctorService.getAllDoctors().then(
+  loadDoctors(term: string): void {
+    const search = (term || '').trim() || undefined;
+    this.doctorService.searchDoctors(search).then(
       (doctors: any[]) => {
-        this.doctors = doctors || [];
+        this.doctorOptions = (doctors || []).map(doctor => ({
+          id: doctor.doctorId,
+          displayLabel: `${doctor.crm || 'CRM não informado'} - ${doctor.name || 'Médico ' + doctor.doctorId}`,
+          data: doctor
+        }));
       },
       (error: any) => {
         this.toastService.show(
@@ -88,6 +99,14 @@ export class AppointmentEditComponent implements OnInit {
         );
       }
     );
+  }
+
+  onPatientSearch(term: string): void {
+    this.loadPatients(term);
+  }
+
+  onDoctorSearch(term: string): void {
+    this.loadDoctors(term);
   }
 
   loadAppointment(): void {

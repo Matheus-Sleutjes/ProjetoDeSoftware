@@ -4,13 +4,15 @@ import { CommonModule, Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
 import { PaymentService } from '../../../services/payment.service';
+import { PaymentDto } from '../../../models/PaymentDto';
 import { PaymentMethodService } from '../../../services/payment-method.service';
 import { AppointmentService } from '../../../services/appointment.service';
+import { AutocompleteComponent, AutocompleteOption } from '../../../components/autocomplete/autocomplete.component';
 
 @Component({
   selector: 'app-payment-create',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, AutocompleteComponent],
   templateUrl: './payment-create.component.html',
   styleUrl: './payment-create.component.scss',
 })
@@ -18,8 +20,8 @@ export class PaymentCreateComponent implements OnInit {
 
   paymentForm!: FormGroup;
   loading = false;
-  paymentMethods: any[] = [];
-  appointments: any[] = [];
+  paymentMethodOptions: AutocompleteOption[] = [];
+  appointmentOptions: AutocompleteOption[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -44,7 +46,11 @@ export class PaymentCreateComponent implements OnInit {
   loadPaymentMethods(): void {
     this.paymentMethodService.getAllPaymentMethods().then(
       (methods: any[]) => {
-        this.paymentMethods = methods || [];
+        this.paymentMethodOptions = (methods || []).map(method => ({
+          id: method.paymentMethodId,
+          displayLabel: method.description || `Método ${method.paymentMethodId}`,
+          data: method
+        }));
       },
       () => {
         this.toastService.show(
@@ -60,7 +66,11 @@ export class PaymentCreateComponent implements OnInit {
   loadAppointments(): void {
     this.appointmentService.getAvailableForPayment().then(
       (appointments: any[]) => {
-        this.appointments = appointments || [];
+        this.appointmentOptions = (appointments || []).map(a => ({
+          id: a.appointmentId,
+          displayLabel: this.formatAppointmentLabel(a),
+          data: a
+        }));
       },
       () => {
         this.toastService.show(
@@ -86,10 +96,11 @@ export class PaymentCreateComponent implements OnInit {
     }
 
     this.loading = true;
-    const paymentData = {
+    const paymentData: PaymentDto = {
       paymentDate: this.paymentForm.value.paymentDate,
       paymentMethodId: this.paymentForm.value.paymentMethodId,
-      userId: this.paymentForm.value.userId,
+      // userId será definido no backend a partir do token
+      userId: 0,
       appointmentId: this.paymentForm.value.appointmentId
     };
 
@@ -102,8 +113,7 @@ export class PaymentCreateComponent implements OnInit {
             '#ffffff',
             3000
           );
-          this.paymentForm.reset();
-          this.initializeForm();
+          this.router.navigate(['/payments']);
         } else {
           this.toastService.show(
             'Erro ao criar pagamento.',
@@ -130,9 +140,34 @@ export class PaymentCreateComponent implements OnInit {
     this.paymentForm = this.fb.group({
       paymentDate: ['', [Validators.required]],
       paymentMethodId: ['', [Validators.required]],
-      userId: ['', [Validators.required]],
       appointmentId: ['', [Validators.required]]
     });
+  }
+
+  onAppointmentSearch(term: string): void {
+    // Filtro local - pode ser substituído por busca no backend se necessário
+    this.loadAppointments();
+  }
+
+  onPaymentMethodSearch(term: string): void {
+    // Filtro local - pode ser substituído por busca no backend se necessário
+    this.loadPaymentMethods();
+  }
+
+  private formatAppointmentLabel(appointment: any): string {
+    if (!appointment) return '';
+    const date = appointment.appointmentDate ? new Date(appointment.appointmentDate) : null;
+    const formattedDate = date
+      ? date.toLocaleString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      : '';
+    const name = appointment.patientName || `Paciente ${appointment.patientId}`;
+    return `${formattedDate} - ${name}`;
   }
 }
 

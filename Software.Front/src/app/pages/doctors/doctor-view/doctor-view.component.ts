@@ -58,34 +58,20 @@ export class DoctorViewComponent implements OnInit {
     this.doctorService.getDoctorById(this.doctorId).then(
       (doctor: any) => {
         this.doctor = doctor;
-        this.authService.getUserById(doctor.userId).then(
-          (user: any) => {
-            this.user = user;
-            if (doctor.specialtyId) {
-              this.specialtyService.getSpecialtyById(doctor.specialtyId).then(
-                (specialty: any) => {
-                  this.specialty = specialty;
-                  this.loading = false;
-                },
-                () => {
-                  this.loading = false;
-                }
-              );
-            } else {
-              this.loading = false;
-            }
-          },
-          (error: any) => {
-            this.toastService.show(
-              error.error?.message || 'Erro ao carregar dados do usuário.',
-              '#dc3545',
-              '#ffffff',
-              4000
-            );
-            this.loading = false;
-            this.goBack();
-          }
-        );
+        // Como o DoctorDto agora retorna todos os dados do usuário,
+        // não precisa buscar separadamente
+        this.user = {
+          name: doctor.name?.split(' ')[0] || '',
+          lastName: doctor.name?.split(' ').slice(1).join(' ') || '',
+          username: doctor.username || '',
+          email: doctor.email || '',
+          cpf: doctor.cpf || '',
+          phone: doctor.phone || ''
+        };
+        this.specialty = {
+          description: doctor.specialtyName || 'Não informado'
+        };
+        this.loading = false;
       },
       (error: any) => {
         this.toastService.show(

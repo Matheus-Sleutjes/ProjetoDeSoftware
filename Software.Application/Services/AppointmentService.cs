@@ -9,9 +9,14 @@ namespace Software.Application.Services
     {
         private readonly IAppointmentRepository _appointmentRepository = appointmentRepository;
 
-        public async Task<string> CreateAsync(AppointmentDto dto)
+        public string Create(AppointmentDto dto)
         {
-            var entity = new Appointment(dto.PatientId, dto.DoctorId, dto.AppointmentDate, dto.Description);
+            // Garante que a data seja tratada como UTC para o PostgreSQL
+            var appointmentDateUtc = dto.AppointmentDate.Kind == DateTimeKind.Utc
+                ? dto.AppointmentDate
+                : DateTime.SpecifyKind(dto.AppointmentDate, DateTimeKind.Utc);
+            
+            var entity = new Appointment(dto.PatientId, dto.DoctorId, appointmentDateUtc, dto.Description);
 
             var result = _appointmentRepository.Create(entity);
             if (!result)
@@ -72,7 +77,9 @@ namespace Software.Application.Services
 
             entity.PatientId = dto.PatientId;
             entity.DoctorId = dto.DoctorId;
-            entity.AppointmentDate = dto.AppointmentDate;
+            entity.Doctor = null;
+            entity.Patient = null;
+            entity.AppointmentDate = DateTime.SpecifyKind(dto.AppointmentDate, DateTimeKind.Utc);
             entity.Description = dto.Description;
             entity.Status = dto.Status;
 

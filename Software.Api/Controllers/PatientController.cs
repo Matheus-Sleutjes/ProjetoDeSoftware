@@ -7,9 +7,10 @@ namespace Software.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class PatientController(IPatientService patientService) : ControllerBase
+    public class PatientController(IPatientService patientService, IAppointmentService appointmentService) : ControllerBase
     {
         private readonly IPatientService _patientService = patientService;
+        private readonly IAppointmentService _appointmentService = appointmentService;
 
         [Authorize]
         [HttpGet]
@@ -78,6 +79,13 @@ namespace Software.Api.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
+            // Valida se existe agendamento vinculado ao paciente
+            var appointments = _appointmentService.GetByPatientId(id);
+            if (appointments.Any())
+            {
+                return BadRequest(new { Message = "Não é possível remover o paciente, pois existe(m) agendamento(s) vinculado(s)." });
+            }
+
             var isSuccess = _patientService.DeleteById(id);
 
             if (isSuccess)

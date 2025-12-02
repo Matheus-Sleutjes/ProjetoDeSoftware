@@ -5,11 +5,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
 import { PaymentService } from '../../../services/payment.service';
 import { PaymentMethodService } from '../../../services/payment-method.service';
+import { AutocompleteComponent, AutocompleteOption } from '../../../components/autocomplete/autocomplete.component';
 
 @Component({
   selector: 'app-payment-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, AutocompleteComponent],
   templateUrl: './payment-edit.component.html',
   styleUrl: './payment-edit.component.scss',
 })
@@ -18,7 +19,10 @@ export class PaymentEditComponent implements OnInit {
   paymentForm!: FormGroup;
   paymentId!: number;
   loading = false;
-  paymentMethods: any[] = [];
+  paymentMethodOptions: AutocompleteOption[] = [];
+  userName: string = '';
+  private userId: number = 0;
+  private appointmentId: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -56,7 +60,11 @@ export class PaymentEditComponent implements OnInit {
   loadPaymentMethods(): void {
     this.paymentMethodService.getAllPaymentMethods().then(
       (methods: any[]) => {
-        this.paymentMethods = methods || [];
+        this.paymentMethodOptions = (methods || []).map(method => ({
+          id: method.paymentMethodId,
+          displayLabel: method.description || `Método ${method.paymentMethodId}`,
+          data: method
+        }));
       },
       () => {
         this.toastService.show(
@@ -69,18 +77,27 @@ export class PaymentEditComponent implements OnInit {
     );
   }
 
+  onPaymentMethodSearch(term: string): void {
+    // Recarrega métodos de pagamento
+    this.loadPaymentMethods();
+  }
+
   loadPayment(): void {
     this.loading = true;
     this.paymentService.getPaymentById(this.paymentId).then(
       (payment: any) => {
         const paymentDate = payment.paymentDate
-          ? new Date(payment.paymentDate).toISOString().slice(0, 16)
+          ? new Date(payment.paymentDate).toISOString().slice(0, 10)
           : '';
+        
+        // Armazena userId e appointmentId (não editáveis)
+        this.userId = payment.userId || 0;
+        this.appointmentId = payment.appointmentId || 0;
+        this.userName = payment.userName || 'Não informado';
+        
         this.paymentForm.patchValue({
           paymentDate: paymentDate,
-          paymentMethodId: payment.paymentMethodId || '',
-          userId: payment.userId || '',
-          appointmentId: payment.appointmentId || ''
+          paymentMethodId: payment.paymentMethodId || ''
         });
         this.loading = false;
       },
@@ -113,8 +130,8 @@ export class PaymentEditComponent implements OnInit {
     const paymentData = {
       paymentDate: this.paymentForm.value.paymentDate,
       paymentMethodId: this.paymentForm.value.paymentMethodId,
-      userId: this.paymentForm.value.userId,
-      appointmentId: this.paymentForm.value.appointmentId
+      userId: this.userId,           // Usa o valor armazenado (não editável)
+      appointmentId: this.appointmentId  // Usa o valor armazenado (não editável)
     };
 
     this.paymentService.updatePayment(this.paymentId, paymentData)
@@ -152,9 +169,7 @@ export class PaymentEditComponent implements OnInit {
   initializeForm(): void {
     this.paymentForm = this.fb.group({
       paymentDate: ['', [Validators.required]],
-      paymentMethodId: ['', [Validators.required]],
-      userId: ['', [Validators.required]],
-      appointmentId: ['', [Validators.required]]
+      paymentMethodId: ['', [Validators.required]]
     });
   }
 }

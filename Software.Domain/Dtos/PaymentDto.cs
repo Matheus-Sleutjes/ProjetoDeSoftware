@@ -10,6 +10,9 @@ namespace Software.Domain.Dtos
 
         public string? PaymentMethodDescription { get; set; }
         public string? UserName { get; set; }
+        public DateTime? AppointmentDate { get; set; }
+        public string? PatientName { get; set; }
+        public string? DoctorName { get; set; }
     }
 }
 

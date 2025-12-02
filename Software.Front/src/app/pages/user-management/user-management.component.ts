@@ -6,7 +6,7 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { In_Users } from '../../models/In_users';
 import { ActionDefinition, ColumnDefinition, PagedList } from '../../shared/table/table.models';
 import { TableComponent } from "../../shared/table/table.component";
-import { ConfirmModalComponent } from '../../shared/modal/confirm-modal.component';
+import { ConfirmationModalComponent } from '../../shared/modal/confirmation-modal.component';
 import { ToastService } from '../../services/toast.service';
 import { Router } from '@angular/router';
 
@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, TableComponent, ConfirmModalComponent]
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, TableComponent, ConfirmationModalComponent]
 })
 export class UserManagementComponent implements OnInit {
   users: In_Users[] = [];
@@ -114,7 +114,7 @@ export class UserManagementComponent implements OnInit {
 
   openDeleteModal(item: any): void {
     this.itemToDelete = item;
-    const itemName = item.name ? `${item.name} ${item.lastName || ''}`.trim() : `item ${item.userId || item.id || ''}`;
+    const itemName = item.name ? `${item.name}`.trim() : `item ${item.userId || item.id || ''}`;
     this.deleteModalTitle = 'Confirmar Exclusão';
     this.deleteModalBody = `Tem certeza que deseja remover ${itemName}?`;
     this.showDeleteModal = true;

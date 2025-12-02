@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationService } from '../../../services/authentication.service';
+import { PatientService } from '../../../services/patient.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
@@ -23,6 +24,7 @@ export class PatientEditComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthenticationService,
+    private patientService: PatientService,
     private router: Router,
     private route: ActivatedRoute,
     private toastService: ToastService,
@@ -62,25 +64,28 @@ export class PatientEditComponent implements OnInit {
 
   loadPatient(): void {
     this.loading = true;
-    // Como Patient agora é apenas um User com Role.Patient,
-    // usamos diretamente o ID do paciente como ID do usuário.
-    this.userId = this.patientId;
-    this.authService.getUserById(this.userId).then(
-      (user: any) => {
+    this.patientService.getPatientById(this.patientId).then(
+      (patient: any) => {
+        this.userId = patient.userId;
+        
+        const birthDateFormatted = patient.birthDate 
+          ? new Date(patient.birthDate).toISOString().slice(0, 10)
+          : '';
+        
         this.patientForm.patchValue({
-          name: user.name || '',
-          lastName: user.lastName || '',
-          username: user.username || '',
-          email: user.email || '',
-          cpf: user.cpf || '',
-          phone: '',
-          birthDate: ''
+          name: patient.name?.split(' ')[0] || '',
+          lastName: patient.name?.split(' ').slice(1).join(' ') || '',
+          username: patient.username || '',
+          email: patient.email || '',
+          cpf: patient.cpf || '',
+          phone: patient.phone || '',
+          birthDate: birthDateFormatted
         });
         this.loading = false;
       },
       (error: any) => {
         this.toastService.show(
-          error.error?.message || 'Erro ao carregar dados do usuário.',
+          error.error?.message || 'Erro ao carregar dados do paciente.',
           '#dc3545',
           '#ffffff',
           4000

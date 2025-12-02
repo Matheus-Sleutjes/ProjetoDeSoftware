@@ -72,6 +72,11 @@ namespace Software.Application.Services
                     SpecialtyId = entity.SpecialtyId,
                     UserId = entity.UserId,
                     CRM = entity.CRM,
+                    Name = entity.User != null ? entity.User.Name + " " + entity.User.LastName : null,
+                    Username = entity.User?.Username,
+                    Email = entity.User?.Email,
+                    Cpf = entity.User?.Cpf,
+                    Phone = entity.User?.Phone
                 }).ToList();
         }
 
@@ -86,6 +91,12 @@ namespace Software.Application.Services
                 UserId = entity.UserId,
                 SpecialtyId = entity.SpecialtyId,
                 CRM = entity.CRM,
+                Name = entity.User != null ? entity.User.Name + " " + entity.User.LastName : null,
+                Username = entity.User?.Username,
+                Email = entity.User?.Email,
+                Cpf = entity.User?.Cpf,
+                Phone = entity.User?.Phone,
+                SpecialtyName = entity.Specialty?.Description
             };
             return dto;
         }

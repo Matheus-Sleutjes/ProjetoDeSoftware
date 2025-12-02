@@ -38,6 +38,11 @@ namespace Software.Domain.Models
         [Required]
         public string Cpf { get; set; } = string.Empty;
 
+        [MaxLength(20)]
+        public string? Phone { get; set; }
+
+        public DateTime? BirthDate { get; set; }
+
         [Required]
         public Role Role { get; set; }
 

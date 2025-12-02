@@ -22,50 +22,52 @@
     } @else {
         <div class="modal-body p-3 card mb-2">
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="patientName" class="form-label">Paciente</label>
-                    <input type="text" class="form-control" id="patientName" 
-                        [value]="appointment.patientName || patient.name || 'Carregando...'" readonly>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Paciente</label>
+                    <input type="text" class="form-control-plaintext" 
+                        [value]="getPatientDisplay()" readonly>
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label for="doctorName" class="form-label">Médico</label>
-                    <input type="text" class="form-control" id="doctorName" 
-                        [value]="appointment.doctorName || doctor.name || 'Carregando...'" readonly>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Médico</label>
+                    <input type="text" class="form-control-plaintext" 
+                        [value]="getDoctorDisplay()" readonly>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Especialidade</label>
+                    <input type="text" class="form-control-plaintext" 
+                        [value]="appointment.specialtyName || 'Não informada'" readonly>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="specialtyName" class="form-label">Especialidade</label>
-                    <input type="text" class="form-control" id="specialtyName" 
-                        [value]="appointment.specialtyName || ''" readonly>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label for="appointmentDate" class="form-label">Data e Hora</label>
-                    <input type="text" class="form-control" id="appointmentDate" 
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Data e Hora</label>
+                    <input type="text" class="form-control-plaintext" 
                         [value]="formatDateTime(appointment.appointmentDate)" readonly>
                 </div>
-            </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="status" class="form-label">Status</label>
-                    <input type="text" class="form-control" id="status" 
-                        [value]="getStatusDescription(appointment.status)" readonly>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Status</label>
+                    <div class="mt-2">
+                        <span class="badge" [ngClass]="getStatusBadgeClass(appointment.status)">
+                            {{ getStatusDescription(appointment.status) }}
+                        </span>
+                    </div>
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label for="createdAt" class="form-label">Data de Criação</label>
-                    <input type="text" class="form-control" id="createdAt" 
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Data de Criação</label>
+                    <input type="text" class="form-control-plaintext" 
                         [value]="formatDateTime(appointment.createdAt)" readonly>
                 </div>
             </div>
 
             <div class="mb-3">
-                <label for="description" class="form-label">Observações</label>
-                <textarea class="form-control" id="description" rows="3" readonly>{{appointment.description || ''}}</textarea>
+                <label class="form-label">Observações</label>
+                <textarea class="form-control-plaintext" rows="3" 
+                    [value]="appointment.description || 'Nenhuma observação'" readonly></textarea>
             </div>
         </div>
     }

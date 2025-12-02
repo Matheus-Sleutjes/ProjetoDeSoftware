@@ -117,8 +117,7 @@ export class DoctorCreateComponent implements OnInit {
                 '#ffffff',
                 3000
               );
-              this.doctorForm.reset();
-              this.initializeForm();
+              this.router.navigate(['/doctors']);
             } else {
               this.toastService.show(
                 'Erro ao criar médico.',

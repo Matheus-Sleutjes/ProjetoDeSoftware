@@ -124,14 +124,12 @@
             <!-- CPF -->
             <div class="mb-3">
               <label for="cpf" class="form-label">CPF *</label>
-              <input type="text" class="form-control" id="cpf" formControlName="cpf" placeholder="000.000.000-00"
-                (input)="formatCpf($event)" maxlength="14"
+              <input type="text" class="form-control" id="cpf" formControlName="cpf" placeholder="000.000.000-00" appCpfMask maxlength="14"
                 [class.is-invalid]="registerForm.get('cpf')?.invalid && registerForm.get('cpf')?.touched">
               <div class="invalid-feedback"
                 *ngIf="registerForm.get('cpf')?.invalid && registerForm.get('cpf')?.touched">
                 <span *ngIf="registerForm.get('cpf')?.errors?.['required']">CPF é obrigatório</span>
-                <span *ngIf="registerForm.get('cpf')?.errors?.['pattern']">CPF deve estar no formato
-                  000.000.000-00</span>
+                <span *ngIf="registerForm.get('cpf')?.errors?.['cpfInvalid']">CPF inválido</span>
               </div>
             </div>
 

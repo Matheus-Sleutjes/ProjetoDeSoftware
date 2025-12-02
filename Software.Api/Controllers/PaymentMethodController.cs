@@ -7,9 +7,10 @@ namespace Software.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class PaymentMethodController(IPaymentMethodService paymentMethodService) : ControllerBase
+    public class PaymentMethodController(IPaymentMethodService paymentMethodService, IPaymentService paymentService) : ControllerBase
     {
         private readonly IPaymentMethodService _paymentMethodService = paymentMethodService;
+        private readonly IPaymentService _paymentService = paymentService;
 
         [Authorize]
         [HttpGet]
@@ -71,6 +72,15 @@ namespace Software.Api.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
+            // Valida se existe pagamento vinculado ao método de pagamento
+            var payments = _paymentService.GetAll()
+                                          .Where(p => p.PaymentMethodId == id)
+                                          .ToList();
+            if (payments.Any())
+            {
+                return BadRequest(new { Message = "Não é possível remover o método de pagamento, pois existe(m) pagamento(s) vinculado(s)." });
+            }
+
             var result = _paymentMethodService.DeleteById(id);
             if (result)
                 return Ok(new { Message = "Método de pagamento deletado com sucesso!" });

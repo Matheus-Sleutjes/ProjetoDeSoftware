@@ -22,37 +22,42 @@
   } @else {
     <div class="modal-body p-3 card mb-2">
       <div class="row">
-        <div class="col-md-3 mb-3">
-          <label class="form-label">ID do Pagamento</label>
-          <input type="text" class="form-control" [value]="payment.paymentId" readonly>
-        </div>
-
-        <div class="col-md-3 mb-3">
+        <div class="col-md-4 mb-3">
           <label class="form-label">Data do Pagamento</label>
-          <input type="text" class="form-control" [value]="formatDateTime(payment.paymentDate)" readonly>
+          <input type="text" class="form-control-plaintext" 
+                 [value]="formatDateTime(payment.paymentDate)" readonly>
         </div>
 
-        <div class="col-md-3 mb-3">
-          <label class="form-label">Usuário (ID)</label>
-          <input type="text" class="form-control" [value]="payment.userId" readonly>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Método de Pagamento</label>
+          <input type="text" class="form-control-plaintext"
+                 [value]="payment.paymentMethodDescription || 'Não informado'" readonly>
         </div>
 
-        <div class="col-md-3 mb-3">
-          <label class="form-label">Agendamento (ID)</label>
-          <input type="text" class="form-control" [value]="payment.appointmentId" readonly>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Usuário Responsável</label>
+          <input type="text" class="form-control-plaintext" 
+                 [value]="payment.userName || 'Não informado'" readonly>
         </div>
       </div>
 
       <div class="row">
-        <div class="col-md-6 mb-3">
-          <label class="form-label">Nome do Usuário</label>
-          <input type="text" class="form-control" [value]="payment.userName || ''" readonly>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Paciente</label>
+          <input type="text" class="form-control-plaintext" 
+                 [value]="payment.patientName || 'Não informado'" readonly>
         </div>
 
-        <div class="col-md-6 mb-3">
-          <label class="form-label">Método de Pagamento</label>
-          <input type="text" class="form-control"
-                 [value]="payment.paymentMethodDescription || paymentMethod.description || ''" readonly>
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Médico</label>
+          <input type="text" class="form-control-plaintext" 
+                 [value]="payment.doctorName || 'Não informado'" readonly>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Data da Consulta</label>
+          <input type="text" class="form-control-plaintext" 
+                 [value]="formatDateTime(payment.appointmentDate)" readonly>
         </div>
       </div>
     </div>

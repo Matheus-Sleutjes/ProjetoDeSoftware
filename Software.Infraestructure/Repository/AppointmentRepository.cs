@@ -30,7 +30,7 @@ namespace Software.Infraestructure.Repository
 
         public bool Update(Appointment entity)
         {
-            entity.UpdatedAt = DateTime.Now;
+            entity.UpdatedAt = DateTime.UtcNow;
             _context.Appointment.Update(entity);
             SaveChanges();
             return true;

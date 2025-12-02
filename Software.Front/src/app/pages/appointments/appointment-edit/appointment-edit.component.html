@@ -24,32 +24,36 @@
             <div class="modal-body p-3 card mb-2">
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="patientId" class="form-label">Paciente *</label>
-                        <select class="form-select" id="patientId" formControlName="patientId"
-                            [class.is-invalid]="appointmentForm.get('patientId')?.invalid && appointmentForm.get('patientId')?.touched">
-                            <option value="">Selecione um paciente</option>
-                            @for (patient of patients; track patient.patientId) {
-                                <option [value]="patient.patientId">{{patient.name || 'Paciente ' + patient.patientId}}</option>
-                            }
-                        </select>
+                        <app-autocomplete
+                            label="Paciente"
+                            placeholder="Digite o CPF ou nome do paciente"
+                            [required]="true"
+                            [options]="patientOptions"
+                            [debounceTime]="300"
+                            [minChars]="0"
+                            formControlName="patientId"
+                            (searchChange)="onPatientSearch($event)"
+                        ></app-autocomplete>
                         @if (appointmentForm.get('patientId')?.invalid && appointmentForm.get('patientId')?.touched) {
-                            <div class="invalid-feedback">
+                            <div class="text-danger small mt-1">
                                 Paciente é obrigatório.
                             </div>
                         }
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label for="doctorId" class="form-label">Médico *</label>
-                        <select class="form-select" id="doctorId" formControlName="doctorId"
-                            [class.is-invalid]="appointmentForm.get('doctorId')?.invalid && appointmentForm.get('doctorId')?.touched">
-                            <option value="">Selecione um médico</option>
-                            @for (doctor of doctors; track doctor.doctorId) {
-                                <option [value]="doctor.doctorId">{{doctor.name || 'Médico ' + doctor.doctorId}}</option>
-                            }
-                        </select>
+                        <app-autocomplete
+                            label="Médico"
+                            placeholder="Digite o CRM ou nome do médico"
+                            [required]="true"
+                            [options]="doctorOptions"
+                            [debounceTime]="300"
+                            [minChars]="0"
+                            formControlName="doctorId"
+                            (searchChange)="onDoctorSearch($event)"
+                        ></app-autocomplete>
                         @if (appointmentForm.get('doctorId')?.invalid && appointmentForm.get('doctorId')?.touched) {
-                            <div class="invalid-feedback">
+                            <div class="text-danger small mt-1">
                                 Médico é obrigatório.
                             </div>
                         }

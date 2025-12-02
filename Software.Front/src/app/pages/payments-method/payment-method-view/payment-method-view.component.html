@@ -24,12 +24,12 @@
       <div class="row">
         <div class="col-md-4 mb-3">
           <label class="form-label">ID do Método</label>
-          <input type="text" class="form-control" [value]="method.paymentMethodId" readonly>
+          <input type="text" class="form-control-plaintext" [value]="method.paymentMethodId || 'Não informado'" readonly>
         </div>
 
-        <div class="col-md-8 mb-3">
+        <div class="col-md-4 mb-3">
           <label class="form-label">Descrição</label>
-          <input type="text" class="form-control" [value]="method.description" readonly>
+          <input type="text" class="form-control-plaintext" [value]="method.description || 'Não informado'" readonly>
         </div>
       </div>
     </div>

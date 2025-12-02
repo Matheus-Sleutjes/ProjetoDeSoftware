@@ -38,16 +38,11 @@
   </div>
 
   <!-- Confirm Delete Modal -->
-  <app-confirm-modal
+  <app-confirmation-modal
     [show]="showDeleteModal"
     [title]="deleteModalTitle"
     [body]="deleteModalBody"
-    [confirmText]="'Confirmar'"
-    [cancelText]="'Cancelar'"
-    [confirmButtonClass]="'btn-danger'"
-    [cancelButtonClass]="'btn-secondary'"
     (confirm)="confirmDelete()"
-    (cancel)="closeDeleteModal()"
-    (close)="closeDeleteModal()">
-  </app-confirm-modal>
+    (cancel)="closeDeleteModal()">
+  </app-confirmation-modal>
 </div>

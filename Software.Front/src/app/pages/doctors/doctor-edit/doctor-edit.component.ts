@@ -87,31 +87,17 @@ export class DoctorEditComponent implements OnInit {
     this.doctorService.getDoctorById(this.doctorId).then(
       (doctor: any) => {
         this.userId = doctor.userId;
-        this.authService.getUserById(this.userId).then(
-          (user: any) => {
-            this.doctorForm.patchValue({
-              name: user.name || '',
-              lastName: user.lastName || '',
-              username: user.username || '',
-              email: user.email || '',
-              cpf: user.cpf || '',
-              crm: doctor.crm || '',
-              specialtyId: doctor.specialtyId || '',
-              phone: doctor.phone || ''
-            });
-            this.loading = false;
-          },
-          (error: any) => {
-            this.toastService.show(
-              error.error?.message || 'Erro ao carregar dados do usuário.',
-              '#dc3545',
-              '#ffffff',
-              4000
-            );
-            this.loading = false;
-            this.goBack();
-          }
-        );
+        this.doctorForm.patchValue({
+          name: doctor.name?.split(' ')[0] || '',
+          lastName: doctor.name?.split(' ').slice(1).join(' ') || '',
+          username: doctor.username || '',
+          email: doctor.email || '',
+          cpf: doctor.cpf || '',
+          crm: doctor.crm || '',
+          specialtyId: doctor.specialtyId || '',
+          phone: doctor.phone || ''
+        });
+        this.loading = false;
       },
       (error: any) => {
         this.toastService.show(

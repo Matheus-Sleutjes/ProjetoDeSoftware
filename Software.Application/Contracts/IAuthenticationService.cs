@@ -8,6 +8,7 @@ namespace Software.Application.Contracts
         LoginResponse Login(string email, string password);
         UserDto? GetById(int id);
         UserDto? GetByCpf(string cpf);
+        UserDto? GetByEmail(string email);
         bool DeleteById(int id);
         bool Update(int id, UserDto dto);
         List<UserDto> GetAllByParameter(int roleId);

@@ -22,6 +22,15 @@ namespace Software.Application.Services
             var user = new User(dto.Name, dto.LastName, dto.Username, dto.Email, ConvertStringToBase64(dto.Password), dto.Cpf);
 
             user.Role = dto.Role == 0 ? Role.Patient : dto.Role;
+            user.Phone = dto.Phone;
+            
+            // Garante que a data seja tratada como UTC para o PostgreSQL
+            if (dto.BirthDate.HasValue)
+            {
+                user.BirthDate = dto.BirthDate.Value.Kind == DateTimeKind.Utc
+                    ? dto.BirthDate.Value
+                    : DateTime.SpecifyKind(dto.BirthDate.Value, DateTimeKind.Utc);
+            }
 
             var result = _authenticationRepository.Create(user);
             return result;
@@ -56,7 +65,9 @@ namespace Software.Application.Services
                 Username = user.Username,
                 Email = user.Email,
                 Role = user.Role,
-                Cpf = user.Cpf
+                Cpf = user.Cpf,
+                Phone = user.Phone,
+                BirthDate = user.BirthDate
             };
             return dto;
         }
@@ -73,7 +84,28 @@ namespace Software.Application.Services
                 Username = user.Username,
                 Email = user.Email,
                 Role = user.Role,
-                Cpf = user.Cpf
+                Cpf = user.Cpf,
+                Phone = user.Phone,
+                BirthDate = user.BirthDate
+            };
+            return dto;
+        }
+
+        public UserDto? GetByEmail(string email)
+        {
+            var user = _authenticationRepository.GetByEmail(email);
+            if (user == null) return null;
+            var dto = new UserDto
+            {
+                UserId = user.UserId,
+                Name = user.Name,
+                LastName = user.LastName,
+                Username = user.Username,
+                Email = user.Email,
+                Role = user.Role,
+                Cpf = user.Cpf,
+                Phone = user.Phone,
+                BirthDate = user.BirthDate
             };
             return dto;
         }
@@ -104,6 +136,15 @@ namespace Software.Application.Services
             }
 
             user.Cpf = string.IsNullOrWhiteSpace(dto.Cpf) ? user.Cpf : dto.Cpf;
+            user.Phone = string.IsNullOrWhiteSpace(dto.Phone) ? user.Phone : dto.Phone;
+            
+            // Garante que a data seja tratada como UTC para o PostgreSQL
+            if (dto.BirthDate.HasValue)
+            {
+                user.BirthDate = dto.BirthDate.Value.Kind == DateTimeKind.Utc
+                    ? dto.BirthDate.Value
+                    : DateTime.SpecifyKind(dto.BirthDate.Value, DateTimeKind.Utc);
+            }
 
             _authenticationRepository.Update(user);
             return true;

@@ -27,53 +27,42 @@
         </div>
 
         <div class="col-md-4 mb-3">
-          <label for="paymentMethodId" class="form-label">Método de Pagamento *</label>
-          <select class="form-select" id="paymentMethodId" formControlName="paymentMethodId"
-                  [class.is-invalid]="paymentForm.get('paymentMethodId')?.invalid && paymentForm.get('paymentMethodId')?.touched">
-            <option value="">Selecione um método</option>
-            @for (method of paymentMethods; track method.paymentMethodId) {
-              <option [value]="method.paymentMethodId">{{ method.description || ('Método ' + method.paymentMethodId) }}</option>
-            }
-          </select>
+          <app-autocomplete
+            label="Método de Pagamento"
+            placeholder="Digite o nome do método de pagamento"
+            [required]="true"
+            [options]="paymentMethodOptions"
+            [debounceTime]="300"
+            [minChars]="0"
+            formControlName="paymentMethodId"
+            (searchChange)="onPaymentMethodSearch($event)"
+          ></app-autocomplete>
           @if (paymentForm.get('paymentMethodId')?.invalid && paymentForm.get('paymentMethodId')?.touched) {
-            <div class="invalid-feedback">
+            <div class="text-danger small mt-1">
               Método de pagamento é obrigatório.
             </div>
           }
         </div>
 
         <div class="col-md-4 mb-3">
-          <label for="appointmentId" class="form-label">Agendamento *</label>
-          <select class="form-select" id="appointmentId" formControlName="appointmentId"
-                  [class.is-invalid]="paymentForm.get('appointmentId')?.invalid && paymentForm.get('appointmentId')?.touched">
-            <option value="">Selecione um agendamento</option>
-            @for (appointment of appointments; track appointment.appointmentId) {
-              <option [value]="appointment.appointmentId">
-                {{ appointment.appointmentDate | date:'dd/MM/yyyy' }} - {{ appointment.patientName || ('Paciente ' + appointment.patientId) }}
-              </option>
-            }
-          </select>
+          <app-autocomplete
+            label="Agendamento"
+            placeholder="Digite a data/hora ou nome do paciente"
+            [required]="true"
+            [options]="appointmentOptions"
+            [debounceTime]="300"
+            [minChars]="0"
+            formControlName="appointmentId"
+            (searchChange)="onAppointmentSearch($event)"
+          ></app-autocomplete>
           @if (paymentForm.get('appointmentId')?.invalid && paymentForm.get('appointmentId')?.touched) {
-            <div class="invalid-feedback">
+            <div class="text-danger small mt-1">
               Agendamento é obrigatório.
             </div>
           }
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label for="userId" class="form-label">Usuário (ID) *</label>
-          <input type="number" class="form-control" id="userId" formControlName="userId"
-                 placeholder="Informe o ID do usuário associado"
-                 [class.is-invalid]="paymentForm.get('userId')?.invalid && paymentForm.get('userId')?.touched">
-          @if (paymentForm.get('userId')?.invalid && paymentForm.get('userId')?.touched) {
-            <div class="invalid-feedback">
-              Usuário é obrigatório.
-            </div>
-          }
-        </div>
-      </div>
     </div>
 
     <div class="modal-footer">

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationService } from '../../../services/authentication.service';
+import { PatientService } from '../../../services/patient.service';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
@@ -21,6 +22,7 @@ export class PatientCreateComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthenticationService,
+    private patientService: PatientService,
     private router: Router,
     private toastService: ToastService,
     private location: Location,
@@ -63,6 +65,8 @@ export class PatientCreateComponent implements OnInit {
       email: this.patientForm.value.email,
       password: this.patientForm.value.password,
       cpf: this.patientForm.value.cpf,
+      phone: this.patientForm.value.phone || null,
+      birthDate: this.patientForm.value.birthDate || null,
       role: 3 as 1 | 2 | 3
     };
 
@@ -80,15 +84,37 @@ export class PatientCreateComponent implements OnInit {
           return;
         }
 
-        this.toastService.show(
-          'Paciente criado com sucesso!',
-          '#28a745',
-          '#ffffff',
-          3000
-        );
-        this.patientForm.reset();
-        this.initializeForm();
-        this.loading = false;
+        const patientData = { userId: userId };
+
+        this.patientService.createPatient(patientData)
+          .then((success: boolean) => {
+            if (success) {
+              this.toastService.show(
+                'Paciente criado com sucesso!',
+                '#28a745',
+                '#ffffff',
+                3000
+              );
+              this.router.navigate(['/patients']);
+            } else {
+              this.toastService.show(
+                'Usuário criado, mas ocorreu um erro ao criar o paciente.',
+                '#dc3545',
+                '#ffffff',
+                4000
+              );
+            }
+            this.loading = false;
+          })
+          .catch((error: any) => {
+            this.toastService.show(
+              error?.error?.message || 'Usuário criado, mas ocorreu um erro ao criar o paciente. Tente novamente.',
+              '#dc3545',
+              '#ffffff',
+              4000
+            );
+            this.loading = false;
+          });
       })
       .catch((error: any) => {
         this.toastService.show(

@@ -65,8 +65,42 @@ export class AppointmentViewComponent implements OnInit {
     }
   }
 
+  getStatusBadgeClass(status: number): string {
+    switch (status) {
+      case 1: return 'bg-primary';
+      case 2: return 'bg-info';
+      case 3: return 'bg-warning';
+      case 4: return 'bg-success';
+      case 5: return 'bg-danger';
+      case 6: return 'bg-secondary';
+      default: return 'bg-secondary';
+    }
+  }
+
+  getPatientDisplay(): string {
+    if (this.appointment.patientName) {
+      return this.appointment.patientName;
+    }
+    if (this.patient && this.patient.name) {
+      const cpf = this.patient.cpf ? `${this.patient.cpf} - ` : '';
+      return `${cpf}${this.patient.name}`;
+    }
+    return 'Não informado';
+  }
+
+  getDoctorDisplay(): string {
+    if (this.appointment.doctorName) {
+      return this.appointment.doctorName;
+    }
+    if (this.doctor && this.doctor.name) {
+      const crm = this.doctor.crm ? `${this.doctor.crm} - ` : '';
+      return `${crm}${this.doctor.name}`;
+    }
+    return 'Não informado';
+  }
+
   formatDateTime(dateTime: string): string {
-    if (!dateTime) return '';
+    if (!dateTime) return 'Não informado';
     const date = new Date(dateTime);
     return date.toLocaleString('pt-BR', {
       day: '2-digit',

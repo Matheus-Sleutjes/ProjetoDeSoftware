@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TableComponent } from '../../shared/table/table.component';
-import { ConfirmModalComponent } from '../../shared/modal/confirm-modal.component';
+import { ConfirmationModalComponent } from '../../shared/modal/confirmation-modal.component';
 import { ColumnDefinition, ActionDefinition, PagedList } from '../../shared/table/table.models';
 import { DoctorService } from '../../services/doctor.service';
 import { ToastService } from '../../services/toast.service';
@@ -13,7 +13,7 @@ import { ToastService } from '../../services/toast.service';
   templateUrl: './doctors.component.html',
   styleUrls: ['./doctors.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, TableComponent, ConfirmModalComponent]
+  imports: [CommonModule, FormsModule, TableComponent, ConfirmationModalComponent]
 })
 export class DoctorsComponent implements OnInit {
   loading = false;

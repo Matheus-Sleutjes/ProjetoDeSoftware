@@ -50,7 +50,7 @@ export class PaymentViewComponent implements OnInit {
   }
 
   formatDateTime(dateTime: string): string {
-    if (!dateTime) return '';
+    if (!dateTime) return 'Não informado';
     const date = new Date(dateTime);
     return date.toLocaleString('pt-BR', {
       day: '2-digit',

@@ -39,4 +39,13 @@
       </app-table>
     </div>
   </div>
+
+  <!-- Confirm Delete Modal -->
+  <app-confirmation-modal
+    [show]="showDeleteModal"
+    [title]="deleteModalTitle"
+    [body]="deleteModalBody"
+    (confirm)="confirmDelete()"
+    (cancel)="closeDeleteModal()">
+  </app-confirmation-modal>
 </div>

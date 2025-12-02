@@ -61,8 +61,7 @@ export class SpecialtyCreateComponent implements OnInit {
             '#ffffff',
             3000
           );
-          this.specialtyForm.reset();
-          this.initializeForm();
+          this.router.navigate(['/specialties']);
         } else {
           this.toastService.show(
             'Erro ao criar especialidade.',

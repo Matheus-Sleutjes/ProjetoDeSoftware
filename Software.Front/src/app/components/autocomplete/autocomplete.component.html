@@ -1,0 +1,66 @@
+<div class="autocomplete-wrapper">
+  @if (label) {
+    <label class="form-label">
+      {{ label }}
+      @if (required) {
+        <span class="text-danger">*</span>
+      }
+    </label>
+  }
+  
+  <div class="autocomplete-container">
+    <div class="input-group">
+      <input
+        type="text"
+        class="form-control"
+        [class.is-valid]="selectedOption"
+        [placeholder]="placeholder"
+        [formControl]="searchControl"
+        (focus)="onInputFocus()"
+        (blur)="onInputBlur()"
+        autocomplete="off"
+        [readonly]="selectedOption !== null"
+      />
+      @if (selectedOption) {
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="clearSelection()"
+          (mousedown)="$event.preventDefault()"
+          title="Limpar seleção"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      } @else {
+        <span class="input-group-text bg-white border-start-0">
+          <i class="fas fa-search text-muted"></i>
+        </span>
+      }
+    </div>
+
+    @if (showDropdown && filteredOptions.length > 0) {
+      <div class="autocomplete-dropdown">
+        <ul class="list-group">
+          @for (option of filteredOptions; track option.id) {
+            <li
+              class="list-group-item list-group-item-action"
+              (click)="selectOption(option)"
+              [class.active]="selectedOption?.id === option.id"
+            >
+              {{ option.displayLabel }}
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    @if (showDropdown && filteredOptions.length === 0 && searchControl.value && searchControl.value.length >= minChars) {
+      <div class="autocomplete-dropdown">
+        <div class="p-3 text-muted text-center">
+          Nenhum resultado encontrado
+        </div>
+      </div>
+    }
+  </div>
+</div>
+

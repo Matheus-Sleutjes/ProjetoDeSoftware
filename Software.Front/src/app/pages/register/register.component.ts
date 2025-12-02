@@ -6,13 +6,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationService } from '../../services/authentication.service';
 import { ToastService } from '../../services/toast.service';
 import { In_CreateAccount } from '../../models/In_createAccount';
+import { CpfValidator } from '../../validators/cpf.validator';
+import { CpfMaskDirective } from '../../directives/cpf-mask.directive';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, CpfMaskDirective]
 })
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
@@ -36,7 +38,7 @@ export class RegisterComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]],
-      cpf: ['', [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]],
+      cpf: ['', [Validators.required, CpfValidator.validate()]],
       // role sempre será paciente para registro público
       role: [3]
     }, { validators: this.passwordMatchValidator });
@@ -53,14 +55,6 @@ export class RegisterComponent implements OnInit {
     return null;
   }
 
-  formatCpf(event: any) {
-    let value = event.target.value.replace(/\D/g, '');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    event.target.value = value;
-    this.registerForm.get('cpf')?.setValue(value);
-  }
 
   onRegister() {
     if (this.registerForm.invalid) {
