@@ -41,7 +41,7 @@ namespace Software.Application.Services
                 var userId = _authenticationService.Create(userDto);
                 if (userId == 0)
                 {
-                    return "Usuário já existe ou não pôde ser criado.";
+                    return "Email ou nome de usuário já está em uso.";
                 }
 
                 dto.UserId = userId;
