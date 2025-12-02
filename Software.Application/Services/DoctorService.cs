@@ -13,7 +13,6 @@ namespace Software.Application.Services
 
         public string Create(DoctorDto dto)
         {
-            // Se não foi informado UserId, tenta criar o usuário automaticamente
             if (dto.UserId <= 0)
             {
                 if (string.IsNullOrWhiteSpace(dto.Name) ||

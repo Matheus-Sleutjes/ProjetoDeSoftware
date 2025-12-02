@@ -14,10 +14,6 @@ export class DoctorService {
 
   public controller = "Doctor";
 
-  getAllDoctors(): Promise<any[]> {
-    return this.http.get<any[]>(`${this.controller}`);
-  }
-
   searchDoctors(term?: string): Promise<any[]> {
     const pagedList: PagedList<any> = {
       items: [],

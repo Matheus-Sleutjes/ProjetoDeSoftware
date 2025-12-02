@@ -14,10 +14,6 @@ export class PaymentService {
     private http: HttpService
   ) { }
 
-  getAllPayments(): Promise<any[]> {
-    return this.http.get<any[]>(`${this.controller}`);
-  }
-
   getPaymentById(id: number): Promise<any> {
     return this.http.get<any>(`${this.controller}/${id}`);
   }

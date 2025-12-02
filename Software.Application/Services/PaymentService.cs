@@ -13,7 +13,6 @@ namespace Software.Application.Services
         {
             if (dto == null) return "Informações inválidas";
 
-            // Garante que a data seja tratada como UTC para o PostgreSQL
             var paymentDateUtc = dto.PaymentDate.Kind == DateTimeKind.Utc
                 ? dto.PaymentDate
                 : DateTime.SpecifyKind(dto.PaymentDate, DateTimeKind.Utc);
@@ -75,7 +74,6 @@ namespace Software.Application.Services
             var entity = _paymentRepository.GetById(id);
             if (entity == null) return false;
 
-            // Garante que a data seja tratada como UTC para o PostgreSQL
             entity.PaymentDate = dto.PaymentDate.Kind == DateTimeKind.Utc
                 ? dto.PaymentDate
                 : DateTime.SpecifyKind(dto.PaymentDate, DateTimeKind.Utc);

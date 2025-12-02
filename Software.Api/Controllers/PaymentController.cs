@@ -39,7 +39,6 @@ namespace Software.Api.Controllers
         {
             if (dto == null) return BadRequest("Informações inválidas");
 
-            // Obtém o email do usuário autenticado a partir do token
             var emailClaim = User?.Claims.FirstOrDefault(c =>
                 c.Type == JwtRegisteredClaimNames.Email || c.Type == ClaimTypes.Email);
 
@@ -50,7 +49,6 @@ namespace Software.Api.Controllers
             if (user == null)
                 return BadRequest(new { Message = "Usuário autenticado não encontrado." });
 
-            // Define o UserId com base no usuário autenticado
             dto.UserId = user.UserId;
 
             var result = _paymentService.Create(dto);

@@ -71,7 +71,6 @@ namespace Software.Api.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            // Valida se existe agendamento vinculado ao médico
             var appointments = _appointmentService.GetByDoctorId(id);
             if (appointments.Any())
             {

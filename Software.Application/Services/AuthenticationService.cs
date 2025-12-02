@@ -24,7 +24,6 @@ namespace Software.Application.Services
             user.Role = dto.Role == 0 ? Role.Patient : dto.Role;
             user.Phone = dto.Phone;
             
-            // Garante que a data seja tratada como UTC para o PostgreSQL
             if (dto.BirthDate.HasValue)
             {
                 user.BirthDate = dto.BirthDate.Value.Kind == DateTimeKind.Utc
@@ -129,7 +128,6 @@ namespace Software.Application.Services
             user.Username = string.IsNullOrWhiteSpace(dto.Username) ? user.Username : dto.Username;
             user.Email = string.IsNullOrWhiteSpace(dto.Email) ? user.Email : dto.Email;
 
-            // Se Role não vier informado (0), mantém o perfil atual
             if (dto.Role != 0)
             {
                 user.Role = dto.Role;
@@ -138,7 +136,6 @@ namespace Software.Application.Services
             user.Cpf = string.IsNullOrWhiteSpace(dto.Cpf) ? user.Cpf : dto.Cpf;
             user.Phone = string.IsNullOrWhiteSpace(dto.Phone) ? user.Phone : dto.Phone;
             
-            // Garante que a data seja tratada como UTC para o PostgreSQL
             if (dto.BirthDate.HasValue)
             {
                 user.BirthDate = dto.BirthDate.Value.Kind == DateTimeKind.Utc

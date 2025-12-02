@@ -99,7 +99,6 @@ export class PaymentCreateComponent implements OnInit {
     const paymentData: PaymentDto = {
       paymentDate: this.paymentForm.value.paymentDate,
       paymentMethodId: this.paymentForm.value.paymentMethodId,
-      // userId será definido no backend a partir do token
       userId: 0,
       appointmentId: this.paymentForm.value.appointmentId
     };

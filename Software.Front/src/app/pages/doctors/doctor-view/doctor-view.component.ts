@@ -58,8 +58,6 @@ export class DoctorViewComponent implements OnInit {
     this.doctorService.getDoctorById(this.doctorId).then(
       (doctor: any) => {
         this.doctor = doctor;
-        // Como o DoctorDto agora retorna todos os dados do usuário,
-        // não precisa buscar separadamente
         this.user = {
           name: doctor.name?.split(' ')[0] || '',
           lastName: doctor.name?.split(' ').slice(1).join(' ') || '',

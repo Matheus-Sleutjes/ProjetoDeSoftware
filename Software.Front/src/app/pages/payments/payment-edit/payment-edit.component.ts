@@ -78,7 +78,6 @@ export class PaymentEditComponent implements OnInit {
   }
 
   onPaymentMethodSearch(term: string): void {
-    // Recarrega métodos de pagamento
     this.loadPaymentMethods();
   }
 
@@ -90,7 +89,6 @@ export class PaymentEditComponent implements OnInit {
           ? new Date(payment.paymentDate).toISOString().slice(0, 10)
           : '';
         
-        // Armazena userId e appointmentId (não editáveis)
         this.userId = payment.userId || 0;
         this.appointmentId = payment.appointmentId || 0;
         this.userName = payment.userName || 'Não informado';

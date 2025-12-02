@@ -72,7 +72,6 @@ namespace Software.Api.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            // Valida se existe pagamento vinculado ao método de pagamento
             var payments = _paymentService.GetAll()
                                           .Where(p => p.PaymentMethodId == id)
                                           .ToList();

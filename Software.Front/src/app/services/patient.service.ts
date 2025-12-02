@@ -14,10 +14,6 @@ export class PatientService {
 
   public controller = "Patient";
 
-  getAllPatients(): Promise<any[]> {
-    return this.http.get<any[]>(`${this.controller}`);
-  }
-
   searchPatients(term?: string): Promise<any[]> {
     const params = term ? { term } : {};
     return this.http.get<any[]>(`${this.controller}/search`, params);

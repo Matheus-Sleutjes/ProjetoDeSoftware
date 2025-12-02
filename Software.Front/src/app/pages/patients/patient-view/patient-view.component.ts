@@ -55,8 +55,6 @@ export class PatientViewComponent implements OnInit {
     this.patientService.getPatientById(this.patientId).then(
       (patient: any) => {
         this.patient = patient;
-        // Como o PatientDto agora retorna todos os dados do usuário,
-        // não precisa buscar separadamente
         this.user = {
           name: patient.name?.split(' ')[0] || '',
           lastName: patient.name?.split(' ').slice(1).join(' ') || '',

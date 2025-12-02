@@ -11,12 +11,11 @@ namespace Software.Application.Services
 
         public string Create(AppointmentDto dto)
         {
-            // Garante que a data seja tratada como UTC para o PostgreSQL
             var appointmentDateUtc = dto.AppointmentDate.Kind == DateTimeKind.Utc
                 ? dto.AppointmentDate
                 : DateTime.SpecifyKind(dto.AppointmentDate, DateTimeKind.Utc);
             
-            var entity = new Appointment(dto.PatientId, dto.DoctorId, appointmentDateUtc, dto.Description);
+            ando var entity = new Appointment(dto.PatientId, dto.DoctorId, appointmentDateUtc, dto.Description);
 
             var result = _appointmentRepository.Create(entity);
             if (!result)

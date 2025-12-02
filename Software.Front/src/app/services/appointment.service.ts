@@ -14,24 +14,12 @@ export class AppointmentService {
 
   public controller = "Appointment";
 
-  getAllAppointments(): Promise<any[]> {
-    return this.http.get<any[]>(`${this.controller}`);
-  }
-
   getAvailableForPayment(): Promise<any[]> {
     return this.http.get<any[]>(`${this.controller}/available-for-payment`);
   }
 
   getAppointmentById(id: number): Promise<any> {
     return this.http.get<any>(`${this.controller}/${id}`);
-  }
-
-  getAppointmentsByPatientId(patientId: number): Promise<any[]> {
-    return this.http.get<any[]>(`${this.controller}/patient/${patientId}`);
-  }
-
-  getAppointmentsByDoctorId(doctorId: number): Promise<any[]> {
-    return this.http.get<any[]>(`${this.controller}/doctor/${doctorId}`);
   }
 
   pagination(pagedList: PagedList<any>): Promise<any> {

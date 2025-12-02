@@ -96,7 +96,6 @@ namespace Software.Api.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            // Valida se existe pagamento vinculado ao agendamento
             var payments = _paymentService.GetAll()
                                           .Where(p => p.AppointmentId == id)
                                           .ToList();
