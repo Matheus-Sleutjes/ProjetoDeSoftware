@@ -1,116 +1,179 @@
-using Microsoft.EntityFrameworkCore;
+using Dapper;
+using Npgsql;
 using Software.Domain.Dtos;
 using Software.Domain.Models;
 using Software.Infraestructure.Contracts;
+using System.Data;
 
 namespace Software.Infraestructure.Repository
 {
-    public class PaymentRepository(SoftwareContext context) : Repository(context), IPaymentRepository
+    public class PaymentRepository : IPaymentRepository
     {
-        private readonly SoftwareContext _context = context;
+        private IDbConnection GetConnection() => new NpgsqlConnection(DatabaseConfig.ConnectionString);
 
         public bool Create(Payment payment)
         {
-            _context.Payment.Add(payment);
-            SaveChanges();
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/CreatePayment.sql");
+            
+            var paymentId = connection.QuerySingle<int>(sql, new
+            {
+                PaymentDate = payment.PaymentDate,
+                PaymentMethodId = payment.PaymentMethodId,
+                UserId = payment.UserId,
+                AppointmentId = payment.AppointmentId
+            });
+            
+            payment.PaymentId = paymentId;
             return true;
         }
 
         public bool Delete(Payment payment)
         {
-            _context.Payment.Remove(payment);
-            SaveChanges();
-            return true;
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/DeletePayment.sql");
+            
+            var rowsAffected = connection.Execute(sql, new { PaymentId = payment.PaymentId });
+            return rowsAffected > 0;
         }
 
         public bool Update(Payment payment)
         {
-            _context.Payment.Update(payment);
-            SaveChanges();
-            return true;
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/UpdatePayment.sql");
+            
+            var rowsAffected = connection.Execute(sql, new
+            {
+                PaymentId = payment.PaymentId,
+                PaymentDate = payment.PaymentDate,
+                PaymentMethodId = payment.PaymentMethodId,
+                UserId = payment.UserId,
+                AppointmentId = payment.AppointmentId
+            });
+            
+            return rowsAffected > 0;
         }
 
         public List<Payment> GetAll()
         {
-            return _context.Payment
-                .Include(p => p.PaymentMethod)
-                .Include(p => p.User)
-                .Include(p => p.Appointment)
-                    .ThenInclude(a => a.Patient)
-                    .ThenInclude(pt => pt.User)
-                .Include(p => p.Appointment)
-                    .ThenInclude(a => a.Doctor)
-                    .ThenInclude(d => d.User)
-                .AsNoTracking()
-                .ToList();
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/GetAllPayments.sql");
+            
+            var payments = connection.Query<Payment>(sql).ToList();
+            
+            foreach (var payment in payments)
+            {
+                if (payment.PaymentMethodId > 0)
+                {
+                    payment.PaymentMethod = connection.QuerySingleOrDefault<PaymentMethod>(
+                        "SELECT \"PaymentMethodId\", \"Description\" FROM \"PaymentMethod\" WHERE \"PaymentMethodId\" = @Id",
+                        new { Id = payment.PaymentMethodId });
+                }
+                
+                if (payment.UserId > 0)
+                {
+                    payment.User = connection.QuerySingleOrDefault<User>(
+                        "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
+                        new { Id = payment.UserId });
+                }
+                
+                if (payment.AppointmentId > 0)
+                {
+                    payment.Appointment = connection.QuerySingleOrDefault<Appointment>(
+                        "SELECT \"AppointmentId\", \"AppointmentDate\", \"Description\", \"Status\", \"PatientId\", \"DoctorId\", \"CreatedAt\", \"UpdatedAt\" FROM \"Appointment\" WHERE \"AppointmentId\" = @Id",
+                        new { Id = payment.AppointmentId });
+                    
+                    if (payment.Appointment != null)
+                    {
+                        if (payment.Appointment.PatientId > 0)
+                        {
+                            payment.Appointment.Patient = connection.QuerySingleOrDefault<Patient>(
+                                "SELECT \"PatientId\", \"UserId\" FROM \"Patient\" WHERE \"PatientId\" = @Id",
+                                new { Id = payment.Appointment.PatientId });
+                        }
+                        
+                        if (payment.Appointment.DoctorId > 0)
+                        {
+                            payment.Appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(
+                                "SELECT \"DoctorId\", \"CRM\", \"UserId\", \"SpecialtyId\" FROM \"Doctor\" WHERE \"DoctorId\" = @Id",
+                                new { Id = payment.Appointment.DoctorId });
+                        }
+                    }
+                }
+            }
+            
+            return payments;
         }
 
         public Payment? GetById(int id)
         {
-            return _context.Payment
-                .Include(p => p.PaymentMethod)
-                .Include(p => p.User)
-                .Include(p => p.Appointment)
-                    .ThenInclude(a => a.Patient)
-                    .ThenInclude(pt => pt.User)
-                .Include(p => p.Appointment)
-                    .ThenInclude(a => a.Doctor)
-                    .ThenInclude(d => d.User)
-                .AsNoTracking()
-                .FirstOrDefault(x => x.PaymentId == id);
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/GetPaymentById.sql");
+            
+            var payment = connection.QuerySingleOrDefault<Payment>(sql, new { PaymentId = id });
+            
+            if (payment == null) return null;
+            
+            if (payment.PaymentMethodId > 0)
+            {
+                payment.PaymentMethod = connection.QuerySingleOrDefault<PaymentMethod>(
+                    "SELECT \"PaymentMethodId\", \"Description\" FROM \"PaymentMethod\" WHERE \"PaymentMethodId\" = @Id",
+                    new { Id = payment.PaymentMethodId });
+            }
+            
+            if (payment.UserId > 0)
+            {
+                payment.User = connection.QuerySingleOrDefault<User>(
+                    "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
+                    new { Id = payment.UserId });
+            }
+            
+            if (payment.AppointmentId > 0)
+            {
+                payment.Appointment = connection.QuerySingleOrDefault<Appointment>(
+                    "SELECT \"AppointmentId\", \"AppointmentDate\", \"Description\", \"Status\", \"PatientId\", \"DoctorId\", \"CreatedAt\", \"UpdatedAt\" FROM \"Appointment\" WHERE \"AppointmentId\" = @Id",
+                    new { Id = payment.AppointmentId });
+                
+                if (payment.Appointment != null)
+                {
+                    if (payment.Appointment.PatientId > 0)
+                    {
+                        payment.Appointment.Patient = connection.QuerySingleOrDefault<Patient>(
+                            "SELECT \"PatientId\", \"UserId\" FROM \"Patient\" WHERE \"PatientId\" = @Id",
+                            new { Id = payment.Appointment.PatientId });
+                    }
+                    
+                    if (payment.Appointment.DoctorId > 0)
+                    {
+                        payment.Appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(
+                            "SELECT \"DoctorId\", \"CRM\", \"UserId\", \"SpecialtyId\" FROM \"Doctor\" WHERE \"DoctorId\" = @Id",
+                            new { Id = payment.Appointment.DoctorId });
+                    }
+                }
+            }
+            
+            return payment;
         }
 
         public PagedListDto<PaymentDto> GetPaged(int pageNumber, int pageSize, string? search = null)
         {
-            var query = _context.Payment
-                .Include(p => p.PaymentMethod)
-                .Include(p => p.User)
-                .Include(p => p.Appointment)
-                    .ThenInclude(a => a.Patient)
-                    .ThenInclude(pt => pt.User)
-                .Include(p => p.Appointment)
-                    .ThenInclude(a => a.Doctor)
-                    .ThenInclude(d => d.User)
-                .AsNoTracking()
-                .AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(search))
+            using var connection = GetConnection();
+            
+            var countSql = File.ReadAllText("Queries/GetPagedPaymentsCount.sql");
+            var dataSql = File.ReadAllText("Queries/GetPagedPayments.sql");
+            
+            var parameters = new
             {
-                query = query.Where(p =>
-                    (p.PaymentMethod != null && p.PaymentMethod.Description.Contains(search)) ||
-                    (p.User != null && (p.User.Name + " " + p.User.LastName).Contains(search)) ||
-                    (p.Appointment != null && p.Appointment.Patient != null && p.Appointment.Patient.User != null && 
-                        (p.Appointment.Patient.User.Name + " " + p.Appointment.Patient.User.LastName).Contains(search)) ||
-                    (p.Appointment != null && p.Appointment.Doctor != null && p.Appointment.Doctor.User != null && 
-                        (p.Appointment.Doctor.User.Name + " " + p.Appointment.Doctor.User.LastName).Contains(search)));
-            }
-
-            var totalCount = query.Count();
+                Search = search,
+                PageSize = pageSize,
+                Offset = (pageNumber - 1) * pageSize
+            };
+            
+            var totalCount = connection.QuerySingle<int>(countSql, parameters);
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-
-            var items = query
-                .OrderByDescending(p => p.PaymentDate)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(p => new PaymentDto
-                {
-                    PaymentId = p.PaymentId,
-                    PaymentDate = p.PaymentDate,
-                    PaymentMethodId = p.PaymentMethodId,
-                    UserId = p.UserId,
-                    AppointmentId = p.AppointmentId,
-                    PaymentMethodDescription = p.PaymentMethod != null ? p.PaymentMethod.Description : string.Empty,
-                    UserName = p.User != null ? (p.User.Name + " " + p.User.LastName) : string.Empty,
-                    AppointmentDate = p.Appointment != null ? p.Appointment.AppointmentDate : null,
-                    PatientName = p.Appointment != null && p.Appointment.Patient != null && p.Appointment.Patient.User != null
-                        ? (p.Appointment.Patient.User.Name + " " + p.Appointment.Patient.User.LastName)
-                        : string.Empty,
-                    DoctorName = p.Appointment != null && p.Appointment.Doctor != null && p.Appointment.Doctor.User != null
-                        ? (p.Appointment.Doctor.User.Name + " " + p.Appointment.Doctor.User.LastName)
-                        : string.Empty
-                })
-                .ToList();
-
+            
+            var items = connection.Query<PaymentDto>(dataSql, parameters).ToList();
+            
             return new PagedListDto<PaymentDto>
             {
                 Items = items,
@@ -123,7 +186,3 @@ namespace Software.Infraestructure.Repository
         }
     }
 }
-
-
-
-

@@ -1,106 +1,134 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dapper;
+using Npgsql;
 using Software.Domain.Dtos;
 using Software.Domain.Models;
 using Software.Infraestructure.Contracts;
+using System.Data;
 
 namespace Software.Infraestructure.Repository
 {
-    public class PatientRepository(SoftwareContext context) : Repository(context), IPatientRepository
+    public class PatientRepository : IPatientRepository
     {
-        private readonly SoftwareContext _context = context;
-    
+        private IDbConnection GetConnection() => new NpgsqlConnection(DatabaseConfig.ConnectionString);
+
         public Patient? GetPatientById(int id)
         {
-            return _context.Patient.AsNoTracking()
-                                   .Include(p => p.User)
-                                   .FirstOrDefault(p => p.PatientId == id);
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/GetPatientById.sql");
+            
+            var patient = connection.QuerySingleOrDefault<Patient>(sql, new { PatientId = id });
+            
+            if (patient == null) return null;
+            
+            if (patient.UserId > 0)
+            {
+                patient.User = connection.QuerySingleOrDefault<User>(
+                    "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
+                    new { Id = patient.UserId });
+            }
+            
+            return patient;
         }
 
         public bool Create(Patient entity)
         {
-            _context.Patient.Add(entity);
-            SaveChanges();
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/CreatePatient.sql");
+            
+            var patientId = connection.QuerySingle<int>(sql, new { UserId = entity.UserId });
+            
+            entity.PatientId = patientId;
             return true;
         }
 
         public bool Update(Patient entity)
         {
-            _context.Patient.Update(entity);
-            SaveChanges();
-            return true;
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/UpdatePatient.sql");
+            
+            var rowsAffected = connection.Execute(sql, new
+            {
+                PatientId = entity.PatientId,
+                UserId = entity.UserId
+            });
+            
+            return rowsAffected > 0;
         }
 
         public bool Delete(Patient entity)
         {
-            _context.Patient.Remove(entity);
-            SaveChanges();
-            return true;
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/DeletePatient.sql");
+            
+            var rowsAffected = connection.Execute(sql, new { PatientId = entity.PatientId });
+            return rowsAffected > 0;
         }
 
         public List<Patient> GetAll()
         {
-            return _context.Patient.AsNoTracking()
-                                   .Include(p => p.User)
-                                   .ToList();
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/GetAllPatients.sql");
+            
+            var patients = connection.Query<Patient>(sql).ToList();
+            
+            foreach (var patient in patients)
+            {
+                if (patient.UserId > 0)
+                {
+                    patient.User = connection.QuerySingleOrDefault<User>(
+                        "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
+                        new { Id = patient.UserId });
+                }
+            }
+            
+            return patients;
         }
 
         public List<Patient> Search(string? term = null)
         {
-            var query = _context.Patient.AsNoTracking()
-                                        .Include(p => p.User)
-                                        .AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(term))
-            {
-                term = term.Trim();
-                query = query.Where(p =>
-                    p.User != null && (
-                        p.User.Name.Contains(term) ||
-                        p.User.LastName.Contains(term) ||
-                        p.User.Email.Contains(term) ||
-                        p.User.Cpf.Contains(term)));
-            }
-
-            return query
-                .OrderBy(p => p.User != null ? p.User.Name : "")
-                .ToList();
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/SearchPatients.sql");
+            
+            var patients = new Dictionary<int, Patient>();
+            
+            connection.Query<Patient, User, Patient>(
+                sql,
+                (patient, user) =>
+                {
+                    if (!patients.TryGetValue(patient.PatientId, out var currentPatient))
+                    {
+                        currentPatient = patient;
+                        currentPatient.User = user;
+                        patients.Add(patient.PatientId, currentPatient);
+                    }
+                    return currentPatient;
+                },
+                new { Term = term?.Trim() },
+                splitOn: "UserUserId"
+            );
+            
+            return patients.Values.ToList();
         }
 
         public PagedListDto<PatientDto> GetPaged(int pageNumber, int pageSize, string? search = null)
         {
-            var query = _context.Patient.AsNoTracking()
-                                        .Include(p => p.User)
-                                        .AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(search))
+            using var connection = GetConnection();
+            
+            var countSql = File.ReadAllText("Queries/GetPagedPatientsCount.sql");
+            var dataSql = File.ReadAllText("Queries/GetPagedPatients.sql");
+            
+            var parameters = new
             {
-                query = query.Where(p =>
-                    p.User != null && (
-                        p.User.Name.Contains(search) ||
-                        p.User.LastName.Contains(search) ||
-                        p.User.Email.Contains(search) ||
-                        p.User.Cpf.Contains(search)));
-            }
-
-            var totalCount = query.Count();
+                Search = search,
+                PageSize = pageSize,
+                Offset = (pageNumber - 1) * pageSize
+            };
+            
+            var totalCount = connection.QuerySingle<int>(countSql, parameters);
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-
-            var items = query
-                .OrderBy(p => p.User != null ? p.User.Name : "")
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(p => new PatientDto
-                {
-                    PatientId = p.PatientId,
-                    UserId = p.UserId,
-                    Name = p.User != null ? p.User.Name + " " + p.User.LastName : null,
-                    Email = p.User != null ? p.User.Email : null,
-                    Cpf = p.User != null ? p.User.Cpf : null,
-                    Phone = "",
-                    BirthDate = null
-                })
-                .ToList();
-
+            
+            var items = connection.Query<PatientDto>(dataSql, parameters).ToList();
+            
             return new PagedListDto<PatientDto>
             {
                 Items = items,

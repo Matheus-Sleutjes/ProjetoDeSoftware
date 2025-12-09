@@ -9,8 +9,11 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var secretKey = builder.Configuration.GetSection("JwtSettings").GetSection("SecretKey").Value;
+var secretKey = builder.Configuration.GetSection("JwtSettings").GetSection("SecretKey").Value ?? string.Empty;
 Utils.JtwSecretkey = secretKey;
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
+DatabaseConfig.ConnectionString = connectionString;
 
 builder.Services.AddAuthentication(options =>
 {

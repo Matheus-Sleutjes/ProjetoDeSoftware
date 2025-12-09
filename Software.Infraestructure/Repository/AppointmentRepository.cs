@@ -1,151 +1,314 @@
-using Microsoft.EntityFrameworkCore;
+using Dapper;
+using Npgsql;
 using Software.Domain.Dtos;
 using Software.Domain.Models;
 using Software.Infraestructure.Contracts;
+using System.Data;
 
 namespace Software.Infraestructure.Repository
 {
-    public class AppointmentRepository(SoftwareContext context) : Repository(context), IAppointmentRepository
+    public class AppointmentRepository : IAppointmentRepository
     {
-        private readonly SoftwareContext _context = context;
+        private IDbConnection GetConnection() => new NpgsqlConnection(DatabaseConfig.ConnectionString);
+
 
         public Appointment? GetAppointmentById(int id)
         {
-            return _context.Appointment.AsNoTracking()
-                                      .Include(a => a.Patient)
-                                      .ThenInclude(a => a.User)
-                                      .Include(a => a.Doctor)
-                                      .ThenInclude(d => d.User)
-                                      .Include(a => a.Doctor)
-                                      .ThenInclude(d => d.Specialty)
-                                      .FirstOrDefault(x => x.AppointmentId == id);
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/GetAppointmentById.sql");
+            
+            var appointment = connection.QuerySingleOrDefault<Appointment>(sql, new { AppointmentId = id });
+            
+            if (appointment == null) return null;
+            
+            if (appointment.PatientId > 0)
+            {
+                appointment.Patient = connection.QuerySingleOrDefault<Patient>(
+                    "SELECT \"PatientId\", \"UserId\" FROM \"Patient\" WHERE \"PatientId\" = @Id",
+                    new { Id = appointment.PatientId });
+                    
+                if (appointment.Patient != null && appointment.Patient.UserId > 0)
+                {
+                    appointment.Patient.User = connection.QuerySingleOrDefault<User>(
+                        "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
+                        new { Id = appointment.Patient.UserId });
+                }
+            }
+            
+            if (appointment.DoctorId > 0)
+            {
+                appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(
+                    "SELECT \"DoctorId\", \"CRM\", \"UserId\", \"SpecialtyId\" FROM \"Doctor\" WHERE \"DoctorId\" = @Id",
+                    new { Id = appointment.DoctorId });
+                    
+                if (appointment.Doctor != null)
+                {
+                    if (appointment.Doctor.UserId > 0)
+                    {
+                        appointment.Doctor.User = connection.QuerySingleOrDefault<User>(
+                            "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
+                            new { Id = appointment.Doctor.UserId });
+                    }
+                    
+                    if (appointment.Doctor.SpecialtyId > 0)
+                    {
+                        appointment.Doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(
+                            "SELECT \"SpecialtyId\", \"Description\" FROM \"Specialty\" WHERE \"SpecialtyId\" = @Id",
+                            new { Id = appointment.Doctor.SpecialtyId });
+                    }
+                }
+            }
+            
+            return appointment;
         }
 
         public bool Create(Appointment entity)
         {
-            _context.Appointment.Add(entity);
-            SaveChanges();
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/CreateAppointment.sql");
+            
+            var appointmentId = connection.QuerySingle<int>(sql, new
+            {
+                AppointmentDate = entity.AppointmentDate,
+                Description = entity.Description,
+                Status = entity.Status,
+                PatientId = entity.PatientId,
+                DoctorId = entity.DoctorId,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            });
+            
+            entity.AppointmentId = appointmentId;
             return true;
         }
 
         public bool Update(Appointment entity)
         {
-            entity.UpdatedAt = DateTime.UtcNow;
-            _context.Appointment.Update(entity);
-            SaveChanges();
-            return true;
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/UpdateAppointment.sql");
+            
+            var rowsAffected = connection.Execute(sql, new
+            {
+                AppointmentId = entity.AppointmentId,
+                AppointmentDate = entity.AppointmentDate,
+                Description = entity.Description,
+                Status = entity.Status,
+                PatientId = entity.PatientId,
+                DoctorId = entity.DoctorId,
+                UpdatedAt = DateTime.UtcNow
+            });
+            
+            return rowsAffected > 0;
         }
 
         public bool Delete(Appointment entity)
         {
-            _context.Appointment.Remove(entity);
-            SaveChanges();
-            return true;
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/DeleteAppointment.sql");
+            
+            var rowsAffected = connection.Execute(sql, new { AppointmentId = entity.AppointmentId });
+            return rowsAffected > 0;
         }
 
         public List<Appointment> GetAll()
         {
-            return _context.Appointment.AsNoTracking()
-                                      .Include(a => a.Patient)
-                                      .ThenInclude(p => p.User)
-                                      .Include(a => a.Doctor)
-                                      .ThenInclude(d => d.User)
-                                      .Include(a => a.Doctor)
-                                      .ThenInclude(d => d.Specialty)
-                                      .OrderByDescending(a => a.AppointmentDate)
-                                      .ToList();
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/GetAllAppointments.sql");
+            
+            var appointments = connection.Query<Appointment>(sql).ToList();
+            
+            foreach (var appointment in appointments)
+            {
+                if (appointment.PatientId > 0)
+                {
+                    appointment.Patient = connection.QuerySingleOrDefault<Patient>(
+                        "SELECT \"PatientId\", \"UserId\" FROM \"Patient\" WHERE \"PatientId\" = @Id",
+                        new { Id = appointment.PatientId });
+                        
+                    if (appointment.Patient != null && appointment.Patient.UserId > 0)
+                    {
+                        appointment.Patient.User = connection.QuerySingleOrDefault<User>(
+                            "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
+                            new { Id = appointment.Patient.UserId });
+                    }
+                }
+                
+                if (appointment.DoctorId > 0)
+                {
+                    appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(
+                        "SELECT \"DoctorId\", \"CRM\", \"UserId\", \"SpecialtyId\" FROM \"Doctor\" WHERE \"DoctorId\" = @Id",
+                        new { Id = appointment.DoctorId });
+                        
+                    if (appointment.Doctor != null)
+                    {
+                        if (appointment.Doctor.UserId > 0)
+                        {
+                            appointment.Doctor.User = connection.QuerySingleOrDefault<User>(
+                                "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
+                                new { Id = appointment.Doctor.UserId });
+                        }
+                        
+                        if (appointment.Doctor.SpecialtyId > 0)
+                        {
+                            appointment.Doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(
+                                "SELECT \"SpecialtyId\", \"Description\" FROM \"Specialty\" WHERE \"SpecialtyId\" = @Id",
+                                new { Id = appointment.Doctor.SpecialtyId });
+                        }
+                    }
+                }
+            }
+            
+            return appointments;
         }
 
         public List<Appointment> GetByPatientId(int patientId)
         {
-            return _context.Appointment.AsNoTracking()
-                                      .Include(a => a.Patient)
-                                      .ThenInclude(p => p.User)
-                                      .Include(a => a.Doctor)
-                                      .ThenInclude(d => d.User)
-                                      .Include(a => a.Doctor)
-                                      .ThenInclude(d => d.Specialty)
-                                      .Where(a => a.PatientId == patientId)
-                                      .OrderByDescending(a => a.AppointmentDate)
-                                      .ToList();
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/GetAppointmentsByPatientId.sql");
+            
+            var appointments = connection.Query<Appointment>(sql, new { PatientId = patientId }).ToList();
+            
+            foreach (var appointment in appointments)
+            {
+                if (appointment.PatientId > 0)
+                {
+                    appointment.Patient = connection.QuerySingleOrDefault<Patient>(
+                        "SELECT \"PatientId\", \"UserId\" FROM \"Patient\" WHERE \"PatientId\" = @Id",
+                        new { Id = appointment.PatientId });
+                        
+                    if (appointment.Patient != null && appointment.Patient.UserId > 0)
+                    {
+                        appointment.Patient.User = connection.QuerySingleOrDefault<User>(
+                            "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
+                            new { Id = appointment.Patient.UserId });
+                    }
+                }
+                
+                if (appointment.DoctorId > 0)
+                {
+                    appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(
+                        "SELECT \"DoctorId\", \"CRM\", \"UserId\", \"SpecialtyId\" FROM \"Doctor\" WHERE \"DoctorId\" = @Id",
+                        new { Id = appointment.DoctorId });
+                        
+                    if (appointment.Doctor != null)
+                    {
+                        if (appointment.Doctor.UserId > 0)
+                        {
+                            appointment.Doctor.User = connection.QuerySingleOrDefault<User>(
+                                "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
+                                new { Id = appointment.Doctor.UserId });
+                        }
+                        
+                        if (appointment.Doctor.SpecialtyId > 0)
+                        {
+                            appointment.Doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(
+                                "SELECT \"SpecialtyId\", \"Description\" FROM \"Specialty\" WHERE \"SpecialtyId\" = @Id",
+                                new { Id = appointment.Doctor.SpecialtyId });
+                        }
+                    }
+                }
+            }
+            
+            return appointments;
         }
 
         public List<Appointment> GetByDoctorId(int doctorId)
         {
-            return _context.Appointment.AsNoTracking()
-                                      .Include(a => a.Patient)
-                                      .ThenInclude(p => p.User)
-                                      .Include(a => a.Doctor)
-                                      .ThenInclude(d => d.User)
-                                      .Include(a => a.Doctor)
-                                      .ThenInclude(d => d.Specialty)
-                                      .Where(a => a.DoctorId == doctorId)
-                                      .OrderByDescending(a => a.AppointmentDate)
-                                      .ToList();
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/GetAppointmentsByDoctorId.sql");
+            
+            var appointments = connection.Query<Appointment>(sql, new { DoctorId = doctorId }).ToList();
+            
+            foreach (var appointment in appointments)
+            {
+                if (appointment.PatientId > 0)
+                {
+                    appointment.Patient = connection.QuerySingleOrDefault<Patient>(
+                        "SELECT \"PatientId\", \"UserId\" FROM \"Patient\" WHERE \"PatientId\" = @Id",
+                        new { Id = appointment.PatientId });
+                        
+                    if (appointment.Patient != null && appointment.Patient.UserId > 0)
+                    {
+                        appointment.Patient.User = connection.QuerySingleOrDefault<User>(
+                            "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
+                            new { Id = appointment.Patient.UserId });
+                    }
+                }
+                
+                if (appointment.DoctorId > 0)
+                {
+                    appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(
+                        "SELECT \"DoctorId\", \"CRM\", \"UserId\", \"SpecialtyId\" FROM \"Doctor\" WHERE \"DoctorId\" = @Id",
+                        new { Id = appointment.DoctorId });
+                        
+                    if (appointment.Doctor != null)
+                    {
+                        if (appointment.Doctor.UserId > 0)
+                        {
+                            appointment.Doctor.User = connection.QuerySingleOrDefault<User>(
+                                "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
+                                new { Id = appointment.Doctor.UserId });
+                        }
+                        
+                        if (appointment.Doctor.SpecialtyId > 0)
+                        {
+                            appointment.Doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(
+                                "SELECT \"SpecialtyId\", \"Description\" FROM \"Specialty\" WHERE \"SpecialtyId\" = @Id",
+                                new { Id = appointment.Doctor.SpecialtyId });
+                        }
+                    }
+                }
+            }
+            
+            return appointments;
         }
 
         public List<Appointment> GetAvailableForPayment()
         {
-            var paidAppointmentIds = _context.Payment
-                .Select(p => p.AppointmentId)
-                .Distinct()
-                .ToList();
-
-            return _context.Appointment.AsNoTracking()
-                                      .Include(a => a.Patient)
-                                      .ThenInclude(p => p.User)
-                                      .Where(a => !paidAppointmentIds.Contains(a.AppointmentId))
-                                      .OrderBy(a => a.AppointmentDate)
-                                      .ToList();
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/GetAvailableAppointmentsForPayment.sql");
+            
+            var appointments = connection.Query<Appointment>(sql).ToList();
+            
+            foreach (var appointment in appointments)
+            {
+                if (appointment.PatientId > 0)
+                {
+                    appointment.Patient = connection.QuerySingleOrDefault<Patient>(
+                        "SELECT \"PatientId\", \"UserId\" FROM \"Patient\" WHERE \"PatientId\" = @Id",
+                        new { Id = appointment.PatientId });
+                        
+                    if (appointment.Patient != null && appointment.Patient.UserId > 0)
+                    {
+                        appointment.Patient.User = connection.QuerySingleOrDefault<User>(
+                            "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
+                            new { Id = appointment.Patient.UserId });
+                    }
+                }
+            }
+            
+            return appointments;
         }
 
         public PagedListDto<AppointmentDto> GetPaged(int pageNumber, int pageSize, string? search = null)
         {
-            var query = _context.Appointment.AsNoTracking()
-                                           .Include(a => a.Patient)
-                                           .ThenInclude(p => p.User)
-                                           .Include(a => a.Doctor)
-                                           .ThenInclude(d => d.User)
-                                           .Include(a => a.Doctor)
-                                           .ThenInclude(d => d.Specialty)
-                                           .AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(search))
+            using var connection = GetConnection();
+            
+            var countSql = File.ReadAllText("Queries/GetPagedAppointmentsCount.sql");
+            var dataSql = File.ReadAllText("Queries/GetPagedAppointments.sql");
+            
+            var parameters = new
             {
-                query = query.Where(a => 
-                    (a.Patient != null && a.Patient.User != null && a.Patient.User.Name.Contains(search)) ||
-                    (a.Patient != null && a.Patient.User != null && a.Patient.User.LastName.Contains(search)) ||
-                    (a.Patient != null && a.Patient.User != null && a.Patient.User.Email.Contains(search)) ||
-                    (a.Doctor != null && a.Doctor.User != null && a.Doctor.User.Name.Contains(search)) ||
-                    (a.Doctor != null && a.Doctor.User != null && a.Doctor.User.LastName.Contains(search)) ||
-                    (a.Doctor != null && a.Doctor.CRM.Contains(search)) ||
-                    (a.Doctor != null && a.Doctor.Specialty != null && a.Doctor.Specialty.Description.Contains(search)) ||
-                    a.Description.Contains(search));
-            }
-
-            var totalCount = query.Count();
+                Search = search,
+                PageSize = pageSize,
+                Offset = (pageNumber - 1) * pageSize
+            };
+            
+            var totalCount = connection.QuerySingle<int>(countSql, parameters);
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-
-            var items = query
-                .OrderByDescending(a => a.AppointmentDate)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(a => new AppointmentDto
-                {
-                    AppointmentId = a.AppointmentId,
-                    PatientId = a.PatientId,
-                    DoctorId = a.DoctorId,
-                    AppointmentDate = a.AppointmentDate,
-                    Description = a.Description,
-                    Status = a.Status,
-                    CreatedAt = a.CreatedAt,
-                    UpdatedAt = a.UpdatedAt,
-                    PatientName = a.Patient != null && a.Patient.User != null ? a.Patient.User.Name + " " + a.Patient.User.LastName : "",
-                    DoctorName = a.Doctor != null && a.Doctor.User != null ? a.Doctor.User.Name + " " + a.Doctor.User.LastName : "",
-                    SpecialtyName = a.Doctor != null && a.Doctor.Specialty != null ? a.Doctor.Specialty.Description : ""
-                })
-                .ToList();
-
+            
+            var items = connection.Query<AppointmentDto>(dataSql, parameters).ToList();
+            
             return new PagedListDto<AppointmentDto>
             {
                 Items = items,
@@ -157,4 +320,4 @@ namespace Software.Infraestructure.Repository
             };
         }
     }
-} 
+}

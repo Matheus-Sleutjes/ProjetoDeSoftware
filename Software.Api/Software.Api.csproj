@@ -29,4 +29,10 @@
     <ProjectReference Include="..\Software.Infraestructure\Software.Infraestructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Queries\*.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

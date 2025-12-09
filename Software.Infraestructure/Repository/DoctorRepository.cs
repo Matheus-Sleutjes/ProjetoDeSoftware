@@ -1,97 +1,138 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dapper;
+using Npgsql;
 using Software.Domain.Dtos;
 using Software.Domain.Models;
 using Software.Infraestructure.Contracts;
+using System.Data;
 
 namespace Software.Infraestructure.Repository
 {
-    public class DoctorRepository(SoftwareContext context) : Repository(context), IDoctorRepository
+    public class DoctorRepository : IDoctorRepository
     {
-        private readonly SoftwareContext _context = context;
+        private IDbConnection GetConnection() => new NpgsqlConnection(DatabaseConfig.ConnectionString);
+
 
         public Doctor? GetDoctorById(int id)
         {
-            return _context.Doctor.AsNoTracking()
-                                  .Include(d => d.User)
-                                  .Include(d => d.Specialty)
-                                  .FirstOrDefault(x => x.DoctorId == id);
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/GetDoctorById.sql");
+            
+            var doctor = connection.QuerySingleOrDefault<Doctor>(sql, new { DoctorId = id });
+            
+            if (doctor == null) return null;
+            
+            if (doctor.UserId > 0)
+            {
+                doctor.User = connection.QuerySingleOrDefault<User>(
+                    "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
+                    new { Id = doctor.UserId });
+            }
+            
+            if (doctor.SpecialtyId > 0)
+            {
+                doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(
+                    "SELECT \"SpecialtyId\", \"Description\" FROM \"Specialty\" WHERE \"SpecialtyId\" = @Id",
+                    new { Id = doctor.SpecialtyId });
+            }
+            
+            return doctor;
         }
 
         public bool Create(Doctor doctor)
         {
-            // Garante que o usuário vinculado ao médico exista
-            var userExists = _context.Users.AsNoTracking()
-                                           .Any(u => u.UserId == doctor.UserId);
+            using var connection = GetConnection();
+            
+            var checkUserSql = File.ReadAllText("Queries/CheckUserExists.sql");
+            var userExists = connection.QuerySingle<bool>(checkUserSql, new { UserId = doctor.UserId });
+            
             if (!userExists)
             {
                 return false;
             }
-
-            _context.Doctor.Add(doctor);
-            SaveChanges();
+            
+            var sql = File.ReadAllText("Queries/CreateDoctor.sql");
+            var doctorId = connection.QuerySingle<int>(sql, new
+            {
+                CRM = doctor.CRM,
+                UserId = doctor.UserId,
+                SpecialtyId = doctor.SpecialtyId
+            });
+            
+            doctor.DoctorId = doctorId;
             return true;
         }
 
         public bool Update(Doctor doctor)
         {
-            _context.Doctor.Update(doctor);
-            SaveChanges();
-            return true;
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/UpdateDoctor.sql");
+            
+            var rowsAffected = connection.Execute(sql, new
+            {
+                DoctorId = doctor.DoctorId,
+                CRM = doctor.CRM,
+                UserId = doctor.UserId,
+                SpecialtyId = doctor.SpecialtyId
+            });
+            
+            return rowsAffected > 0;
         }
 
         public bool Delete(Doctor doctor)
         {
-            _context.Doctor.Remove(doctor);
-            SaveChanges();
-            return true;
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/DeleteDoctor.sql");
+            
+            var rowsAffected = connection.Execute(sql, new { DoctorId = doctor.DoctorId });
+            return rowsAffected > 0;
         }
 
         public List<Doctor> GetAll()
         {
-            return _context.Doctor.AsNoTracking()
-                                  .Include(d => d.User)
-                                  .Include(d => d.Specialty)
-                                  .ToList();
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/GetAllDoctors.sql");
+            
+            var doctors = connection.Query<Doctor>(sql).ToList();
+            
+            foreach (var doctor in doctors)
+            {
+                if (doctor.UserId > 0)
+                {
+                    doctor.User = connection.QuerySingleOrDefault<User>(
+                        "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
+                        new { Id = doctor.UserId });
+                }
+                
+                if (doctor.SpecialtyId > 0)
+                {
+                    doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(
+                        "SELECT \"SpecialtyId\", \"Description\" FROM \"Specialty\" WHERE \"SpecialtyId\" = @Id",
+                        new { Id = doctor.SpecialtyId });
+                }
+            }
+            
+            return doctors;
         }
 
         public PagedListDto<DoctorDto> GetPaged(int pageNumber, int pageSize, string? search = null)
         {
-            var query = _context.Doctor.AsNoTracking()
-                                       .Include(d => d.User)
-                                       .Include(d => d.Specialty)
-                                       .AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(search))
+            using var connection = GetConnection();
+            
+            var countSql = File.ReadAllText("Queries/GetPagedDoctorsCount.sql");
+            var dataSql = File.ReadAllText("Queries/GetPagedDoctors.sql");
+            
+            var parameters = new
             {
-                query = query.Where(d => 
-                    (d.User != null && d.User.Name.Contains(search)) ||
-                    (d.User != null && d.User.LastName.Contains(search)) ||
-                    (d.User != null && d.User.Email.Contains(search)) ||
-                    (d.User != null && d.User.Cpf.Contains(search)) ||
-                    d.CRM.Contains(search) ||
-                    (d.Specialty != null && d.Specialty.Description.Contains(search)));
-            }
-
-            var totalCount = query.Count();
+                Search = search,
+                PageSize = pageSize,
+                Offset = (pageNumber - 1) * pageSize
+            };
+            
+            var totalCount = connection.QuerySingle<int>(countSql, parameters);
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-
-            var items = query
-                .OrderBy(d => d.User != null ? d.User.Name : "")
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(d => new DoctorDto
-                {
-                    DoctorId = d.DoctorId,
-                    UserId = d.UserId,
-                    SpecialtyId = d.SpecialtyId,
-                    CRM = d.CRM,
-                    Name = d.User != null ? d.User.Name + " " + d.User.LastName : "",
-                    Email = d.User != null ? d.User.Email : "",
-                    Phone = "",
-                    SpecialtyName = d.Specialty != null ? d.Specialty.Description : ""
-                })
-                .ToList();
-
+            
+            var items = connection.Query<DoctorDto>(dataSql, parameters).ToList();
+            
             return new PagedListDto<DoctorDto>
             {
                 Items = items,

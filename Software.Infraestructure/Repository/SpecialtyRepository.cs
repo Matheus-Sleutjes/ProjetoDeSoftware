@@ -1,72 +1,86 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dapper;
+using Npgsql;
 using Software.Domain.Dtos;
 using Software.Domain.Models;
 using Software.Infraestructure.Contracts;
+using System.Data;
 
 namespace Software.Infraestructure.Repository
 {
-    public class SpecialtyRepository(SoftwareContext context) : Repository(context), ISpecialtyRepository
+    public class SpecialtyRepository : ISpecialtyRepository
     {
-        private readonly SoftwareContext _context = context;
+        private IDbConnection GetConnection() => new NpgsqlConnection(DatabaseConfig.ConnectionString);
+
 
         public bool Create(Specialty specialty)
         {
-            _context.Specialty.Add(specialty);
-            SaveChanges();
-
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/CreateSpecialty.sql");
+            
+            var specialtyId = connection.QuerySingle<int>(sql, new { Description = specialty.Description });
+            
+            specialty.SpecialtyId = specialtyId;
             return true;
         }
 
         public bool Delete(Specialty specialty)
         {
-            _context.Specialty.Remove(specialty);
-            SaveChanges();
-
-            return true;
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/DeleteSpecialty.sql");
+            
+            var rowsAffected = connection.Execute(sql, new { SpecialtyId = specialty.SpecialtyId });
+            return rowsAffected > 0;
         }
 
         public bool Update(Specialty specialty)
         {
-            _context.Specialty.Update(specialty);
-            SaveChanges();
-            return true;
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/UpdateSpecialty.sql");
+            
+            var rowsAffected = connection.Execute(sql, new
+            {
+                SpecialtyId = specialty.SpecialtyId,
+                Description = specialty.Description
+            });
+            
+            return rowsAffected > 0;
         }
 
         public List<Specialty> GetAll()
         {
-            return _context.Specialty.AsNoTracking().ToList();
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/GetAllSpecialties.sql");
+            
+            return connection.Query<Specialty>(sql).ToList();
         }
 
         public Specialty? GetById(int id)
         {
-            return _context.Specialty.AsNoTracking().FirstOrDefault(x => x.SpecialtyId == id);
+            using var connection = GetConnection();
+            var sql = File.ReadAllText("Queries/GetSpecialtyById.sql");
+            
+            return connection.QueryFirstOrDefault<Specialty>(sql, new { SpecialtyId = id });
         }
 
         public PagedListDto<SpecialtyDto> GetPaged(int pageNumber, int pageSize, string? search = null)
         {
-            var query = _context.Specialty.AsNoTracking().AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(search))
+            using var connection = GetConnection();
+            
+            var countSql = File.ReadAllText("Queries/GetPagedSpecialtiesCount.sql");
+            var dataSql = File.ReadAllText("Queries/GetPagedSpecialties.sql");
+            
+            var parameters = new
             {
-                query = query.Where(s => s.Description.Contains(search));
-            }
-
-            var totalCount = query.Count();
+                Search = search,
+                PageSize = pageSize,
+                Offset = (pageNumber - 1) * pageSize
+            };
+            
+            var totalCount = connection.QuerySingle<int>(countSql, parameters);
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-
-            var items = query
-                .OrderBy(s => s.Description)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(s => new SpecialtyDto
-                {
-                    SpecialtyId = s.SpecialtyId,
-                    Description = s.Description,
-                    Name = s.Description,
-                    DoctorCount = _context.Doctor.Count(d => d.SpecialtyId == s.SpecialtyId)
-                })
-                .ToList();
-
+            
+            var items = connection.Query<SpecialtyDto>(dataSql, parameters).ToList();
+            
             return new PagedListDto<SpecialtyDto>
             {
                 Items = items,
