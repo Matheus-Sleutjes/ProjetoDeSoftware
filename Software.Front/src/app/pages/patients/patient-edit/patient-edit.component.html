@@ -91,14 +91,14 @@
                 <div class="mb-3">
                     <label for="cpf" class="form-label">CPF *</label>
                     <input type="text" class="form-control" id="cpf" formControlName="cpf" placeholder="000.000.000-00"
-                        (input)="formatCpf($event)" maxlength="14"
+                        appCpfMask maxlength="14"
                         [class.is-invalid]="patientForm.get('cpf')?.invalid && patientForm.get('cpf')?.touched">
                     @if (patientForm.get('cpf')?.invalid && patientForm.get('cpf')?.touched) {
                         <div class="invalid-feedback">
                             @if (patientForm.get('cpf')?.errors?.['required']) {
                                 CPF é obrigatório.
-                            } @else if (patientForm.get('cpf')?.errors?.['pattern']) {
-                                Por favor, insira um CPF válido (000.000.000-00).
+                            } @else if (patientForm.get('cpf')?.errors?.['cpfInvalid']) {
+                                CPF inválido.
                             }
                         </div>
                     }

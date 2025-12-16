@@ -16,6 +16,10 @@ namespace Software.Infraestructure.Repository
         {
             using var connection = GetConnection();
             var sql = File.ReadAllText("Queries/GetAppointmentById.sql");
+            var patientSql = File.ReadAllText("Queries/GetPatientById.sql");
+            var doctorSql = File.ReadAllText("Queries/GetDoctorById.sql");
+            var userSql = File.ReadAllText("Queries/GetUserById.sql");
+            var specialtySql = File.ReadAllText("Queries/GetSpecialtyById.sql");
             
             var appointment = connection.QuerySingleOrDefault<Appointment>(sql, new { AppointmentId = id });
             
@@ -23,38 +27,28 @@ namespace Software.Infraestructure.Repository
             
             if (appointment.PatientId > 0)
             {
-                appointment.Patient = connection.QuerySingleOrDefault<Patient>(
-                    "SELECT \"PatientId\", \"UserId\" FROM \"Patient\" WHERE \"PatientId\" = @Id",
-                    new { Id = appointment.PatientId });
+                appointment.Patient = connection.QuerySingleOrDefault<Patient>(patientSql, new { PatientId = appointment.PatientId });
                     
                 if (appointment.Patient != null && appointment.Patient.UserId > 0)
                 {
-                    appointment.Patient.User = connection.QuerySingleOrDefault<User>(
-                        "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
-                        new { Id = appointment.Patient.UserId });
+                    appointment.Patient.User = connection.QuerySingleOrDefault<User>(userSql, new { UserId = appointment.Patient.UserId });
                 }
             }
             
             if (appointment.DoctorId > 0)
             {
-                appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(
-                    "SELECT \"DoctorId\", \"CRM\", \"UserId\", \"SpecialtyId\" FROM \"Doctor\" WHERE \"DoctorId\" = @Id",
-                    new { Id = appointment.DoctorId });
+                appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(doctorSql, new { DoctorId = appointment.DoctorId });
                     
                 if (appointment.Doctor != null)
                 {
                     if (appointment.Doctor.UserId > 0)
                     {
-                        appointment.Doctor.User = connection.QuerySingleOrDefault<User>(
-                            "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
-                            new { Id = appointment.Doctor.UserId });
+                        appointment.Doctor.User = connection.QuerySingleOrDefault<User>(userSql, new { UserId = appointment.Doctor.UserId });
                     }
                     
                     if (appointment.Doctor.SpecialtyId > 0)
                     {
-                        appointment.Doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(
-                            "SELECT \"SpecialtyId\", \"Description\" FROM \"Specialty\" WHERE \"SpecialtyId\" = @Id",
-                            new { Id = appointment.Doctor.SpecialtyId });
+                        appointment.Doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(specialtySql, new { SpecialtyId = appointment.Doctor.SpecialtyId });
                     }
                 }
             }
@@ -71,11 +65,11 @@ namespace Software.Infraestructure.Repository
             {
                 AppointmentDate = entity.AppointmentDate,
                 Description = entity.Description,
-                Status = entity.Status,
+                Status = (int)entity.Status,
                 PatientId = entity.PatientId,
                 DoctorId = entity.DoctorId,
                 CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                UpdatedAt = DateTime.UtcNow,
             });
             
             entity.AppointmentId = appointmentId;
@@ -92,10 +86,10 @@ namespace Software.Infraestructure.Repository
                 AppointmentId = entity.AppointmentId,
                 AppointmentDate = entity.AppointmentDate,
                 Description = entity.Description,
-                Status = entity.Status,
+                Status = (int)entity.Status,
                 PatientId = entity.PatientId,
                 DoctorId = entity.DoctorId,
-                UpdatedAt = DateTime.UtcNow
+                UpdatedAt = DateTime.UtcNow,
             });
             
             return rowsAffected > 0;
@@ -114,6 +108,10 @@ namespace Software.Infraestructure.Repository
         {
             using var connection = GetConnection();
             var sql = File.ReadAllText("Queries/GetAllAppointments.sql");
+            var patientSql = File.ReadAllText("Queries/GetPatientById.sql");
+            var doctorSql = File.ReadAllText("Queries/GetDoctorById.sql");
+            var userSql = File.ReadAllText("Queries/GetUserById.sql");
+            var specialtySql = File.ReadAllText("Queries/GetSpecialtyById.sql");
             
             var appointments = connection.Query<Appointment>(sql).ToList();
             
@@ -121,38 +119,28 @@ namespace Software.Infraestructure.Repository
             {
                 if (appointment.PatientId > 0)
                 {
-                    appointment.Patient = connection.QuerySingleOrDefault<Patient>(
-                        "SELECT \"PatientId\", \"UserId\" FROM \"Patient\" WHERE \"PatientId\" = @Id",
-                        new { Id = appointment.PatientId });
+                    appointment.Patient = connection.QuerySingleOrDefault<Patient>(patientSql, new { PatientId = appointment.PatientId });
                         
                     if (appointment.Patient != null && appointment.Patient.UserId > 0)
                     {
-                        appointment.Patient.User = connection.QuerySingleOrDefault<User>(
-                            "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
-                            new { Id = appointment.Patient.UserId });
+                        appointment.Patient.User = connection.QuerySingleOrDefault<User>(userSql, new { UserId = appointment.Patient.UserId });
                     }
                 }
                 
                 if (appointment.DoctorId > 0)
                 {
-                    appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(
-                        "SELECT \"DoctorId\", \"CRM\", \"UserId\", \"SpecialtyId\" FROM \"Doctor\" WHERE \"DoctorId\" = @Id",
-                        new { Id = appointment.DoctorId });
+                    appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(doctorSql, new { DoctorId = appointment.DoctorId });
                         
                     if (appointment.Doctor != null)
                     {
                         if (appointment.Doctor.UserId > 0)
                         {
-                            appointment.Doctor.User = connection.QuerySingleOrDefault<User>(
-                                "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
-                                new { Id = appointment.Doctor.UserId });
+                            appointment.Doctor.User = connection.QuerySingleOrDefault<User>(userSql, new { UserId = appointment.Doctor.UserId });
                         }
                         
                         if (appointment.Doctor.SpecialtyId > 0)
                         {
-                            appointment.Doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(
-                                "SELECT \"SpecialtyId\", \"Description\" FROM \"Specialty\" WHERE \"SpecialtyId\" = @Id",
-                                new { Id = appointment.Doctor.SpecialtyId });
+                            appointment.Doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(specialtySql, new { SpecialtyId = appointment.Doctor.SpecialtyId });
                         }
                     }
                 }
@@ -165,6 +153,10 @@ namespace Software.Infraestructure.Repository
         {
             using var connection = GetConnection();
             var sql = File.ReadAllText("Queries/GetAppointmentsByPatientId.sql");
+            var patientSql = File.ReadAllText("Queries/GetPatientById.sql");
+            var doctorSql = File.ReadAllText("Queries/GetDoctorById.sql");
+            var userSql = File.ReadAllText("Queries/GetUserById.sql");
+            var specialtySql = File.ReadAllText("Queries/GetSpecialtyById.sql");
             
             var appointments = connection.Query<Appointment>(sql, new { PatientId = patientId }).ToList();
             
@@ -172,38 +164,28 @@ namespace Software.Infraestructure.Repository
             {
                 if (appointment.PatientId > 0)
                 {
-                    appointment.Patient = connection.QuerySingleOrDefault<Patient>(
-                        "SELECT \"PatientId\", \"UserId\" FROM \"Patient\" WHERE \"PatientId\" = @Id",
-                        new { Id = appointment.PatientId });
+                    appointment.Patient = connection.QuerySingleOrDefault<Patient>(patientSql, new { PatientId = appointment.PatientId });
                         
                     if (appointment.Patient != null && appointment.Patient.UserId > 0)
                     {
-                        appointment.Patient.User = connection.QuerySingleOrDefault<User>(
-                            "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
-                            new { Id = appointment.Patient.UserId });
+                        appointment.Patient.User = connection.QuerySingleOrDefault<User>(userSql, new { UserId = appointment.Patient.UserId });
                     }
                 }
                 
                 if (appointment.DoctorId > 0)
                 {
-                    appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(
-                        "SELECT \"DoctorId\", \"CRM\", \"UserId\", \"SpecialtyId\" FROM \"Doctor\" WHERE \"DoctorId\" = @Id",
-                        new { Id = appointment.DoctorId });
+                    appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(doctorSql, new { DoctorId = appointment.DoctorId });
                         
                     if (appointment.Doctor != null)
                     {
                         if (appointment.Doctor.UserId > 0)
                         {
-                            appointment.Doctor.User = connection.QuerySingleOrDefault<User>(
-                                "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
-                                new { Id = appointment.Doctor.UserId });
+                            appointment.Doctor.User = connection.QuerySingleOrDefault<User>(userSql, new { UserId = appointment.Doctor.UserId });
                         }
                         
                         if (appointment.Doctor.SpecialtyId > 0)
                         {
-                            appointment.Doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(
-                                "SELECT \"SpecialtyId\", \"Description\" FROM \"Specialty\" WHERE \"SpecialtyId\" = @Id",
-                                new { Id = appointment.Doctor.SpecialtyId });
+                            appointment.Doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(specialtySql, new { SpecialtyId = appointment.Doctor.SpecialtyId });
                         }
                     }
                 }
@@ -216,6 +198,10 @@ namespace Software.Infraestructure.Repository
         {
             using var connection = GetConnection();
             var sql = File.ReadAllText("Queries/GetAppointmentsByDoctorId.sql");
+            var patientSql = File.ReadAllText("Queries/GetPatientById.sql");
+            var doctorSql = File.ReadAllText("Queries/GetDoctorById.sql");
+            var userSql = File.ReadAllText("Queries/GetUserById.sql");
+            var specialtySql = File.ReadAllText("Queries/GetSpecialtyById.sql");
             
             var appointments = connection.Query<Appointment>(sql, new { DoctorId = doctorId }).ToList();
             
@@ -223,38 +209,28 @@ namespace Software.Infraestructure.Repository
             {
                 if (appointment.PatientId > 0)
                 {
-                    appointment.Patient = connection.QuerySingleOrDefault<Patient>(
-                        "SELECT \"PatientId\", \"UserId\" FROM \"Patient\" WHERE \"PatientId\" = @Id",
-                        new { Id = appointment.PatientId });
+                    appointment.Patient = connection.QuerySingleOrDefault<Patient>(patientSql, new { PatientId = appointment.PatientId });
                         
                     if (appointment.Patient != null && appointment.Patient.UserId > 0)
                     {
-                        appointment.Patient.User = connection.QuerySingleOrDefault<User>(
-                            "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
-                            new { Id = appointment.Patient.UserId });
+                        appointment.Patient.User = connection.QuerySingleOrDefault<User>(userSql, new { UserId = appointment.Patient.UserId });
                     }
                 }
                 
                 if (appointment.DoctorId > 0)
                 {
-                    appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(
-                        "SELECT \"DoctorId\", \"CRM\", \"UserId\", \"SpecialtyId\" FROM \"Doctor\" WHERE \"DoctorId\" = @Id",
-                        new { Id = appointment.DoctorId });
+                    appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(doctorSql, new { DoctorId = appointment.DoctorId });
                         
                     if (appointment.Doctor != null)
                     {
                         if (appointment.Doctor.UserId > 0)
                         {
-                            appointment.Doctor.User = connection.QuerySingleOrDefault<User>(
-                                "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
-                                new { Id = appointment.Doctor.UserId });
+                            appointment.Doctor.User = connection.QuerySingleOrDefault<User>(userSql, new { UserId = appointment.Doctor.UserId });
                         }
                         
                         if (appointment.Doctor.SpecialtyId > 0)
                         {
-                            appointment.Doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(
-                                "SELECT \"SpecialtyId\", \"Description\" FROM \"Specialty\" WHERE \"SpecialtyId\" = @Id",
-                                new { Id = appointment.Doctor.SpecialtyId });
+                            appointment.Doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(specialtySql, new { SpecialtyId = appointment.Doctor.SpecialtyId });
                         }
                     }
                 }
@@ -267,6 +243,8 @@ namespace Software.Infraestructure.Repository
         {
             using var connection = GetConnection();
             var sql = File.ReadAllText("Queries/GetAvailableAppointmentsForPayment.sql");
+            var patientSql = File.ReadAllText("Queries/GetPatientById.sql");
+            var userSql = File.ReadAllText("Queries/GetUserById.sql");
             
             var appointments = connection.Query<Appointment>(sql).ToList();
             
@@ -274,15 +252,11 @@ namespace Software.Infraestructure.Repository
             {
                 if (appointment.PatientId > 0)
                 {
-                    appointment.Patient = connection.QuerySingleOrDefault<Patient>(
-                        "SELECT \"PatientId\", \"UserId\" FROM \"Patient\" WHERE \"PatientId\" = @Id",
-                        new { Id = appointment.PatientId });
+                    appointment.Patient = connection.QuerySingleOrDefault<Patient>(patientSql, new { PatientId = appointment.PatientId });
                         
                     if (appointment.Patient != null && appointment.Patient.UserId > 0)
                     {
-                        appointment.Patient.User = connection.QuerySingleOrDefault<User>(
-                            "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
-                            new { Id = appointment.Patient.UserId });
+                        appointment.Patient.User = connection.QuerySingleOrDefault<User>(userSql, new { UserId = appointment.Patient.UserId });
                     }
                 }
             }

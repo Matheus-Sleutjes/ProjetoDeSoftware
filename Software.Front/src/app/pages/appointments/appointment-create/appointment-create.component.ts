@@ -152,7 +152,7 @@ export class AppointmentCreateComponent implements OnInit {
       patientId: ['', [Validators.required]],
       doctorId: ['', [Validators.required]],
       appointmentDate: ['', [Validators.required]],
-      description: ['']
+      description: [''],
     });
   }
 }

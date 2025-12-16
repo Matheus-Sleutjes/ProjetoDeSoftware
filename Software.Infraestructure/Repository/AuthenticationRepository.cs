@@ -52,7 +52,7 @@ namespace Software.Infraestructure.Repository
                 Cpf = user.Cpf,
                 Phone = user.Phone,
                 BirthDate = user.BirthDate,
-                Role = user.Role
+                Role = (int)user.Role
             });
             
             return userId;
@@ -90,7 +90,7 @@ namespace Software.Infraestructure.Repository
                 Cpf = user.Cpf,
                 Phone = user.Phone,
                 BirthDate = user.BirthDate,
-                Role = user.Role
+                Role = (int)user.Role
             });
         }
 

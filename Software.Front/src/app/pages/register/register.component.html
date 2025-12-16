@@ -133,6 +133,20 @@
               </div>
             </div>
 
+            <div class="row">
+              <!-- Telefone -->
+              <div class="col-md-6 mb-3">
+                <label for="phone" class="form-label">Telefone</label>
+                <input type="text" class="form-control" id="phone" formControlName="phone" placeholder="(00) 00000-0000">
+              </div>
+
+              <!-- Data de Nascimento -->
+              <div class="col-md-6 mb-3">
+                <label for="birthDate" class="form-label">Data de Nascimento</label>
+                <input type="date" class="form-control" id="birthDate" formControlName="birthDate">
+              </div>
+            </div>
+
             <!-- Botões -->
             <div class="d-grid gap-2 mb-3">
               <button type="submit" class="btn btn-primary btn-lg" [disabled]="registerForm.invalid">

@@ -23,16 +23,14 @@ namespace Software.Infraestructure.Repository
             
             if (doctor.UserId > 0)
             {
-                doctor.User = connection.QuerySingleOrDefault<User>(
-                    "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
-                    new { Id = doctor.UserId });
+                var userSql = File.ReadAllText("Queries/GetUserById.sql");
+                doctor.User = connection.QuerySingleOrDefault<User>(userSql, new { UserId = doctor.UserId });
             }
             
             if (doctor.SpecialtyId > 0)
             {
-                doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(
-                    "SELECT \"SpecialtyId\", \"Description\" FROM \"Specialty\" WHERE \"SpecialtyId\" = @Id",
-                    new { Id = doctor.SpecialtyId });
+                var specialtySql = File.ReadAllText("Queries/GetSpecialtyById.sql");
+                doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(specialtySql, new { SpecialtyId = doctor.SpecialtyId });
             }
             
             return doctor;
@@ -91,6 +89,8 @@ namespace Software.Infraestructure.Repository
         {
             using var connection = GetConnection();
             var sql = File.ReadAllText("Queries/GetAllDoctors.sql");
+            var userSql = File.ReadAllText("Queries/GetUserById.sql");
+            var specialtySql = File.ReadAllText("Queries/GetSpecialtyById.sql");
             
             var doctors = connection.Query<Doctor>(sql).ToList();
             
@@ -98,16 +98,12 @@ namespace Software.Infraestructure.Repository
             {
                 if (doctor.UserId > 0)
                 {
-                    doctor.User = connection.QuerySingleOrDefault<User>(
-                        "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
-                        new { Id = doctor.UserId });
+                    doctor.User = connection.QuerySingleOrDefault<User>(userSql, new { UserId = doctor.UserId });
                 }
                 
                 if (doctor.SpecialtyId > 0)
                 {
-                    doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(
-                        "SELECT \"SpecialtyId\", \"Description\" FROM \"Specialty\" WHERE \"SpecialtyId\" = @Id",
-                        new { Id = doctor.SpecialtyId });
+                    doctor.Specialty = connection.QuerySingleOrDefault<Specialty>(specialtySql, new { SpecialtyId = doctor.SpecialtyId });
                 }
             }
             

@@ -17,6 +17,7 @@
 
         // Informações adicionais de exibição
         public string? Phone { get; set; }
+        public DateTime? BirthDate { get; set; }
         public string? SpecialtyName { get; set; }
     }
 }

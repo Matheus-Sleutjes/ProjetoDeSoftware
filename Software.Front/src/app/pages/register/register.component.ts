@@ -39,7 +39,8 @@ export class RegisterComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]],
       cpf: ['', [Validators.required, CpfValidator.validate()]],
-      // role sempre será paciente para registro público
+      phone: [''],
+      birthDate: [''],
       role: [3]
     }, { validators: this.passwordMatchValidator });
   }
@@ -72,7 +73,8 @@ export class RegisterComponent implements OnInit {
       email: formValue.email,
       password: formValue.password,
       cpf: formValue.cpf,
-      // força role paciente no registro público
+      phone: formValue.phone || null,
+      birthDate: formValue.birthDate || null,
       role: 3
     };
 

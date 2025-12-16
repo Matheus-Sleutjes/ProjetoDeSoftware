@@ -82,6 +82,8 @@ export class UserViewComponent implements OnInit {
           username: user.username || '',
           email: user.email || '',
           cpf: user.cpf || '',
+          phone: user.phone || '',
+          birthDate: user.birthDate || '',
           role: user.role || 3
         };
         this.loading = false;
@@ -97,5 +99,16 @@ export class UserViewComponent implements OnInit {
         this.goBack();
       }
     );
+  }
+
+  formatBirthDate(birthDate: any): string {
+    if (!birthDate) {
+      return 'Não informado';
+    }
+
+    const dateStr = birthDate.split('T')[0];
+    const [year, month, day] = dateStr.split('-');
+    
+    return `${day}/${month}/${year}`;
   }
 }

@@ -106,17 +106,32 @@
             <div class="mb-3">
                 <label for="cpf" class="form-label">CPF *</label>
                 <input type="text" class="form-control" id="cpf" formControlName="cpf" placeholder="000.000.000-00"
-                    (input)="formatCpf($event)" maxlength="14"
+                    appCpfMask maxlength="14"
                     [class.is-invalid]="userForm.get('cpf')?.invalid && userForm.get('cpf')?.touched">
                 @if (userForm.get('cpf')?.invalid && userForm.get('cpf')?.touched) {
                     <div class="invalid-feedback">
                         @if (userForm.get('cpf')?.errors?.['required']) {
                             CPF é obrigatório.
-                        } @else if (userForm.get('cpf')?.errors?.['pattern']) {
-                            Por favor, insira um CPF válido (000.000.000-00).
+                        } @else if (userForm.get('cpf')?.errors?.['cpfInvalid']) {
+                            CPF inválido.
                         }
                     </div>
                 }
+            </div>
+
+            <div class="row">
+                <!-- Telefone -->
+                <div class="col-md-6 mb-3">
+                    <label for="phone" class="form-label">Telefone</label>
+                    <input type="text" class="form-control" id="phone" formControlName="phone"
+                        placeholder="(00) 00000-0000">
+                </div>
+
+                <!-- Data de Nascimento -->
+                <div class="col-md-6 mb-3">
+                    <label for="birthDate" class="form-label">Data de Nascimento</label>
+                    <input type="date" class="form-control" id="birthDate" formControlName="birthDate">
+                </div>
             </div>
 
             <!-- Role -->

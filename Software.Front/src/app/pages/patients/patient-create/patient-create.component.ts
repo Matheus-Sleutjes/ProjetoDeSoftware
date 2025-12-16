@@ -6,11 +6,13 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../../services/toast.service';
+import { CpfValidator } from '../../../validators/cpf.validator';
+import { CpfMaskDirective } from '../../../directives/cpf-mask.directive';
 
 @Component({
   selector: 'app-patient-create',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CpfMaskDirective],
   templateUrl: './patient-create.component.html',
   styleUrl: './patient-create.component.scss',
 })
@@ -34,15 +36,6 @@ export class PatientCreateComponent implements OnInit {
 
   goBack(): void {
     this.location.back();
-  }
-
-  formatCpf(event: any): void {
-    let value = event.target.value.replace(/\D/g, '');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    event.target.value = value;
-    this.patientForm.get('cpf')?.setValue(value);
   }
 
   onSubmit() {
@@ -134,7 +127,7 @@ export class PatientCreateComponent implements OnInit {
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      cpf: ['', [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]],
+      cpf: ['', [Validators.required, CpfValidator.validate()]],
       phone: [''],
       birthDate: ['']
     });

@@ -50,6 +50,19 @@
                 </div>
 
                 <div class="col-md-4 mb-3">
+                    <label class="form-label">Telefone</label>
+                    <input type="text" class="form-control-plaintext" [value]="user.phone || 'Não informado'" readonly>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Data de Nascimento</label>
+                    <input type="text" class="form-control-plaintext" 
+                        [value]="formatBirthDate(user.birthDate)" readonly>
+                </div>
+
+                <div class="col-md-4 mb-3">
                     <label class="form-label">Perfil</label>
                     <input type="text" class="form-control-plaintext" [value]="getRoleDescription(user.role)" readonly>
                 </div>

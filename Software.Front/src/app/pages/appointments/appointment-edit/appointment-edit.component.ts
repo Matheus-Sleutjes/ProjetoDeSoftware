@@ -154,7 +154,7 @@ export class AppointmentEditComponent implements OnInit {
       doctorId: this.appointmentForm.value.doctorId,
       appointmentDate: this.appointmentForm.value.appointmentDate,
       description: this.appointmentForm.value.description || '',
-      status: this.appointmentForm.value.status
+      status: parseInt(this.appointmentForm.value.status)
     };
 
     this.appointmentService.updateAppointment(this.appointmentId, appointmentData)

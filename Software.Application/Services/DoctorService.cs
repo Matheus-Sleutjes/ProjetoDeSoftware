@@ -75,7 +75,8 @@ namespace Software.Application.Services
                     Username = entity.User?.Username,
                     Email = entity.User?.Email,
                     Cpf = entity.User?.Cpf,
-                    Phone = entity.User?.Phone
+                    Phone = entity.User?.Phone,
+                    BirthDate = entity.User?.BirthDate
                 }).ToList();
         }
 
@@ -95,6 +96,7 @@ namespace Software.Application.Services
                 Email = entity.User?.Email,
                 Cpf = entity.User?.Cpf,
                 Phone = entity.User?.Phone,
+                BirthDate = entity.User?.BirthDate,
                 SpecialtyName = entity.Specialty?.Description
             };
             return dto;

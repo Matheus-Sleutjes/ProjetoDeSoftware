@@ -81,15 +81,13 @@ export class PatientViewComponent implements OnInit {
 
   formatBirthDate(birthDate: any): string {
     if (!birthDate) {
-      return '';
+      return 'Não informado';
     }
 
-    const date = new Date(birthDate);
-    if (isNaN(date.getTime())) {
-      return '';
-    }
-
-    return date.toLocaleDateString('pt-BR');
+    const dateStr = birthDate.split('T')[0];
+    const [year, month, day] = dateStr.split('-');
+    
+    return `${day}/${month}/${year}`;
   }
 }
 

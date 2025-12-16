@@ -22,9 +22,8 @@ namespace Software.Infraestructure.Repository
             
             if (patient.UserId > 0)
             {
-                patient.User = connection.QuerySingleOrDefault<User>(
-                    "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
-                    new { Id = patient.UserId });
+                var userSql = File.ReadAllText("Queries/GetUserById.sql");
+                patient.User = connection.QuerySingleOrDefault<User>(userSql, new { UserId = patient.UserId });
             }
             
             return patient;
@@ -68,6 +67,7 @@ namespace Software.Infraestructure.Repository
         {
             using var connection = GetConnection();
             var sql = File.ReadAllText("Queries/GetAllPatients.sql");
+            var userSql = File.ReadAllText("Queries/GetUserById.sql");
             
             var patients = connection.Query<Patient>(sql).ToList();
             
@@ -75,9 +75,7 @@ namespace Software.Infraestructure.Repository
             {
                 if (patient.UserId > 0)
                 {
-                    patient.User = connection.QuerySingleOrDefault<User>(
-                        "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
-                        new { Id = patient.UserId });
+                    patient.User = connection.QuerySingleOrDefault<User>(userSql, new { UserId = patient.UserId });
                 }
             }
             

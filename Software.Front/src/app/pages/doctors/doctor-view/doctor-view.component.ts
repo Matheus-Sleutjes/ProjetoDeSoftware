@@ -64,7 +64,8 @@ export class DoctorViewComponent implements OnInit {
           username: doctor.username || '',
           email: doctor.email || '',
           cpf: doctor.cpf || '',
-          phone: doctor.phone || ''
+          phone: doctor.phone || '',
+          birthDate: doctor.birthDate || ''
         };
         this.specialty = {
           description: doctor.specialtyName || 'Não informado'
@@ -82,6 +83,17 @@ export class DoctorViewComponent implements OnInit {
         this.goBack();
       }
     );
+  }
+
+  formatBirthDate(birthDate: any): string {
+    if (!birthDate) {
+      return 'Não informado';
+    }
+
+    const dateStr = birthDate.split('T')[0];
+    const [year, month, day] = dateStr.split('-');
+    
+    return `${day}/${month}/${year}`;
   }
 }
 

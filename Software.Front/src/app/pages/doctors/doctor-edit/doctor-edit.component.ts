@@ -7,11 +7,13 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../../services/toast.service';
+import { CpfValidator } from '../../../validators/cpf.validator';
+import { CpfMaskDirective } from '../../../directives/cpf-mask.directive';
 
 @Component({
   selector: 'app-doctor-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CpfMaskDirective],
   templateUrl: './doctor-edit.component.html',
   styleUrl: './doctor-edit.component.scss',
 })
@@ -73,20 +75,16 @@ export class DoctorEditComponent implements OnInit {
     );
   }
 
-  formatCpf(event: any): void {
-    let value = event.target.value.replace(/\D/g, '');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    event.target.value = value;
-    this.doctorForm.get('cpf')?.setValue(value);
-  }
-
   loadDoctor(): void {
     this.loading = true;
     this.doctorService.getDoctorById(this.doctorId).then(
       (doctor: any) => {
         this.userId = doctor.userId;
+        
+        const birthDateFormatted = doctor.birthDate 
+          ? doctor.birthDate.split('T')[0]
+          : '';
+        
         this.doctorForm.patchValue({
           name: doctor.name?.split(' ')[0] || '',
           lastName: doctor.name?.split(' ').slice(1).join(' ') || '',
@@ -95,7 +93,8 @@ export class DoctorEditComponent implements OnInit {
           cpf: doctor.cpf || '',
           crm: doctor.crm || '',
           specialtyId: doctor.specialtyId || '',
-          phone: doctor.phone || ''
+          phone: doctor.phone || '',
+          birthDate: birthDateFormatted
         });
         this.loading = false;
       },
@@ -184,10 +183,11 @@ export class DoctorEditComponent implements OnInit {
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      cpf: ['', [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]],
+      cpf: ['', [Validators.required, CpfValidator.validate()]],
       crm: ['', [Validators.required]],
       specialtyId: ['', [Validators.required]],
-      phone: ['']
+      phone: [''],
+      birthDate: ['']
     });
   }
 }

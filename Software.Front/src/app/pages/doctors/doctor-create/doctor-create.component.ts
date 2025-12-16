@@ -7,11 +7,13 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../../services/toast.service';
+import { CpfValidator } from '../../../validators/cpf.validator';
+import { CpfMaskDirective } from '../../../directives/cpf-mask.directive';
 
 @Component({
   selector: 'app-doctor-create',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CpfMaskDirective],
   templateUrl: './doctor-create.component.html',
   styleUrl: './doctor-create.component.scss',
 })
@@ -56,15 +58,6 @@ export class DoctorCreateComponent implements OnInit {
     );
   }
 
-  formatCpf(event: any): void {
-    let value = event.target.value.replace(/\D/g, '');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    event.target.value = value;
-    this.doctorForm.get('cpf')?.setValue(value);
-  }
-
   onSubmit() {
     if (this.doctorForm.invalid) {
       this.doctorForm.markAllAsTouched();
@@ -85,6 +78,8 @@ export class DoctorCreateComponent implements OnInit {
       email: this.doctorForm.value.email,
       password: this.doctorForm.value.password,
       cpf: this.doctorForm.value.cpf,
+      phone: this.doctorForm.value.phone || null,
+      birthDate: this.doctorForm.value.birthDate || null,
       role: 2 as 1 | 2 | 3
     };
 
@@ -157,10 +152,11 @@ export class DoctorCreateComponent implements OnInit {
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      cpf: ['', [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]],
+      cpf: ['', [Validators.required, CpfValidator.validate()]],
       crm: ['', [Validators.required]],
       specialtyId: ['', [Validators.required]],
-      phone: ['']
+      phone: [''],
+      birthDate: ['']
     });
   }
 }

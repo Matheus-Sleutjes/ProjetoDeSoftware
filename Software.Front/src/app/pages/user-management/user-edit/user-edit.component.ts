@@ -5,10 +5,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../../services/toast.service';
+import { CpfValidator } from '../../../validators/cpf.validator';
+import { CpfMaskDirective } from '../../../directives/cpf-mask.directive';
 
 @Component({
   selector: 'app-user-edit',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CpfMaskDirective],
   templateUrl: './user-edit.component.html',
   styleUrl: './user-edit.component.scss',
 })
@@ -60,25 +62,20 @@ export class UserEditComponent implements OnInit {
     this.location.back();
   }
 
-  formatCpf(event: any): void {
-    let value = event.target.value.replace(/\D/g, '');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    event.target.value = value;
-    this.userForm.get('cpf')?.setValue(value);
-  }
-
   loadUser(): void {
     this.loading = true;
     this.authService.getUserById(this.userId).then(
       (user: any) => {
+        const birthDateFormatted = user.birthDate ? user.birthDate.split('T')[0] : '';
+        
         this.userForm.patchValue({
           name: user.name || '',
           lastName: user.lastName || '',
           username: user.username || '',
           email: user.email || '',
           cpf: user.cpf || '',
+          phone: user.phone || '',
+          birthDate: birthDateFormatted,
           role: user.role || 3
         });
         this.loading = false;
@@ -154,7 +151,9 @@ export class UserEditComponent implements OnInit {
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      cpf: ['', [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]],
+      cpf: ['', [Validators.required, CpfValidator.validate()]],
+      phone: [''],
+      birthDate: [''],
       role: [3, [Validators.required]],
       password: ['']
     });

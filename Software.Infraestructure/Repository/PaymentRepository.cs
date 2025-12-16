@@ -58,6 +58,11 @@ namespace Software.Infraestructure.Repository
         {
             using var connection = GetConnection();
             var sql = File.ReadAllText("Queries/GetAllPayments.sql");
+            var paymentMethodSql = File.ReadAllText("Queries/GetPaymentMethodById.sql");
+            var userSql = File.ReadAllText("Queries/GetUserById.sql");
+            var appointmentSql = File.ReadAllText("Queries/GetAppointmentById.sql");
+            var patientSql = File.ReadAllText("Queries/GetPatientById.sql");
+            var doctorSql = File.ReadAllText("Queries/GetDoctorById.sql");
             
             var payments = connection.Query<Payment>(sql).ToList();
             
@@ -65,38 +70,28 @@ namespace Software.Infraestructure.Repository
             {
                 if (payment.PaymentMethodId > 0)
                 {
-                    payment.PaymentMethod = connection.QuerySingleOrDefault<PaymentMethod>(
-                        "SELECT \"PaymentMethodId\", \"Description\" FROM \"PaymentMethod\" WHERE \"PaymentMethodId\" = @Id",
-                        new { Id = payment.PaymentMethodId });
+                    payment.PaymentMethod = connection.QuerySingleOrDefault<PaymentMethod>(paymentMethodSql, new { PaymentMethodId = payment.PaymentMethodId });
                 }
                 
                 if (payment.UserId > 0)
                 {
-                    payment.User = connection.QuerySingleOrDefault<User>(
-                        "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
-                        new { Id = payment.UserId });
+                    payment.User = connection.QuerySingleOrDefault<User>(userSql, new { UserId = payment.UserId });
                 }
                 
                 if (payment.AppointmentId > 0)
                 {
-                    payment.Appointment = connection.QuerySingleOrDefault<Appointment>(
-                        "SELECT \"AppointmentId\", \"AppointmentDate\", \"Description\", \"Status\", \"PatientId\", \"DoctorId\", \"CreatedAt\", \"UpdatedAt\" FROM \"Appointment\" WHERE \"AppointmentId\" = @Id",
-                        new { Id = payment.AppointmentId });
+                    payment.Appointment = connection.QuerySingleOrDefault<Appointment>(appointmentSql, new { AppointmentId = payment.AppointmentId });
                     
                     if (payment.Appointment != null)
                     {
                         if (payment.Appointment.PatientId > 0)
                         {
-                            payment.Appointment.Patient = connection.QuerySingleOrDefault<Patient>(
-                                "SELECT \"PatientId\", \"UserId\" FROM \"Patient\" WHERE \"PatientId\" = @Id",
-                                new { Id = payment.Appointment.PatientId });
+                            payment.Appointment.Patient = connection.QuerySingleOrDefault<Patient>(patientSql, new { PatientId = payment.Appointment.PatientId });
                         }
                         
                         if (payment.Appointment.DoctorId > 0)
                         {
-                            payment.Appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(
-                                "SELECT \"DoctorId\", \"CRM\", \"UserId\", \"SpecialtyId\" FROM \"Doctor\" WHERE \"DoctorId\" = @Id",
-                                new { Id = payment.Appointment.DoctorId });
+                            payment.Appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(doctorSql, new { DoctorId = payment.Appointment.DoctorId });
                         }
                     }
                 }
@@ -109,6 +104,11 @@ namespace Software.Infraestructure.Repository
         {
             using var connection = GetConnection();
             var sql = File.ReadAllText("Queries/GetPaymentById.sql");
+            var paymentMethodSql = File.ReadAllText("Queries/GetPaymentMethodById.sql");
+            var userSql = File.ReadAllText("Queries/GetUserById.sql");
+            var appointmentSql = File.ReadAllText("Queries/GetAppointmentById.sql");
+            var patientSql = File.ReadAllText("Queries/GetPatientById.sql");
+            var doctorSql = File.ReadAllText("Queries/GetDoctorById.sql");
             
             var payment = connection.QuerySingleOrDefault<Payment>(sql, new { PaymentId = id });
             
@@ -116,38 +116,28 @@ namespace Software.Infraestructure.Repository
             
             if (payment.PaymentMethodId > 0)
             {
-                payment.PaymentMethod = connection.QuerySingleOrDefault<PaymentMethod>(
-                    "SELECT \"PaymentMethodId\", \"Description\" FROM \"PaymentMethod\" WHERE \"PaymentMethodId\" = @Id",
-                    new { Id = payment.PaymentMethodId });
+                payment.PaymentMethod = connection.QuerySingleOrDefault<PaymentMethod>(paymentMethodSql, new { PaymentMethodId = payment.PaymentMethodId });
             }
             
             if (payment.UserId > 0)
             {
-                payment.User = connection.QuerySingleOrDefault<User>(
-                    "SELECT \"UserId\", \"Name\", \"LastName\", \"Username\", \"Email\", \"Password\", \"Cpf\", \"Phone\", \"BirthDate\", \"Role\" FROM \"Users\" WHERE \"UserId\" = @Id",
-                    new { Id = payment.UserId });
+                payment.User = connection.QuerySingleOrDefault<User>(userSql, new { UserId = payment.UserId });
             }
             
             if (payment.AppointmentId > 0)
             {
-                payment.Appointment = connection.QuerySingleOrDefault<Appointment>(
-                    "SELECT \"AppointmentId\", \"AppointmentDate\", \"Description\", \"Status\", \"PatientId\", \"DoctorId\", \"CreatedAt\", \"UpdatedAt\" FROM \"Appointment\" WHERE \"AppointmentId\" = @Id",
-                    new { Id = payment.AppointmentId });
+                payment.Appointment = connection.QuerySingleOrDefault<Appointment>(appointmentSql, new { AppointmentId = payment.AppointmentId });
                 
                 if (payment.Appointment != null)
                 {
                     if (payment.Appointment.PatientId > 0)
                     {
-                        payment.Appointment.Patient = connection.QuerySingleOrDefault<Patient>(
-                            "SELECT \"PatientId\", \"UserId\" FROM \"Patient\" WHERE \"PatientId\" = @Id",
-                            new { Id = payment.Appointment.PatientId });
+                        payment.Appointment.Patient = connection.QuerySingleOrDefault<Patient>(patientSql, new { PatientId = payment.Appointment.PatientId });
                     }
                     
                     if (payment.Appointment.DoctorId > 0)
                     {
-                        payment.Appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(
-                            "SELECT \"DoctorId\", \"CRM\", \"UserId\", \"SpecialtyId\" FROM \"Doctor\" WHERE \"DoctorId\" = @Id",
-                            new { Id = payment.Appointment.DoctorId });
+                        payment.Appointment.Doctor = connection.QuerySingleOrDefault<Doctor>(doctorSql, new { DoctorId = payment.Appointment.DoctorId });
                     }
                 }
             }

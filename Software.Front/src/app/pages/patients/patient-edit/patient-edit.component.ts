@@ -6,11 +6,13 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../../services/toast.service';
+import { CpfValidator } from '../../../validators/cpf.validator';
+import { CpfMaskDirective } from '../../../directives/cpf-mask.directive';
 
 @Component({
   selector: 'app-patient-edit',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CpfMaskDirective],
   templateUrl: './patient-edit.component.html',
   styleUrl: './patient-edit.component.scss',
 })
@@ -53,15 +55,6 @@ export class PatientEditComponent implements OnInit {
     this.location.back();
   }
 
-  formatCpf(event: any): void {
-    let value = event.target.value.replace(/\D/g, '');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    event.target.value = value;
-    this.patientForm.get('cpf')?.setValue(value);
-  }
-
   loadPatient(): void {
     this.loading = true;
     this.patientService.getPatientById(this.patientId).then(
@@ -69,7 +62,7 @@ export class PatientEditComponent implements OnInit {
         this.userId = patient.userId;
         
         const birthDateFormatted = patient.birthDate 
-          ? new Date(patient.birthDate).toISOString().slice(0, 10)
+          ? patient.birthDate.split('T')[0]
           : '';
         
         this.patientForm.patchValue({
@@ -150,7 +143,7 @@ export class PatientEditComponent implements OnInit {
       lastName: ['', [Validators.required, Validators.minLength(2)]],
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      cpf: ['', [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]],
+      cpf: ['', [Validators.required, CpfValidator.validate()]],
       phone: [''],
       birthDate: ['']
     });
